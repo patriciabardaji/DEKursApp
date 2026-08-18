@@ -368,6 +368,13 @@ input{font:inherit;color:inherit}
 .guide-body ol{margin:13px 0 0;padding-left:20px}
 .guide-body li{font-size:14px;line-height:1.6;color:var(--ink-60);margin-bottom:7px}
 .guide-body li b{color:var(--ink)}
+
+.caps{display:flex;gap:8px;margin-top:12px}
+.capbtn{
+  flex:1;padding:13px 6px;border:1px solid var(--ink-14);border-radius:6px;background:var(--card);
+  font-family:var(--mono);font-size:12px;letter-spacing:.04em;
+}
+.capbtn[data-on="1"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 -3px 0 var(--accent);font-weight:600}
 /* ---------- home screen ---------- */
 .hero{border:1px solid var(--ink-14);border-top:4px solid var(--accent);border-radius:6px;padding:18px 18px 20px;background:var(--card)}
 .hero .who{font-family:var(--serif);font-size:26px;line-height:1.2;margin:0 0 3px}
@@ -1812,7 +1819,11 @@ const DAY = () => Math.floor(Date.now()/864e5);
 const STEPS = {1:1, 2:2, 3:4, 4:8, 5:16};
 const SESSION = 16;
 const GOAL = 120;                  // Punkte pro Tag
-const NEWCAP = 12;                 // höchstens so viele neue Karten pro Tag
+const MINUTES = [10, 15, 25, 40];      // wählbares Tagesziel
+const SEC_PER_CARD = 15;               // Erfahrungswert fürs Tippen einer Karte
+const goalMin = () => P.goalMin || 15;
+const dailyCards = () => Math.round(goalMin() * 60 / SEC_PER_CARD);
+const SECOF = {v:"vocab", g:"grammar", b:"verbs", s:"satz"};
 
 const LEVELS = [
   [0,"Zettelwirtschaft","paper chaos"],
@@ -1843,8 +1854,8 @@ const STAMPS = [
 ];
 
 let P = { p:{}, xp:0, streak:0, goalDay:0, dayD:0, dayXp:0, bestCombo:0, blitzBest:0,
-          stamps:{}, dir:"de", sessions:0, newByLevel:{}, ansByLevel:{}, course:null,
-          name:"", lastBackup:0 };
+          stamps:{}, dir:"de", sessions:0, ansBySec:{}, bonusBySec:{}, course:null,
+          name:"", lastBackup:0, goalMin:15 };
 let S = { mode:"vocab", topic:null, force:false, queue:[], i:0, marks:[], locked:false,
           pts:0, combo:0, best:0, fresh:[], timer:null, bEnd:0, bScore:0, bItem:null };
 
@@ -1873,7 +1884,8 @@ function buildQueue(m, force){
   const due = all.filter(isDue).sort((a,b)=>rec(a).d - rec(b).d);
   const fresh = all.filter(id => !rec(id));
   const soon = all.filter(id => rec(id) && rec(id).d > DAY()).sort((a,b)=>rec(a).d - rec(b).d);
-  let q = due.concat(fresh.slice(0, force ? SESSION : newLeft())).slice(0, SESSION);
+  const budget = force ? SESSION : secLeft(m);
+  let q = due.concat(fresh).slice(0, Math.min(SESSION, budget));
   if(!q.length && force) q = soon.slice(0, 8);   // everything seen → review ahead of schedule
   return q;
 }
@@ -1881,13 +1893,25 @@ function buildQueue(m, force){
 /* ---------- points, level, streak ---------- */
 function touchDay(){
   const d = DAY();
-  if(P.dayD !== d){ P.dayD = d; P.dayXp = 0; P.newByLevel = {}; P.ansByLevel = {}; }
-  if(!P.newByLevel) P.newByLevel = {};
-  if(!P.ansByLevel) P.ansByLevel = {};
+  if(P.dayD !== d){ P.dayD = d; P.dayXp = 0; P.ansBySec = {}; P.bonusBySec = {}; }
+  if(!P.ansBySec) P.ansBySec = {};
+  if(!P.bonusBySec) P.bonusBySec = {};
 }
-const newToday = () => P.newByLevel[CV] || 0;
-const ansToday = () => P.ansByLevel[CV] || 0;
-const newLeft  = () => Math.max(0, NEWCAP - newToday());
+const SECS = ["vocab","grammar","verbs","satz"];
+const secDone = m => (P.ansBySec || {})[CV + "|" + m] || 0;
+const ansToday = () => SECS.reduce((a,m) => a + secDone(m), 0);
+const bonus = () => (P.bonusBySec || {})[CV] || 0;   // extra rounds pulled forward today
+// the day's cards are split across the sections in proportion to their size
+function secTarget(m){
+  const sm = S.mode, stp = S.topic; S.mode = m; S.topic = null;
+  const sizes = {}; let total = 0;
+  SECS.forEach(k => { S.mode = k; const n = pool(k).length; sizes[k] = n; total += n; });
+  S.mode = sm; S.topic = stp;
+  const share = Math.max(3, Math.round(dailyCards() * sizes[m] / total));
+  return share * (1 + bonus());
+}
+const secLeft = m => Math.max(0, secTarget(m) - secDone(m));
+const dayTarget = () => SECS.reduce((a,m) => a + secTarget(m), 0);
 function addXP(n){
   touchDay();
   P.xp += n; P.dayXp += n;
@@ -1910,8 +1934,8 @@ function levelPct(){
 
 function grade(id, ok){
   touchDay();
-  if(!rec(id)) P.newByLevel[CV] = newToday() + 1;
-  P.ansByLevel[CV] = ansToday() + 1;
+  const sec = SECOF[kind(id)];
+  P.ansBySec[CV + "|" + sec] = secDone(sec) + 1;
   const r = rec(id) || {b:1, d:DAY(), n:0, k:0};
   r.n++; if(ok) r.k++;
   r.b = ok ? Math.min(5, r.b + 1) : 1;
@@ -2138,13 +2162,13 @@ function renderEmpty(m){
   $("#stage").innerHTML = `
   <div class="card">
     <div class="tab"><span>${esc(label)}</span><span>nichts geplant</span></div>
-    <p class="prompt" style="font-size:23px">Hier ist heute nichts fällig</p>
+    <p class="prompt" style="font-size:23px">${secLeft(m) === 0 ? "Tagesziel hier erreicht" : "Hier ist heute nichts fällig"}</p>
     <p class="sub">${s.fresh
-      ? `Es warten noch ${s.fresh} neue Karten, aber das Tagesziel für neue Karten ist erreicht (${NEWCAP} pro Tag). Morgen geht es hier weiter.`
+      ? `Dein Anteil für heute in diesem Bereich ist geschafft — ${secDone(m)} Karten. Es warten noch ${s.fresh}, die morgen dran sind. Du kannst aber jederzeit weitermachen.`
       : "Alle Karten in diesem Bereich sind wiederholt. Die nächsten kommen in ein paar Tagen zurück."}</p>
     <p class="sub">Wiederholungen zählen nicht gegen dieses Limit — es begrenzt nur, wie viel Neues an einem Tag dazukommt.</p>
     <div class="actions">
-      <button class="btn ghost" id="anyway">Trotzdem üben</button>
+      <button class="btn ghost" id="anyway">Weitermachen</button>
       <button class="btn" id="home">Zur Übersicht</button>
     </div>
   </div>`;
@@ -2206,7 +2230,7 @@ function guideHTML(){
     <details class="guide">
       <summary>So funktioniert es<span>1 Minute</span></summary>
       <div class="guide-body">
-        <p><b>Jeden Tag ein kleiner Plan.</b> Die Startseite zeigt, was heute ansteht: fällige Wiederholungen plus höchstens zwölf neue Karten. Meistens sind das fünf bis zehn Minuten.</p>
+        <p><b>Jeden Tag ein Plan.</b> Die Startseite zeigt, was heute ansteht: ein festes Tagesziel von rund 15 Minuten, aufgeteilt auf die vier Bereiche — fällige Wiederholungen zuerst, dann neue Karten. Wenn du früher fertig bist, kannst du den Stoff von morgen vorziehen.</p>
         <p><b>Fünf Kästen.</b> Jede Karte wandert bei einer richtigen Antwort einen Kasten weiter und kommt später wieder — nach 1, 2, 4, 8 und 16 Tagen. Bei einer falschen Antwort geht sie zurück in Kasten 1.</p>
         <p><b>Tippen statt raten.</b> Du schreibst die Übersetzung selbst. Kleine Tippfehler und fehlende Umlaute werden akzeptiert; wenn deine Antwort trotzdem richtig war, kannst du sie selbst als richtig werten.</p>
         <p><b>Vier Bereiche.</b> Vokabeln, Grammatik, Verben und Satzbau — dazu Blitz, eine Minute auf Zeit. Punkte, Stufen und Stempel gibt es fürs Dranbleiben.</p>
@@ -2261,39 +2285,37 @@ function renderHome(){
   const keys = [["vocab","Vokabeln","Wörter tippen"],["grammar","Grammatik",GTOPICS.length + " Themen"],
                 ["verbs","Verben",VHEAD],["satz","Satzbau","Wortstellung"]];
   const st = {}; keys.forEach(([k])=> st[k] = sectionStats(k));
-  const reviews = keys.reduce((a,[k])=> a + st[k].due, 0);
-  const freshAvail = keys.reduce((a,[k])=> a + st[k].fresh, 0);
-  const newPlanned = Math.min(newLeft(), freshAvail);
-  const left = reviews + newPlanned;
   const doneToday = ansToday();
-  const planTotal = doneToday + left;
-  const mins = Math.max(1, Math.round(left * 12 / 60));
+  const target = dayTarget();
+  const leftToday = SECS.reduce((a,m) => a + Math.min(secLeft(m), st[m].due + st[m].fresh), 0);
+  const mins = Math.max(1, Math.round(leftToday * SEC_PER_CARD / 60));
+  const nothingLeft = keys.every(([k]) => st[k].due + st[k].fresh === 0);
 
-  // where to send them next
-  let nextK = keys.map(([k])=>k).sort((a,b)=> st[b].due - st[a].due)[0];
-  if(!st[nextK].due) nextK = keys.map(([k])=>k).find(k => st[k].fresh && newLeft()) || nextK;
+  // send them to whichever section is furthest from its share, reviews first
+  let nextK = keys.map(([k])=>k)
+    .filter(k => Math.min(secLeft(k), st[k].due + st[k].fresh) > 0)
+    .sort((a,b) => (st[b].due - st[a].due) || (secLeft(b) - secLeft(a)))[0];
 
-  const plan = left === 0
-    ? `<p class="planbig">Tagesplan erledigt</p>
-       <p class="plansub">Nichts mehr fällig. Du kannst vorarbeiten, eine Blitzrunde spielen, oder es für heute gut sein lassen.</p>`
-    : (() => {
-        const bits = [];
-        if(reviews) bits.push(`${reviews} Wiederholung${reviews===1?"":"en"}`);
-        if(newPlanned) bits.push(`${newPlanned} neue Karte${newPlanned===1?"":"n"}`);
-        return `<p class="planbig">${left} Karten offen</p>
-       <p class="plansub">${bits.join(" · ")} · etwa ${mins} Minuten</p>`;
-      })();
+  const plan = nothingLeft
+    ? `<p class="planbig">Diese Stufe ist durch</p>
+       <p class="plansub">Alle ${courseSize(CV)} Karten sitzen im Kasten. Zeit für die nächste Stufe.</p>`
+    : leftToday === 0
+      ? `<p class="planbig">Tagesziel erreicht</p>
+         <p class="plansub">${doneToday} Karten heute, etwa ${Math.round(doneToday*SEC_PER_CARD/60)} Minuten. Du kannst hier aufhören — oder schon den Stoff von morgen holen.</p>`
+      : `<p class="planbig">${leftToday} Karten heute</p>
+         <p class="plansub">Etwa ${mins} Minute${mins===1?"":"n"}${doneToday ? ` · ${doneToday} von ${target} schon geschafft` : ` · Tagesziel ${goalMin()} Minuten`}${bonus() ? " · Zusatzrunde" : ""}</p>`;
 
   const checklist = keys.map(([k,name])=>{
     const s = st[k];
-    const canStartNew = newLeft() > 0 && s.fresh > 0;
-    const done = s.due === 0 && !canStartNew;
-    const note = s.due ? `${s.due} fällig heute`
-               : canStartNew ? "neue Karten möglich"
-               : s.fresh ? `${s.fresh} übrig, morgen weiter`
-               : "komplett wiederholt";
+    const avail = s.due + s.fresh;
+    const todo = Math.min(secLeft(k), avail);
+    const done = todo === 0;
+    const note = avail === 0 ? "komplett gelernt"
+               : todo === 0 ? `heute fertig · ${secDone(k)} gemacht`
+               : s.due ? `${Math.min(todo, s.due)} zum Wiederholen`
+               : `${todo} neue Karten`;
     return `<li data-k="${k}" data-done="${done?1:0}">
-      <span class="mark">${done ? "✓" : (s.due || "+")}</span>
+      <span class="mark">${done ? "✓" : todo}</span>
       <span class="what"><b>${name}</b><span>${note}</span></span>
     </li>`;
   }).join("");
@@ -2320,11 +2342,12 @@ function renderHome(){
     <p class="who">${hello}.</p>
     <p class="lvl">Stufe ${l.i+1} · ${l.name} · ${P.xp} Punkte</p>
     ${plan}
-    <div class="track2"><i style="width:${planTotal ? Math.round(doneToday/planTotal*100) : 100}%"></i></div>
-    <div class="goal"><span>${doneToday} von ${planTotal} heute</span><span>${P.dayXp} / ${GOAL} Punkte</span></div>
+    <div class="track2"><i style="width:${Math.min(100, Math.round(doneToday/target*100))}%"></i></div>
+    <div class="goal"><span>${doneToday} von ${target} Karten</span><span>${P.dayXp} Punkte heute</span></div>
     <ul class="check">${checklist}</ul>
-    ${left ? `<button class="btn wide" id="start" style="margin-top:16px">Weitermachen</button>`
-           : `<button class="btn ghost wide" id="ahead" style="margin-top:16px">Vorarbeiten</button>`}
+    ${nothingLeft ? `<button class="btn wide" id="switch" style="margin-top:16px">Andere Stufe wählen</button>`
+      : leftToday ? `<button class="btn wide" id="start" style="margin-top:16px">Los geht's</button>`
+      : `<button class="btn ghost wide" id="ahead" style="margin-top:16px">Stoff von morgen holen</button>`}
   </div>
 
   ${backupNag()}
@@ -2349,7 +2372,11 @@ function renderHome(){
   $("#stage").querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
   $("#stage").querySelectorAll(".check li").forEach(li => li.onclick = () => go(li.dataset.k));
   if($("#start")) $("#start").onclick = () => go(nextK);
-  if($("#ahead")) $("#ahead").onclick = () => { S.force = true; go("vocab"); };
+  if($("#switch")) $("#switch").onclick = () => go("welcome");
+  if($("#ahead")) $("#ahead").onclick = () => {
+    P.bonusBySec[CV] = bonus() + 1;      // pull one more day's worth forward
+    store.save(P); renderHome();
+  };
   if($("#nagbtn")) $("#nagbtn").onclick = () => go("stats");
 }
 
@@ -2815,6 +2842,12 @@ function renderStats(){
     ${STAMPS.map(s=>`<div class="stamp" data-on="${P.stamps[s[0]]?1:0}"><b>${s[1]}</b><span>${s[2]}</span></div>`).join("")}
   </div>
   <div class="divider"></div>
+  <p class="eyebrow">Tagesziel</p>
+  <div class="caps">
+    ${MINUTES.map(c=>`<button class="capbtn" data-cap="${c}" data-on="${goalMin()===c?1:0}">${c} Min</button>`).join("")}
+  </div>
+  <p class="note">Daraus ergeben sich etwa <b>${dailyCards()} Karten pro Tag</b>, aufgeteilt auf die vier Bereiche. Fällige Wiederholungen kommen zuerst, der Rest wird mit neuen Karten gefüllt. Wenn du fertig bist, kannst du auf der Startseite den Stoff von morgen vorziehen.</p>
+  <div class="divider"></div>
   <p class="eyebrow">Name</p>
   <p class="note">Angemeldet als <b>${esc(P.name && P.name !== "–" ? P.name : "ohne Namen")}</b> · <button class="tiny" id="rename">ändern</button></p>
   <div class="divider"></div>
@@ -2829,6 +2862,10 @@ function renderStats(){
   <div class="actions"><button class="btn ghost" id="reset">Fortschritt zurücksetzen</button></div>
   <p class="note" id="msg"></p>`;
 
+  $("#stage").querySelectorAll("[data-cap]").forEach(b => b.onclick = () => {
+    P.goalMin = +b.dataset.cap;
+    store.save(P); renderStats();
+  });
   $("#rename").onclick = () => {
     const n = prompt("Wie heißt du?", P.name === "–" ? "" : P.name);
     if(n === null) return;
@@ -2851,7 +2888,7 @@ function renderStats(){
     rd.onload = () => {
       try{
         const o = JSON.parse(rd.result);
-        if(o && o.p){ P = Object.assign({p:{},xp:0,streak:0,goalDay:0,dayD:0,dayXp:0,bestCombo:0,blitzBest:0,stamps:{},dir:"de",sessions:0,newByLevel:{},ansByLevel:{},name:"",lastBackup:0}, o);
+        if(o && o.p){ P = Object.assign({p:{},xp:0,streak:0,goalDay:0,dayD:0,dayXp:0,bestCombo:0,blitzBest:0,stamps:{},dir:"de",sessions:0,ansBySec:{},bonusBySec:{},name:"",lastBackup:0,goalMin:15}, o);
           store.save(P); chrome(); renderStats(); $("#msg").textContent = "Sicherung geladen."; }
       }catch(err){ $("#msg").textContent = "Die Datei konnte nicht gelesen werden. Bitte wähle karteikasten-fortschritt.json."; }
     };
@@ -2859,8 +2896,8 @@ function renderStats(){
   };
   $("#reset").onclick = () => {
     if(!confirm("Alle Karten, Punkte und Stempel zurücksetzen?")) return;
-    P = { p:{}, xp:0, streak:0, goalDay:0, dayD:0, dayXp:0, bestCombo:0, blitzBest:0, stamps:{}, dir:P.dir, sessions:0, newByLevel:{}, ansByLevel:{}, course:P.course,
-         name:P.name, lastBackup:0 };
+    P = { p:{}, xp:0, streak:0, goalDay:0, dayD:0, dayXp:0, bestCombo:0, blitzBest:0, stamps:{}, dir:P.dir, sessions:0, ansBySec:{}, bonusBySec:{}, course:P.course,
+         name:P.name, lastBackup:0, goalMin:P.goalMin };
     store.save(P); chrome(); renderStats();
   };
 }
