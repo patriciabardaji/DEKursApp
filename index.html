@@ -489,7 +489,7 @@ input{font:inherit;color:inherit}
 
 <main class="stage" id="stage">
   <div class="card">
-    <div class="tab"><span>Hinweis</span><span>JavaScript</span></div>
+    <div class="tab"><span>Hinweis</span><span>Version 14</span></div>
     <p class="prompt" style="font-size:22px">Diese Vorschau kann die App nicht starten</p>
     <p class="sub">The iPhone Files preview opens HTML with JavaScript switched off. Open the app from your home screen instead, or in Safari, Chrome or Firefox.</p>
   </div>
@@ -1819,6 +1819,7 @@ const DAY = () => Math.floor(Date.now()/864e5);
 const STEPS = {1:1, 2:2, 3:4, 4:8, 5:16};
 const SESSION = 16;
 const GOAL = 120;                  // Punkte pro Tag
+const APP_VERSION = "14";
 const MINUTES = [10, 15, 25, 40];      // wählbares Tagesziel
 const SEC_PER_CARD = 15;               // Erfahrungswert fürs Tippen einer Karte
 const goalMin = () => P.goalMin || 15;
@@ -2860,7 +2861,8 @@ function renderStats(){
   <input type="file" id="file" accept="application/json" class="hidden">
   <div class="divider"></div>
   <div class="actions"><button class="btn ghost" id="reset">Fortschritt zurücksetzen</button></div>
-  <p class="note" id="msg"></p>`;
+  <p class="note" id="msg"></p>
+  <p class="note" style="text-align:center;opacity:.5">DEKurs Version ${APP_VERSION}</p>`;
 
   $("#stage").querySelectorAll("[data-cap]").forEach(b => b.onclick = () => {
     P.goalMin = +b.dataset.cap;
@@ -2933,7 +2935,18 @@ document.addEventListener("keydown", e => {
 </script>
 <script>
 if("serviceWorker" in navigator){
-  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if(refreshing) return;
+    refreshing = true;
+    location.reload();          // a new version took over — show it straight away
+  });
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").then(reg => {
+      reg.update();
+      setInterval(() => reg.update(), 60 * 60 * 1000);
+    }).catch(()=>{});
+  });
 }
 </script>
 </body>
