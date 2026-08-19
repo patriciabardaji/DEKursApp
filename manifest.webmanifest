@@ -1,7 +1,7 @@
 {
-  "name": "DEKurs · Deutsch A1–B1",
+  "name": "DEKurs · Deutsch A1–B2",
   "short_name": "DEKurs",
-  "description": "Offline-Trainer für Vokabeln, Grammatik, Verben und Satzbau auf den Stufen A1.1 bis B1.1",
+  "description": "Offline-Trainer für Vokabeln, Grammatik, Verben und Satzbau auf den Stufen A1.1 bis B2.2",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
