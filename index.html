@@ -185,11 +185,6 @@ input{font:inherit;color:inherit}
 }
 .field input[data-state="right"]{border-color:var(--petrol);box-shadow:inset 3px 0 0 var(--petrol)}
 .field input[data-state="wrong"]{border-color:var(--rot);box-shadow:inset 3px 0 0 var(--rot)}
-.umlauts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.umlauts button{
-  border:1px solid var(--ink-14);border-radius:6px;background:var(--card);
-  padding:7px 12px;font-family:var(--serif);font-size:17px;min-width:44px;
-}
 
 /* ---------- verdict ---------- */
 .verdict{
@@ -303,6 +298,7 @@ input{font:inherit;color:inherit}
   background:var(--signal);color:#241F30;
 }
 .check li[data-done="1"] .mark{background:var(--petrol-soft);color:var(--petrol)}
+.check .chev{margin-left:auto;font-size:20px;color:var(--ink-38);line-height:1}
 .check .what{display:flex;flex-direction:column;gap:1px;min-width:0}
 .check .what b{font-family:var(--serif);font-size:16px;font-weight:600}
 .check li[data-done="1"] .what b{font-weight:400;color:var(--ink-60)}
@@ -449,6 +445,43 @@ input{font:inherit;color:inherit}
 .sh-table.verbs td{font-size:14px}
 .sh-table.verbs td.en{font-size:12px}
 .guide-body{overflow-x:auto}
+
+.panel{border:1px solid var(--ink-14);border-radius:6px;padding:14px 16px;margin-top:10px;background:var(--card)}
+.chart{display:flex;align-items:flex-end;gap:3px;height:64px;margin-top:10px}
+.chart i{flex:1;background:var(--accent);border-radius:2px 2px 0 0;opacity:.45;min-height:3px}
+.chart i[data-today="1"]{opacity:1}
+.chart.soon i{background:var(--signal);opacity:.7}
+.chart.soon i[data-today="1"]{opacity:1;background:var(--petrol)}
+.chartlabels{display:flex;gap:3px;margin-top:5px}
+.chartlabels span{flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:var(--ink-60)}
+.chartlabels.dim span{color:var(--ink-38);letter-spacing:.04em}
+.mastery{margin-top:14px;padding-top:12px;border-top:1px solid var(--ink-07);display:flex;flex-direction:column;gap:7px}
+.mrow{display:grid;grid-template-columns:78px 1fr 46px;align-items:center;gap:9px}
+.mname{font-family:var(--serif);font-size:14px}
+.mtrack{height:5px;background:var(--ink-14);border-radius:99px;overflow:hidden}
+.mtrack i{display:block;height:100%;background:var(--accent)}
+.mnum{font-family:var(--mono);font-size:10px;color:var(--ink-38);text-align:right}
+
+.info{
+  position:absolute;top:10px;right:10px;z-index:2;
+  width:21px;height:21px;border-radius:50%;
+  border:1px solid var(--ink-14);background:var(--card);
+  font-family:var(--serif);font-size:12px;font-style:italic;font-weight:600;color:var(--ink-38);
+  display:flex;align-items:center;justify-content:center;line-height:1;
+}
+.info:hover{border-color:var(--ink-38);color:var(--ink)}
+.info[data-on="1"]{background:var(--accent);border-color:var(--accent);color:#241F30}
+.infobox{
+  margin:0 0 16px;padding:14px 15px;border-radius:6px;
+  background:var(--accent-soft);border:1px solid var(--accent);
+}
+.infobox b{font-family:var(--serif);font-size:16px;display:block;margin-bottom:6px}
+.infobox p{margin:0 0 8px;font-size:13.5px;line-height:1.6;color:var(--ink-60)}
+.infobox p:last-child{margin-bottom:0}
+.infobox i{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--ink)}
+.hero, .card, .stage{position:relative}
+.stage > .info{top:2px;right:2px}
+.stage > .infobox{margin-top:30px}
 /* ---------- home screen ---------- */
 .hero{border:1px solid var(--ink-14);border-top:4px solid var(--accent);border-radius:6px;padding:18px 18px 20px;background:var(--card)}
 .hero .who{font-family:var(--serif);font-size:26px;line-height:1.2;margin:0 0 3px}
@@ -563,7 +596,7 @@ input{font:inherit;color:inherit}
 
 <main class="stage" id="stage">
   <div class="card">
-    <div class="tab"><span>Hinweis</span><span>Version 27</span></div>
+    <div class="tab"><span>Hinweis</span><span>Version 32</span></div>
     <p class="prompt" style="font-size:22px">Diese Vorschau kann die App nicht starten</p>
     <p class="sub">The iPhone Files preview opens HTML with JavaScript switched off. Open the app from your home screen instead, or in Safari, Chrome or Firefox.</p>
   </div>
@@ -4516,7 +4549,7 @@ const DAY = () => Math.floor(Date.now()/864e5);
 const STEPS = {1:1, 2:2, 3:4, 4:8, 5:16};
 const SESSION = 16;
 const GOAL = 120;                  // Punkte pro Tag
-const APP_VERSION = "27";
+const APP_VERSION = "32";
 const MINUTES = [10, 15, 25, 40];      // wählbares Tagesziel
 const SEC_PER_CARD = 15;               // Erfahrungswert fürs Tippen einer Karte
 const goalMin = () => P.goalMin || 15;
@@ -4552,7 +4585,7 @@ const STAMPS = [
 ];
 
 let P = { p:{}, xp:0, streak:0, goalDay:0, dayD:0, dayXp:0, bestCombo:0, blitzBest:0,
-          stamps:{}, dir:"de", sessions:0, ansBySec:{}, bonusBySec:{}, course:null,
+          stamps:{}, dir:"de", sessions:0, ansBySec:{}, bonusBySec:{}, hist:{}, course:null,
           name:"", lastBackup:0, goalMin:15 };
 let S = { mode:"vocab", topic:null, force:false, queue:[], i:0, marks:[], locked:false,
           pts:0, combo:0, best:0, fresh:[], timer:null, bEnd:0, bScore:0, bItem:null };
@@ -4685,6 +4718,9 @@ function grade(id, ok){
   P.ansBySec[CV + "|" + sec] = secDone(sec) + 1;
 
   const today = DAY();
+  P.hist = P.hist || {};
+  P.hist[today] = (P.hist[today] || 0) + 1;
+  Object.keys(P.hist).forEach(d => { if(+d < today - 60) delete P.hist[d]; });
   P.days = P.days || [];
   if(P.days[P.days.length-1] !== today){ P.days.push(today); P.days = P.days.slice(-90); }
   P.levelDays = P.levelDays || {};
@@ -5128,6 +5164,7 @@ function renderHome(){
     return `<li data-k="${k}" data-done="${done?1:0}">
       <span class="mark">${done ? "✓" : todo}</span>
       <span class="what"><b>${name}</b><span>${note}</span></span>
+      <span class="chev">›</span>
     </li>`;
   }).join("");
 
@@ -5139,14 +5176,36 @@ function renderHome(){
     strip.push(`<i data-day="${state}"></i>`);
   }
 
-  const secs = keys.map(([k,name,sub])=>{
+  // what has been done, and what is coming back
+  const hist = P.hist || {};
+  const past = [];
+  for(let i=13;i>=0;i--){ const d = DAY()-i; past.push({d, n: hist[d] || 0}); }
+  const peakPast = Math.max(1, ...past.map(x=>x.n));
+
+  const soon = [];
+  for(let i=0;i<7;i++){
+    const d = DAY()+i;
+    let n = 0;
+    SECS.forEach(m => {
+      const sm = S.mode, stp = S.topic; S.mode = m; S.topic = null;
+      pool(m).forEach(id => { const r = rec(id); if(r && (i===0 ? r.d <= d : r.d === d)) n++; });
+      S.mode = sm; S.topic = stp;
+    });
+    soon.push({d, n});
+  }
+  const peakSoon = Math.max(1, ...soon.map(x=>x.n));
+  const wd = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+  const dayName = d => wd[new Date(d*864e5).getUTCDay()];
+
+  const solidTotal = keys.reduce((a,[k]) => a + st[k].solid, 0);
+  const seenTotal = keys.reduce((a,[k]) => a + (st[k].n - st[k].fresh), 0);
+  const sizeTotal = keys.reduce((a,[k]) => a + st[k].n, 0);
+
+  const mastery = keys.map(([k,name])=>{
     const s = st[k];
-    const tag = s.due ? `${s.due} fällig` : s.fresh ? `${s.fresh} neu` : "fertig";
-    return `<button data-go="${k}">
-      <div class="row"><span><b>${name}</b><span class="sub2">${sub} · ${s.solid}/${s.n} sitzt</span></span>
-      <span class="due" data-hot="${s.due?1:0}">${tag}</span></div>
-      <div class="mini"><i style="width:${Math.round(s.solid/s.n*100)}%"></i></div>
-    </button>`;
+    return `<div class="mrow"><span class="mname">${name}</span>
+      <span class="mtrack"><i style="width:${Math.round(s.solid/s.n*100)}%"></i></span>
+      <span class="mnum">${s.solid}/${s.n}</span></div>`;
   }).join("");
 
   $("#stage").innerHTML = `
@@ -5175,8 +5234,21 @@ function renderHome(){
       : `<p class="fcnote">Du hast jede Karte dieser Stufe schon gesehen — jetzt zählt nur noch das Wiederholen.</p>`}
   </div>
 
-  <p class="eyebrow" style="margin:24px 0 0">Alle Bereiche</p>
-  <div class="sect">${secs}</div>
+  <p class="eyebrow" style="margin:24px 0 0">Rückblick</p>
+  <div class="panel">
+    <div class="wrapline"><span>Karten pro Tag</span><span>letzte 14 Tage</span></div>
+    <div class="chart">${past.map(x=>`<i style="height:${x.n ? Math.max(8, Math.round(x.n/peakPast*100)) : 3}%" data-today="${x.d===DAY()?1:0}" title="${x.n}"></i>`).join("")}</div>
+    <div class="wrapline foot"><span>${Object.values(hist).reduce((a,b)=>a+b,0)} Karten insgesamt</span><span>${seenTotal} von ${sizeTotal} begonnen · ${solidTotal} sitzen</span></div>
+    <div class="mastery">${mastery}</div>
+  </div>
+
+  <p class="eyebrow" style="margin:24px 0 0">Ausblick</p>
+  <div class="panel">
+    <div class="wrapline"><span>Wiederholungen</span><span>nächste 7 Tage</span></div>
+    <div class="chart soon">${soon.map(x=>`<i style="height:${x.n ? Math.max(8, Math.round(x.n/peakSoon*100)) : 3}%" data-today="${x.d===DAY()?1:0}"></i>`).join("")}</div>
+    <div class="chartlabels">${soon.map(x=>`<span>${x.n||""}</span>`).join("")}</div>
+    <div class="chartlabels dim">${soon.map(x=>`<span>${dayName(x.d)}</span>`).join("")}</div>
+  </div>
 
   <p class="eyebrow" style="margin:24px 0 0">Mehr</p>
   <div class="sect">
@@ -5192,6 +5264,7 @@ function renderHome(){
 
   $("#stage").querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
   $("#stage").querySelectorAll(".check li").forEach(li => li.onclick = () => go(li.dataset.k));
+  attachInfo("home");
   if($("#start")) $("#start").onclick = () => go(nextK);
   if($("#switch")) $("#switch").onclick = () => go("welcome");
   if($("#ahead")) $("#ahead").onclick = () => {
@@ -5207,6 +5280,7 @@ function renderHome(){
 function render(){
   if(S.i >= S.queue.length) return renderDone();
   const id = S.queue[S.i];
+  setTimeout(() => attachInfo(S.mode), 0);
   const t = kind(id);
   if(t==="v") renderVocab(id);
   if(t==="g") renderGrammar(id);
@@ -5298,7 +5372,6 @@ function renderVocab(id){
       <label for="ans">${toEn ? "Englisch" : "Deutsch (Artikel optional)"}</label>
       <input id="ans" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="…">
     </div>
-    ${toEn ? "" : `<div class="umlauts">${["ä","ö","ü","ß"].map(c=>`<button data-c="${c}">${c}</button>`).join("")}</div>`}
     <div id="verd"></div>
     <div class="actions" id="act">
       <button class="btn ghost" id="tipbtn">Tipp (halbe Punkte)</button>
@@ -5309,12 +5382,6 @@ function renderVocab(id){
   const inp = $("#ans");
   inp.focus();
   $("#dir").onclick = cycle;
-  $("#stage").querySelectorAll(".umlauts button").forEach(b => b.onmousedown = e => {
-    e.preventDefault();
-    const s = inp.selectionStart ?? inp.value.length;
-    inp.value = inp.value.slice(0,s) + b.dataset.c + inp.value.slice(inp.selectionEnd ?? s);
-    inp.focus(); inp.selectionStart = inp.selectionEnd = s + 1;
-  });
   const lettersHTML = () => {
     const words = solution.trim().split(/\s+/).length;
     return `<div class="tiphint"><em>${toEn ? "Englisch" : "Deutsch"} · ${words} ${words===1?"Wort":"Wörter"}</em>
@@ -5441,19 +5508,10 @@ function renderVerb(id){
     <p class="sub">${esc(v[1])}</p>
     <div class="field"><label for="f1">${esc(VFIELDS[0])}</label><input id="f1" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="…"></div>
     <div class="field"><label for="f2">${esc(VFIELDS[1])}</label><input id="f2" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="hat / ist …"></div>
-    <div class="umlauts">${["ä","ö","ü","ß"].map(c=>`<button data-c="${c}">${c}</button>`).join("")}</div>
     <div id="verd"></div>
     <div class="actions" id="act"><button class="btn wide" id="check">Prüfen</button></div>
   </div>` + railHTML();
 
-  let last = $("#f1");
-  [$("#f1"),$("#f2")].forEach(f => f.addEventListener("focus", () => last = f));
-  $("#stage").querySelectorAll(".umlauts button").forEach(b => b.onmousedown = e => {
-    e.preventDefault();
-    const s = last.selectionStart ?? last.value.length;
-    last.value = last.value.slice(0,s) + b.dataset.c + last.value.slice(last.selectionEnd ?? s);
-    last.focus(); last.selectionStart = last.selectionEnd = s + 1;
-  });
   $("#f1").addEventListener("keydown", e => { if(e.key==="Enter") $("#f2").focus(); });
   $("#f2").addEventListener("keydown", e => { if(e.key==="Enter") check(); });
   $("#check").onclick = check;
@@ -5577,6 +5635,7 @@ function renderBlitzIntro(){
   </div>
   <div class="actions"><button class="btn wide" id="start">Los geht's</button></div>`;
   $("#start").onclick = blitzStart;
+  attachInfo("blitz");
 }
 function blitzItem(){
   if(Math.random() < 0.5){
@@ -5722,6 +5781,43 @@ const LEVEL_TABLES = {
   "B2.1": ["faelle","konn","praep","adjend","kii"],
   "B2.2": ["faelle","konn","praep","adjend","kii"]
 };
+
+/* =====================================================================
+   ⓘ — englische Kurzerklärung zu jeder Übung
+   ===================================================================== */
+const INFO = {
+  home: () => `<b>How this works</b>
+    <p>Each day you get about ${dayTarget()} cards: everything due for review first, then new material. The four rows below are the sections — tap one to start. A card you answer correctly comes back later and later (after 1, 2, 4, 8 and 16 days); a card you get wrong comes back tomorrow.</p>
+    <p><b>German words on screen:</b> <i>Karten heute</i> = cards today · <i>Serie</i> = day streak · <i>Kasten</i> = box · <i>fällig</i> = due · <i>Weiter</i> = next · <i>Prüfen</i> = check · <i>Zurück</i> = back · <i>Übersicht</i> = overview.</p>`,
+  vocab: () => `<b>Vocabulary</b>
+    <p>You see a German word and type what it means in English. The <i>Kontext</i> line is an example sentence with the word itself hidden, to give you a clue without giving it away.</p>
+    <p>Typos and missing umlauts are accepted — <i>erkaltung</i> counts for <i>Erkältung</i>. <i>Tipp</i> shows an English definition and costs half the points. If your answer was right but marked wrong, tap <i>Meine Antwort war auch richtig</i>.</p>
+    <p>The button under the card switches direction: type English, type German, or just flip the card.</p>`,
+  grammar: () => `<b>Grammar</b>
+    <p>Pick the word that fills the gap. Whether you are right or wrong you always see the complete sentence and the rule behind it in English.</p>
+    <p>By default the session mixes all ${GTOPICS.length} topics of this level so nothing gets left out. Tap <i>Einzelnes Thema üben</i> on the card if you want to drill one topic on its own.</p>`,
+  verbs: () => `<b>Verbs</b>
+    <p>You see the infinitive and its English meaning, and type the forms asked for: <i>${VFIELDS.join("</i> and <i>")}</i>.</p>
+    <p>The Perfekt needs <i>hat</i> or <i>ist</i> in front — that is part of the answer, because choosing the right one is the thing worth learning. Verbs of movement and change of state take <i>ist</i>; almost everything else takes <i>hat</i>.</p>`,
+  satz: () => `<b>Sentence building</b>
+    <p>You get an English sentence and the German words shuffled. Tap them in the right order to build the sentence. <i>Zurück</i> takes the last word back, <i>Prüfen</i> checks the whole thing.</p>
+    <p>This trains German word order: the verb in second position, the participle at the end, and the verb going last in a subordinate clause. Each answer explains which rule was being tested.</p>`,
+  blitz: () => `<b>Blitz</b>
+    <p>Sixty seconds of multiple choice, mixing vocabulary and grammar from this level. A wrong answer costs you three seconds.</p>
+    <p>It earns points but deliberately does <b>not</b> move your cards between boxes, so a fast round can never disturb your review schedule.</p>`
+};
+function attachInfo(mode){
+  const card = document.querySelector("#stage .card, #stage .hero") || document.getElementById("stage");
+  if(!card || !INFO[mode] || card.querySelector(".info")) return;
+  card.insertAdjacentHTML("afterbegin",
+    `<button class="info" id="infbtn" aria-label="Erklärung auf Englisch">i</button>
+     <div class="infobox hidden" id="infbox">${INFO[mode]()}</div>`);
+  document.getElementById("infbtn").onclick = () => {
+    const b = document.getElementById("infbox");
+    b.classList.toggle("hidden");
+    document.getElementById("infbtn").dataset.on = b.classList.contains("hidden") ? "0" : "1";
+  };
+}
 
 /* =====================================================================
    SPICKZETTEL — eine Seite pro Stufe
