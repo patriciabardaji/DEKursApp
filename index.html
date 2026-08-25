@@ -199,6 +199,8 @@ input{font:inherit;color:inherit}
 .verdict[data-tone="wrong"]{background:var(--rot-soft);border-color:var(--rot)}
 .verdict[data-tone="wrong"] h4{color:var(--rot)}
 .verdict p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-60)}
+.vex b{font-family:var(--mono);font-size:9px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-38);margin-right:6px;font-weight:600}
+.vex{font-family:var(--serif);font-size:16px;line-height:1.45;color:var(--ink-60);display:inline-block;margin-top:5px}
 .why{color:var(--ink-60);font-size:14px;line-height:1.5;display:inline-block;margin-top:5px}
 .verdict strong{color:var(--ink);font-family:var(--serif);font-size:17px;font-weight:400}
 
@@ -450,11 +452,18 @@ input{font:inherit;color:inherit}
 .chart{display:flex;align-items:flex-end;gap:3px;height:64px;margin-top:10px}
 .chart i{flex:1;background:var(--accent);border-radius:2px 2px 0 0;opacity:.45;min-height:3px}
 .chart i[data-today="1"]{opacity:1}
+.chart.line i[data-kind="past"]{background:var(--accent);opacity:.55}
+.chart.line i[data-kind="today"]{background:var(--accent);opacity:1}
+.chart.line i[data-kind="future"]{background:transparent;border:1px solid var(--signal);border-bottom:0;opacity:1}
+.k-past{color:var(--accent);font-size:11px}
+.k-fut{color:var(--signal);font-size:11px}
 .chart.soon i{background:var(--signal);opacity:.7}
 .chart.soon i[data-today="1"]{opacity:1;background:var(--petrol)}
 .chartlabels{display:flex;gap:3px;margin-top:5px}
-.chartlabels span{flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:var(--ink-60)}
+.chartlabels span{flex:1;text-align:center;font-family:var(--mono);font-size:8.5px;color:var(--ink-60);min-width:0;overflow:hidden}
 .chartlabels.dim span{color:var(--ink-38);letter-spacing:.04em}
+.chartlabels span[data-today="1"]{color:var(--ink);font-weight:600}
+.chartlabels{margin-top:6px}
 .mastery{margin-top:14px;padding-top:12px;border-top:1px solid var(--ink-07);display:flex;flex-direction:column;gap:7px}
 .mrow{display:grid;grid-template-columns:78px 1fr 46px;align-items:center;gap:9px}
 .mname{font-family:var(--serif);font-size:14px}
@@ -505,6 +514,7 @@ input{font:inherit;color:inherit}
 .sect button[data-go="satz"]   {border-left:5px solid #E5A063;background:#FDF6EE}
 .sect button[data-go="blitz"]  {border-left:5px solid #E5BB3F;background:#FDF9EC}
 .sect button[data-go="stats"]  {border-left:5px solid #9B8AD4;background:#F5F3FC}
+.sect button[data-go="sheet"]  {border-left:5px solid #5C9EA6;background:#EFF7F8}
 .sect button[data-go="vocab"] .mini i{background:#6FA8D8}
 .sect button[data-go="grammar"] .mini i{background:#DC87A2}
 .sect button[data-go="verbs"] .mini i{background:#5CB795}
@@ -596,7 +606,7 @@ input{font:inherit;color:inherit}
 
 <main class="stage" id="stage">
   <div class="card">
-    <div class="tab"><span>Hinweis</span><span>Version 32</span></div>
+    <div class="tab"><span>Hinweis</span><span>Version 43</span></div>
     <p class="prompt" style="font-size:22px">Diese Vorschau kann die App nicht starten</p>
     <p class="sub">The iPhone Files preview opens HTML with JavaScript switched off. Open the app from your home screen instead, or in Safari, Chrome or Firefox.</p>
   </div>
@@ -1042,62 +1052,62 @@ const GRAMMAR_B11 = [
 ];
 
 const VERBS_B11 = [
-["anfangen","to begin","fing an","hat angefangen"],
-["anrufen","to call (phone)","rief an","hat angerufen"],
-["beginnen","to begin","begann","hat begonnen"],
-["bekommen","to receive","bekam","hat bekommen"],
-["beschließen","to decide","beschloss","hat beschlossen"],
-["bitten","to ask (for)","bat","hat gebeten"],
-["bleiben","to stay","blieb","ist geblieben"],
-["bringen","to bring","brachte","hat gebracht"],
-["denken","to think","dachte","hat gedacht"],
-["einladen","to invite","lud ein","hat eingeladen"],
-["empfehlen","to recommend","empfahl","hat empfohlen"],
-["entscheiden","to decide","entschied","hat entschieden"],
-["essen","to eat","aß","hat gegessen"],
-["fahren","to go, drive","fuhr","ist gefahren"],
-["finden","to find","fand","hat gefunden"],
-["fliegen","to fly","flog","ist geflogen"],
-["geben","to give","gab","hat gegeben"],
-["gefallen","to please, to like","gefiel","hat gefallen"],
-["gehen","to go","ging","ist gegangen"],
-["gelingen","to succeed","gelang","ist gelungen"],
-["geschehen","to happen","geschah","ist geschehen"],
-["gewinnen","to win","gewann","hat gewonnen"],
-["halten","to hold, to stop","hielt","hat gehalten"],
-["hängen","to hang (be hanging)","hing","hat gehangen"],
-["heißen","to be called","hieß","hat geheißen"],
-["helfen","to help","half","hat geholfen"],
-["kennen","to know (be familiar)","kannte","hat gekannt"],
-["kommen","to come","kam","ist gekommen"],
-["lassen","to let, to leave","ließ","hat gelassen"],
-["laufen","to run, to walk","lief","ist gelaufen"],
-["leihen","to lend, to borrow","lieh","hat geliehen"],
-["lesen","to read","las","hat gelesen"],
-["liegen","to lie, to be situated","lag","hat gelegen"],
-["nehmen","to take","nahm","hat genommen"],
-["schlafen","to sleep","schlief","hat geschlafen"],
-["schließen","to close","schloss","hat geschlossen"],
-["schreiben","to write","schrieb","hat geschrieben"],
-["schwimmen","to swim","schwamm","ist geschwommen"],
-["sehen","to see","sah","hat gesehen"],
-["sitzen","to sit","saß","hat gesessen"],
-["sprechen","to speak","sprach","hat gesprochen"],
-["stehen","to stand","stand","hat gestanden"],
-["steigen","to climb, to rise","stieg","ist gestiegen"],
-["tragen","to carry, to wear","trug","hat getragen"],
-["treffen","to meet","traf","hat getroffen"],
-["trinken","to drink","trank","hat getrunken"],
-["tun","to do","tat","hat getan"],
-["vergessen","to forget","vergaß","hat vergessen"],
-["vergleichen","to compare","verglich","hat verglichen"],
-["verlieren","to lose","verlor","hat verloren"],
-["verstehen","to understand","verstand","hat verstanden"],
-["wachsen","to grow","wuchs","ist gewachsen"],
-["waschen","to wash","wusch","hat gewaschen"],
-["werden","to become","wurde","ist geworden"],
-["wissen","to know (a fact)","wusste","hat gewusst"],
-["ziehen","to pull, to move","zog","hat gezogen"]
+["anfangen","to begin","fing an","hat angefangen","Der Kurs hat pünktlich angefangen.","Der Kurs fing pünktlich an."],
+["anrufen","to call (phone)","rief an","hat angerufen","Ich habe dich gestern zweimal angerufen.","Ich rief dich gestern zweimal an."],
+["beginnen","to begin","begann","hat begonnen","Die Sitzung hat mit einer Vorstellungsrunde begonnen.","Die Sitzung begann mit einer Vorstellungsrunde."],
+["bekommen","to receive","bekam","hat bekommen","Sie hat gestern eine Zusage bekommen.","Sie bekam gestern eine Zusage."],
+["beschließen","to decide","beschloss","hat beschlossen","Wir haben beschlossen, umzuziehen.","Wir beschlossen, umzuziehen."],
+["bitten","to ask (for)","bat","hat gebeten","Er hat mich um Hilfe gebeten.","Er bat mich um Hilfe."],
+["bleiben","to stay","blieb","ist geblieben","Wegen des Regens sind wir zu Hause geblieben.","Wegen des Regens blieben wir zu Hause."],
+["bringen","to bring","brachte","hat gebracht","Der Kollege hat mir einen Kaffee gebracht.","Der Kollege brachte mir einen Kaffee."],
+["denken","to think","dachte","hat gedacht","Ich habe den ganzen Tag an dich gedacht.","Ich dachte den ganzen Tag an dich."],
+["einladen","to invite","lud ein","hat eingeladen","Sie hat zwanzig Leute zum Geburtstag eingeladen.","Sie lud zwanzig Leute zum Geburtstag ein."],
+["empfehlen","to recommend","empfahl","hat empfohlen","Der Arzt hat mir mehr Bewegung empfohlen.","Der Arzt empfahl mir mehr Bewegung."],
+["entscheiden","to decide","entschied","hat entschieden","Wir haben uns für die zweite Wohnung entschieden.","Wir entschieden uns für die zweite Wohnung."],
+["essen","to eat","aß","hat gegessen","Zum Frühstück habe ich nur ein Brot gegessen.","Zum Frühstück aß ich nur ein Brot."],
+["fahren","to go, drive","fuhr","ist gefahren","Am Wochenende sind wir an den See gefahren.","Am Wochenende fuhren wir an den See."],
+["finden","to find","fand","hat gefunden","Endlich habe ich meinen Schlüssel gefunden.","Endlich fand ich meinen Schlüssel."],
+["fliegen","to fly","flog","ist geflogen","Sie ist zum ersten Mal allein geflogen.","Sie flog zum ersten Mal allein."],
+["geben","to give","gab","hat gegeben","Er hat mir seine neue Nummer gegeben.","Er gab mir seine neue Nummer."],
+["gefallen","to please, to like","gefiel","hat gefallen","Die Ausstellung hat mir sehr gut gefallen.","Die Ausstellung gefiel mir sehr gut."],
+["gehen","to go","ging","ist gegangen","Nach dem Essen sind wir spazieren gegangen.","Nach dem Essen gingen wir spazieren."],
+["gelingen","to succeed","gelang","ist gelungen","Der Kuchen ist dieses Mal gut gelungen.","Der Kuchen gelang dieses Mal gut."],
+["geschehen","to happen","geschah","ist geschehen","Zum Glück ist niemandem etwas geschehen.","Zum Glück geschah niemandem etwas."],
+["gewinnen","to win","gewann","hat gewonnen","Unsere Mannschaft hat das Spiel knapp gewonnen.","Unsere Mannschaft gewann das Spiel knapp."],
+["halten","to hold, to stop","hielt","hat gehalten","Der Bus hat direkt vor dem Haus gehalten.","Der Bus hielt direkt vor dem Haus."],
+["hängen","to hang (be hanging)","hing","hat gehangen","Das Bild hat jahrelang im Flur gehangen.","Das Bild hing jahrelang im Flur."],
+["heißen","to be called","hieß","hat geheißen","Meine Großmutter hat Elisabeth geheißen.","Meine Großmutter hieß Elisabeth."],
+["helfen","to help","half","hat geholfen","Die Nachbarn haben uns beim Umzug geholfen.","Die Nachbarn halfen uns beim Umzug."],
+["kennen","to know (be familiar)","kannte","hat gekannt","Ich habe sie schon aus der Schule gekannt.","Ich kannte sie schon aus der Schule."],
+["kommen","to come","kam","ist gekommen","Der Brief ist erst heute gekommen.","Der Brief kam erst heute."],
+["lassen","to let, to leave","ließ","hat gelassen","Ich habe den Schlüssel zu Hause gelassen.","Ich ließ den Schlüssel zu Hause."],
+["laufen","to run, to walk","lief","ist gelaufen","Er ist im Urlaub jeden Morgen gelaufen.","Er lief im Urlaub jeden Morgen."],
+["leihen","to lend, to borrow","lieh","hat geliehen","Sie hat mir ihr Auto für zwei Tage geliehen.","Sie lieh mir ihr Auto für zwei Tage."],
+["lesen","to read","las","hat gelesen","Ich habe den Bericht gestern Abend gelesen.","Ich las den Bericht gestern Abend."],
+["liegen","to lie, to be situated","lag","hat gelegen","Die Post hat den ganzen Tag auf dem Tisch gelegen.","Die Post lag den ganzen Tag auf dem Tisch."],
+["nehmen","to take","nahm","hat genommen","Wir haben den letzten Bus genommen.","Wir nahmen den letzten Bus."],
+["schlafen","to sleep","schlief","hat geschlafen","Ich habe letzte Nacht kaum geschlafen.","Ich schlief letzte Nacht kaum."],
+["schließen","to close","schloss","hat geschlossen","Die Bäckerei hat schon um sechs geschlossen.","Die Bäckerei schloss schon um sechs."],
+["schreiben","to write","schrieb","hat geschrieben","Sie hat mir eine lange Nachricht geschrieben.","Sie schrieb mir eine lange Nachricht."],
+["schwimmen","to swim","schwamm","ist geschwommen","Im Sommer sind wir jeden Tag im See geschwommen.","Im Sommer schwammen wir jeden Tag im See."],
+["sehen","to see","sah","hat gesehen","Ich habe ihn heute Morgen am Bahnhof gesehen.","Ich sah ihn heute Morgen am Bahnhof."],
+["sitzen","to sit","saß","hat gesessen","Wir haben zwei Stunden im Wartezimmer gesessen.","Wir saßen zwei Stunden im Wartezimmer."],
+["sprechen","to speak","sprach","hat gesprochen","Ich habe gestern mit dem Vermieter gesprochen.","Ich sprach gestern mit dem Vermieter."],
+["stehen","to stand","stand","hat gestanden","Das Auto hat die ganze Woche vor der Tür gestanden.","Das Auto stand die ganze Woche vor der Tür."],
+["steigen","to climb, to rise","stieg","ist gestiegen","Die Mieten sind in den letzten Jahren stark gestiegen.","Die Mieten stiegen in den letzten Jahren stark."],
+["tragen","to carry, to wear","trug","hat getragen","Sie hat den schweren Koffer allein getragen.","Sie trug den schweren Koffer allein."],
+["treffen","to meet","traf","hat getroffen","Wir haben uns zufällig im Supermarkt getroffen.","Wir trafen uns zufällig im Supermarkt."],
+["trinken","to drink","trank","hat getrunken","Er hat heute schon vier Tassen Kaffee getrunken.","Er trank heute schon vier Tassen Kaffee."],
+["tun","to do","tat","hat getan","Es tut mir leid, ich habe mein Bestes getan.","Ich tat damals mein Bestes."],
+["vergessen","to forget","vergaß","hat vergessen","Ich habe den Termin völlig vergessen.","Ich vergaß den Termin völlig."],
+["vergleichen","to compare","verglich","hat verglichen","Wir haben die Preise sorgfältig verglichen.","Wir verglichen die Preise sorgfältig."],
+["verlieren","to lose","verlor","hat verloren","Er hat unterwegs seinen Ausweis verloren.","Er verlor unterwegs seinen Ausweis."],
+["verstehen","to understand","verstand","hat verstanden","Ich habe die Frage leider nicht verstanden.","Ich verstand die Frage leider nicht."],
+["wachsen","to grow","wuchs","ist gewachsen","Die Stadt ist in zehn Jahren stark gewachsen.","Die Stadt wuchs in zehn Jahren stark."],
+["waschen","to wash","wusch","hat gewaschen","Ich habe die Wäsche gestern gewaschen.","Ich wusch die Wäsche gestern."],
+["werden","to become","wurde","ist geworden","Aus dem Praktikanten ist ein Kollege geworden.","Aus dem Praktikanten wurde ein Kollege."],
+["wissen","to know (a fact)","wusste","hat gewusst","Davon habe ich wirklich nichts gewusst.","Davon wusste ich wirklich nichts."],
+["ziehen","to pull, to move","zog","hat gezogen","Sie hat den Koffer hinter sich her gezogen.","Sie zog den Koffer hinter sich her."]
 ];
 
 const SENTENCES_B11 = [
@@ -1331,34 +1341,34 @@ const GRAMMAR_A11 = [
 ];
 
 const VERBS_A11 = [
-["sein","to be","bist","ist"],
-["haben","to have","hast","hat"],
-["fahren","to drive, to go","fährst","fährt"],
-["essen","to eat","isst","isst"],
-["sprechen","to speak","sprichst","spricht"],
-["lesen","to read","liest","liest"],
-["sehen","to see","siehst","sieht"],
-["nehmen","to take","nimmst","nimmt"],
-["schlafen","to sleep","schläfst","schläft"],
-["laufen","to run, to walk","läufst","läuft"],
-["geben","to give","gibst","gibt"],
-["helfen","to help","hilfst","hilft"],
-["treffen","to meet","triffst","trifft"],
-["werden","to become","wirst","wird"],
-["wissen","to know (a fact)","weißt","weiß"],
-["tragen","to carry, to wear","trägst","trägt"],
-["waschen","to wash","wäschst","wäscht"],
-["halten","to hold, to stop","hältst","hält"],
-["vergessen","to forget","vergisst","vergisst"],
-["arbeiten","to work","arbeitest","arbeitet"],
-["finden","to find","findest","findet"],
-["warten","to wait","wartest","wartet"],
-["antworten","to answer","antwortest","antwortet"],
-["öffnen","to open","öffnest","öffnet"],
-["heißen","to be called","heißt","heißt"],
-["reisen","to travel","reist","reist"],
-["wohnen","to live","wohnst","wohnt"],
-["kaufen","to buy","kaufst","kauft"]
+["sein","to be","bist","ist","Er ist heute nicht da.","Du bist sehr freundlich."],
+["haben","to have","hast","hat","Sie hat zwei Kinder.","Du hast heute keine Zeit."],
+["fahren","to drive, to go","fährst","fährt","Er fährt jeden Tag mit dem Rad.","Du fährst viel zu schnell."],
+["essen","to eat","isst","isst","Sie isst gern Obst.","Du isst fast nichts."],
+["sprechen","to speak","sprichst","spricht","Er spricht drei Sprachen.","Du sprichst sehr gut Deutsch."],
+["lesen","to read","liest","liest","Sie liest jeden Abend ein Buch.","Du liest wirklich schnell."],
+["sehen","to see","siehst","sieht","Er sieht den Bus nicht.","Du siehst müde aus."],
+["nehmen","to take","nimmst","nimmt","Sie nimmt den Zug um acht.","Du nimmst immer denselben Weg."],
+["schlafen","to sleep","schläfst","schläft","Das Kind schläft schon.","Du schläfst viel zu wenig."],
+["laufen","to run, to walk","läufst","läuft","Er läuft jeden Morgen im Park.","Du läufst schneller als ich."],
+["geben","to give","gibst","gibt","Sie gibt mir das Buch zurück.","Du gibst zu viel Geld aus."],
+["helfen","to help","hilfst","hilft","Er hilft seiner Mutter im Garten.","Du hilfst mir wirklich sehr."],
+["treffen","to meet","triffst","trifft","Sie trifft ihre Freundin im Café.","Du triffst ihn doch morgen."],
+["werden","to become","wirst","wird","Es wird langsam dunkel.","Du wirst bestimmt müde sein."],
+["wissen","to know (a fact)","weißt","weiß","Er weiß die Antwort nicht.","Du weißt das doch schon."],
+["tragen","to carry, to wear","trägst","trägt","Sie trägt heute einen Mantel.","Du trägst die schwere Tasche."],
+["waschen","to wash","wäschst","wäscht","Er wäscht das Auto am Samstag.","Du wäschst dir die Hände."],
+["halten","to hold, to stop","hältst","hält","Der Bus hält vor der Schule.","Du hältst kurz das Baby."],
+["vergessen","to forget","vergisst","vergisst","Er vergisst immer den Schlüssel.","Du vergisst nie einen Geburtstag."],
+["arbeiten","to work","arbeitest","arbeitet","Sie arbeitet bei einer kleinen Firma.","Du arbeitest eindeutig zu viel."],
+["finden","to find","findest","findet","Er findet den Film langweilig.","Du findest sicher eine Lösung."],
+["warten","to wait","wartest","wartet","Sie wartet an der Haltestelle.","Du wartest schon eine Stunde."],
+["antworten","to answer","antwortest","antwortet","Er antwortet nicht auf meine Mail.","Du antwortest immer sehr schnell."],
+["öffnen","to open","öffnest","öffnet","Sie öffnet das Fenster.","Du öffnest bitte die Tür."],
+["heißen","to be called","heißt","heißt","Er heißt Thomas.","Du heißt wie dein Vater."],
+["reisen","to travel","reist","reist","Sie reist am liebsten allein.","Du reist im Sommer nach Italien."],
+["wohnen","to live","wohnst","wohnt","Er wohnt seit Jahren in Berlin.","Du wohnst ziemlich weit weg."],
+["kaufen","to buy","kaufst","kauft","Sie kauft Brot beim Bäcker.","Du kaufst wieder zu viel."]
 ];
 
 const SENTENCES_A11 = [
@@ -1571,40 +1581,40 @@ const GRAMMAR_A12 = [
 ];
 
 const VERBS_A12 = [
-["machen","to do, to make","macht","hat gemacht"],
-["kaufen","to buy","kauft","hat gekauft"],
-["spielen","to play","spielt","hat gespielt"],
-["lernen","to learn","lernt","hat gelernt"],
-["arbeiten","to work","arbeitet","hat gearbeitet"],
-["wohnen","to live","wohnt","hat gewohnt"],
-["kochen","to cook","kocht","hat gekocht"],
-["hören","to hear, to listen","hört","hat gehört"],
-["sagen","to say","sagt","hat gesagt"],
-["fragen","to ask","fragt","hat gefragt"],
-["besuchen","to visit","besucht","hat besucht"],
-["bezahlen","to pay","bezahlt","hat bezahlt"],
-["gehen","to go, to walk","geht","ist gegangen"],
-["kommen","to come","kommt","ist gekommen"],
-["fahren","to drive, to go","fährt","ist gefahren"],
-["fliegen","to fly","fliegt","ist geflogen"],
-["bleiben","to stay","bleibt","ist geblieben"],
-["sein","to be","ist","ist gewesen"],
-["haben","to have","hat","hat gehabt"],
-["essen","to eat","isst","hat gegessen"],
-["trinken","to drink","trinkt","hat getrunken"],
-["sehen","to see","sieht","hat gesehen"],
-["lesen","to read","liest","hat gelesen"],
-["schreiben","to write","schreibt","hat geschrieben"],
-["sprechen","to speak","spricht","hat gesprochen"],
-["nehmen","to take","nimmt","hat genommen"],
-["schlafen","to sleep","schläft","hat geschlafen"],
-["treffen","to meet","trifft","hat getroffen"],
-["finden","to find","findet","hat gefunden"],
-["aufstehen","to get up","steht auf","ist aufgestanden"],
-["einkaufen","to shop","kauft ein","hat eingekauft"],
-["anrufen","to call, to phone","ruft an","hat angerufen"],
-["ankommen","to arrive","kommt an","ist angekommen"],
-["fernsehen","to watch TV","sieht fern","hat ferngesehen"]
+["machen","to do, to make","macht","hat gemacht","Ich habe die Hausaufgaben gemacht.","Er macht das jeden Tag."],
+["kaufen","to buy","kauft","hat gekauft","Wir haben Brot und Milch gekauft.","Sie kauft gern auf dem Markt."],
+["spielen","to play","spielt","hat gespielt","Die Kinder haben im Garten gespielt.","Er spielt sehr gut Klavier."],
+["lernen","to learn","lernt","hat gelernt","Ich habe zwei Stunden gelernt.","Sie lernt schnell."],
+["arbeiten","to work","arbeitet","hat gearbeitet","Er hat gestern lange gearbeitet.","Sie arbeitet in einem Büro."],
+["wohnen","to live","wohnt","hat gewohnt","Wir haben früher in Köln gewohnt.","Er wohnt allein."],
+["kochen","to cook","kocht","hat gekocht","Sie hat eine Suppe gekocht.","Er kocht jeden Abend."],
+["hören","to hear, to listen","hört","hat gehört","Ich habe die Nachrichten gehört.","Sie hört gern Musik."],
+["sagen","to say","sagt","hat gesagt","Er hat dazu nichts gesagt.","Sie sagt immer die Wahrheit."],
+["fragen","to ask","fragt","hat gefragt","Ich habe den Lehrer gefragt.","Er fragt sehr viel."],
+["besuchen","to visit","besucht","hat besucht","Wir haben meine Eltern besucht.","Sie besucht ihn im Krankenhaus."],
+["bezahlen","to pay","bezahlt","hat bezahlt","Ich habe die Rechnung bezahlt.","Er bezahlt immer mit Karte."],
+["gehen","to go, to walk","geht","ist gegangen","Wir sind gestern ins Kino gegangen.","Sie geht jeden Tag zu Fuß."],
+["kommen","to come","kommt","ist gekommen","Der Bus ist zu spät gekommen.","Er kommt gleich."],
+["fahren","to drive, to go","fährt","ist gefahren","Wir sind nach Hamburg gefahren.","Sie fährt mit dem Rad."],
+["fliegen","to fly","fliegt","ist geflogen","Sie ist nach Spanien geflogen.","Er fliegt nur selten."],
+["bleiben","to stay","bleibt","ist geblieben","Ich bin gestern zu Hause geblieben.","Sie bleibt bis morgen."],
+["sein","to be","ist","ist gewesen","Ich bin noch nie in Wien gewesen.","Er ist heute krank."],
+["haben","to have","hat","hat gehabt","Wir haben großes Glück gehabt.","Sie hat einen Hund."],
+["essen","to eat","isst","hat gegessen","Ich habe schon gegessen.","Er isst kein Fleisch."],
+["trinken","to drink","trinkt","hat getrunken","Er hat einen Kaffee getrunken.","Sie trinkt viel Wasser."],
+["sehen","to see","sieht","hat gesehen","Wir haben einen guten Film gesehen.","Er sieht ohne Brille schlecht."],
+["lesen","to read","liest","hat gelesen","Ich habe das Buch schon gelesen.","Sie liest jeden Abend."],
+["schreiben","to write","schreibt","hat geschrieben","Sie hat mir eine Karte geschrieben.","Er schreibt sehr ordentlich."],
+["sprechen","to speak","spricht","hat gesprochen","Ich habe gestern mit ihr gesprochen.","Er spricht sehr leise."],
+["nehmen","to take","nimmt","hat genommen","Wir haben ein Taxi genommen.","Sie nimmt lieber den Bus."],
+["schlafen","to sleep","schläft","hat geschlafen","Ich habe letzte Nacht gut geschlafen.","Das Baby schläft noch."],
+["treffen","to meet","trifft","hat getroffen","Wir haben uns im Park getroffen.","Er trifft sie später."],
+["finden","to find","findet","hat gefunden","Ich habe meine Brille gefunden.","Sie findet die Idee gut."],
+["aufstehen","to get up","steht auf","ist aufgestanden","Ich bin heute um sechs aufgestanden.","Er steht immer früh auf."],
+["einkaufen","to shop","kauft ein","hat eingekauft","Wir haben am Samstag eingekauft.","Sie kauft auf dem Markt ein."],
+["anrufen","to call, to phone","ruft an","hat angerufen","Er hat mich gestern angerufen.","Sie ruft ihre Mutter an."],
+["ankommen","to arrive","kommt an","ist angekommen","Der Zug ist pünktlich angekommen.","Er kommt um acht an."],
+["fernsehen","to watch TV","sieht fern","hat ferngesehen","Wir haben gestern Abend ferngesehen.","Er sieht abends gern fern."]
 ];
 
 const SENTENCES_A12 = [
@@ -2046,66 +2056,66 @@ const GRAMMAR_B12 = [
 ];
 
 const VERBS_B12 = [
-["annehmen","to accept, to assume","nahm an","hat angenommen"],
-["aufgeben","to give up, to post","gab auf","hat aufgegeben"],
-["ausgeben","to spend, to hand out","gab aus","hat ausgegeben"],
-["beitragen","to contribute","trug bei","hat beigetragen"],
-["beraten","to advise","beriet","hat beraten"],
-["besitzen","to own","besaß","hat besessen"],
-["bestehen","to pass, to consist","bestand","hat bestanden"],
-["betreffen","to concern, to affect","betraf","hat betroffen"],
-["beweisen","to prove","bewies","hat bewiesen"],
-["sich bewerben","to apply","bewarb sich","hat sich beworben"],
-["bieten","to offer","bot","hat geboten"],
-["brechen","to break","brach","hat gebrochen"],
-["brennen","to burn","brannte","hat gebrannt"],
-["empfangen","to receive, to welcome","empfing","hat empfangen"],
-["entstehen","to arise, to come into being","entstand","ist entstanden"],
-["erfahren","to find out, to experience","erfuhr","hat erfahren"],
-["erfinden","to invent","erfand","hat erfunden"],
-["erhalten","to receive","erhielt","hat erhalten"],
-["erkennen","to recognise","erkannte","hat erkannt"],
-["erschrecken","to be startled","erschrak","ist erschrocken"],
-["fallen","to fall","fiel","ist gefallen"],
-["fangen","to catch","fing","hat gefangen"],
-["fließen","to flow","floss","ist geflossen"],
-["frieren","to freeze, to be cold","fror","hat gefroren"],
-["gelten","to be valid, to count","galt","hat gegolten"],
-["genießen","to enjoy","genoss","hat genossen"],
-["gießen","to pour, to water","goss","hat gegossen"],
-["greifen","to grab, to reach","griff","hat gegriffen"],
-["klingen","to sound","klang","hat geklungen"],
-["leiden","to suffer","litt","hat gelitten"],
-["lügen","to lie, to tell a lie","log","hat gelogen"],
-["messen","to measure","maß","hat gemessen"],
-["nennen","to name, to call","nannte","hat genannt"],
-["raten","to advise, to guess","riet","hat geraten"],
-["riechen","to smell","roch","hat gerochen"],
-["rufen","to call, to shout","rief","hat gerufen"],
-["scheinen","to seem, to shine","schien","hat geschienen"],
-["schieben","to push","schob","hat geschoben"],
-["schlagen","to hit, to beat","schlug","hat geschlagen"],
-["schneiden","to cut","schnitt","hat geschnitten"],
-["schweigen","to keep silent","schwieg","hat geschwiegen"],
-["singen","to sing","sang","hat gesungen"],
-["sinken","to sink, to fall","sank","ist gesunken"],
-["springen","to jump","sprang","ist gesprungen"],
-["stattfinden","to take place","fand statt","hat stattgefunden"],
-["sterben","to die","starb","ist gestorben"],
-["streiten","to argue","stritt","hat gestritten"],
-["teilnehmen","to take part","nahm teil","hat teilgenommen"],
-["treten","to step, to kick","trat","ist getreten"],
-["unterscheiden","to distinguish","unterschied","hat unterschieden"],
-["verbieten","to forbid","verbot","hat verboten"],
-["verbinden","to connect","verband","hat verbunden"],
-["vergehen","to pass (of time)","verging","ist vergangen"],
-["verlassen","to leave","verließ","hat verlassen"],
-["verschwinden","to disappear","verschwand","ist verschwunden"],
-["versprechen","to promise","versprach","hat versprochen"],
-["vorschlagen","to suggest","schlug vor","hat vorgeschlagen"],
-["werfen","to throw","warf","hat geworfen"],
-["widersprechen","to contradict","widersprach","hat widersprochen"],
-["zunehmen","to increase, to gain weight","nahm zu","hat zugenommen"]
+["annehmen","to accept, to assume","nahm an","hat angenommen","Sie hat das Angebot sofort angenommen.","Sie nahm das Angebot sofort an."],
+["aufgeben","to give up, to post","gab auf","hat aufgegeben","Nach zwei Versuchen hat er aufgegeben.","Nach zwei Versuchen gab er auf."],
+["ausgeben","to spend, to hand out","gab aus","hat ausgegeben","Wir haben im Urlaub zu viel Geld ausgegeben.","Wir gaben im Urlaub zu viel Geld aus."],
+["beitragen","to contribute","trug bei","hat beigetragen","Jeder hat etwas zum Fest beigetragen.","Jeder trug etwas zum Fest bei."],
+["beraten","to advise","beriet","hat beraten","Die Bank hat uns ausführlich beraten.","Die Bank beriet uns ausführlich."],
+["besitzen","to own","besaß","hat besessen","Er hat früher zwei Wohnungen besessen.","Er besaß früher zwei Wohnungen."],
+["bestehen","to pass, to consist","bestand","hat bestanden","Sie hat die Prüfung im ersten Versuch bestanden.","Sie bestand die Prüfung im ersten Versuch."],
+["betreffen","to concern, to affect","betraf","hat betroffen","Die Änderung hat alle Abteilungen betroffen.","Die Änderung betraf alle Abteilungen."],
+["beweisen","to prove","bewies","hat bewiesen","Die Studie hat den Zusammenhang bewiesen.","Die Studie bewies den Zusammenhang."],
+["sich bewerben","to apply","bewarb sich","hat sich beworben","Er hat sich um eine Stelle in Hamburg beworben.","Er bewarb sich um eine Stelle in Hamburg."],
+["bieten","to offer","bot","hat geboten","Die Firma hat mir bessere Bedingungen geboten.","Die Firma bot mir bessere Bedingungen."],
+["brechen","to break","brach","hat gebrochen","Beim Sturz hat sie sich den Arm gebrochen.","Beim Sturz brach sie sich den Arm."],
+["brennen","to burn","brannte","hat gebrannt","Im Kamin hat den ganzen Abend ein Feuer gebrannt.","Im Kamin brannte den ganzen Abend ein Feuer."],
+["empfangen","to receive, to welcome","empfing","hat empfangen","Der Chef hat die Gäste persönlich empfangen.","Der Chef empfing die Gäste persönlich."],
+["entstehen","to arise, to come into being","entstand","ist entstanden","So ist eine ganz neue Idee entstanden.","So entstand eine ganz neue Idee."],
+["erfahren","to find out, to experience","erfuhr","hat erfahren","Ich habe es erst gestern aus der Zeitung erfahren.","Ich erfuhr es erst gestern aus der Zeitung."],
+["erfinden","to invent","erfand","hat erfunden","Er hat die Geschichte einfach erfunden.","Er erfand die Geschichte einfach."],
+["erhalten","to receive","erhielt","hat erhalten","Wir haben Ihre Unterlagen erhalten.","Wir erhielten Ihre Unterlagen am Montag."],
+["erkennen","to recognise","erkannte","hat erkannt","Ich habe sie sofort an der Stimme erkannt.","Ich erkannte sie sofort an der Stimme."],
+["erschrecken","to be startled","erschrak","ist erschrocken","Ich bin bei dem lauten Knall erschrocken.","Ich erschrak bei dem lauten Knall."],
+["fallen","to fall","fiel","ist gefallen","Die Temperatur ist unter null gefallen.","Die Temperatur fiel unter null."],
+["fangen","to catch","fing","hat gefangen","Die Katze hat eine Maus gefangen.","Die Katze fing eine Maus."],
+["fließen","to flow","floss","ist geflossen","Das Wasser ist langsam in den Keller geflossen.","Das Wasser floss langsam in den Keller."],
+["frieren","to freeze, to be cold","fror","hat gefroren","Wir haben auf dem Bahnsteig sehr gefroren.","Wir froren auf dem Bahnsteig sehr."],
+["gelten","to be valid, to count","galt","hat gegolten","Die alte Regel hat bis Januar gegolten.","Die alte Regel galt bis Januar."],
+["genießen","to enjoy","genoss","hat genossen","Wir haben den Abend am Meer sehr genossen.","Wir genossen den Abend am Meer sehr."],
+["gießen","to pour, to water","goss","hat gegossen","Hast du die Blumen schon gegossen?","Sie goss die Blumen jeden Morgen."],
+["greifen","to grab, to reach","griff","hat gegriffen","Er hat schnell nach dem Glas gegriffen.","Er griff schnell nach dem Glas."],
+["klingen","to sound","klang","hat geklungen","Dein Vorschlag hat wirklich gut geklungen.","Dein Vorschlag klang wirklich gut."],
+["leiden","to suffer","litt","hat gelitten","Sie hat jahrelang unter Rückenschmerzen gelitten.","Sie litt jahrelang unter Rückenschmerzen."],
+["lügen","to lie, to tell a lie","log","hat gelogen","Er hat mich angesehen und einfach gelogen.","Er sah mich an und log einfach."],
+["messen","to measure","maß","hat gemessen","Der Arzt hat zuerst das Fieber gemessen.","Der Arzt maß zuerst das Fieber."],
+["nennen","to name, to call","nannte","hat genannt","Sie haben ihre Tochter Marie genannt.","Sie nannten ihre Tochter Marie."],
+["raten","to advise, to guess","riet","hat geraten","Der Anwalt hat uns zu einem Vergleich geraten.","Der Anwalt riet uns zu einem Vergleich."],
+["riechen","to smell","roch","hat gerochen","Es hat im ganzen Haus nach Kuchen gerochen.","Es roch im ganzen Haus nach Kuchen."],
+["rufen","to call, to shout","rief","hat gerufen","Jemand hat auf der Straße um Hilfe gerufen.","Jemand rief auf der Straße um Hilfe."],
+["scheinen","to seem, to shine","schien","hat geschienen","Den ganzen Tag hat die Sonne geschienen.","Den ganzen Tag schien die Sonne."],
+["schieben","to push","schob","hat geschoben","Wir haben das Sofa an die andere Wand geschoben.","Wir schoben das Sofa an die andere Wand."],
+["schlagen","to hit, to beat","schlug","hat geschlagen","Der Regen hat gegen das Fenster geschlagen.","Der Regen schlug gegen das Fenster."],
+["schneiden","to cut","schnitt","hat geschnitten","Ich habe mir beim Kochen in den Finger geschnitten.","Ich schnitt mir beim Kochen in den Finger."],
+["schweigen","to keep silent","schwieg","hat geschwiegen","Zu dem Vorwurf hat er lange geschwiegen.","Zu dem Vorwurf schwieg er lange."],
+["singen","to sing","sang","hat gesungen","Die Kinder haben zwei Lieder gesungen.","Die Kinder sangen zwei Lieder."],
+["sinken","to sink, to fall","sank","ist gesunken","Die Preise sind zum ersten Mal gesunken.","Die Preise sanken zum ersten Mal."],
+["springen","to jump","sprang","ist gesprungen","Er ist mutig vom Dreimeterbrett gesprungen.","Er sprang mutig vom Dreimeterbrett."],
+["stattfinden","to take place","fand statt","hat stattgefunden","Das Konzert hat trotz Regen stattgefunden.","Das Konzert fand trotz Regen statt."],
+["sterben","to die","starb","ist gestorben","Ihr Großvater ist mit neunzig gestorben.","Ihr Großvater starb mit neunzig."],
+["streiten","to argue","stritt","hat gestritten","Wir haben uns über Kleinigkeiten gestritten.","Wir stritten uns über Kleinigkeiten."],
+["teilnehmen","to take part","nahm teil","hat teilgenommen","Sie hat an dem Workshop teilgenommen.","Sie nahm an dem Workshop teil."],
+["treten","to step, to kick","trat","ist getreten","Er ist versehentlich in eine Pfütze getreten.","Er trat versehentlich in eine Pfütze."],
+["unterscheiden","to distinguish","unterschied","hat unterschieden","Ich habe die beiden Zwillinge nie unterschieden.","Ich unterschied die beiden Zwillinge nie."],
+["verbieten","to forbid","verbot","hat verboten","Der Vermieter hat das Grillen verboten.","Der Vermieter verbot das Grillen."],
+["verbinden","to connect","verband","hat verbunden","Die Brücke hat die beiden Ufer verbunden.","Die Brücke verband die beiden Ufer."],
+["vergehen","to pass (of time)","verging","ist vergangen","Seitdem sind schon drei Jahre vergangen.","Seitdem vergingen schon drei Jahre."],
+["verlassen","to leave","verließ","hat verlassen","Sie hat das Büro früher als sonst verlassen.","Sie verließ das Büro früher als sonst."],
+["verschwinden","to disappear","verschwand","ist verschwunden","Mein Schirm ist im Zug verschwunden.","Mein Schirm verschwand im Zug."],
+["versprechen","to promise","versprach","hat versprochen","Du hast mir gestern etwas anderes versprochen.","Du versprachst mir gestern etwas anderes."],
+["vorschlagen","to suggest","schlug vor","hat vorgeschlagen","Sie hat einen früheren Termin vorgeschlagen.","Sie schlug einen früheren Termin vor."],
+["werfen","to throw","warf","hat geworfen","Er hat den Ball über den Zaun geworfen.","Er warf den Ball über den Zaun."],
+["widersprechen","to contradict","widersprach","hat widersprochen","Niemand hat dem Vorschlag widersprochen.","Niemand widersprach dem Vorschlag."],
+["zunehmen","to increase, to gain weight","nahm zu","hat zugenommen","Der Verkehr hat in den letzten Jahren zugenommen.","Der Verkehr nahm in den letzten Jahren zu."]
 ];
 
 const SENTENCES_B12 = [
@@ -2370,40 +2380,40 @@ const GRAMMAR_A21 = [
 ];
 
 const VERBS_A21 = [
-["sein","to be","war","ist gewesen"],
-["haben","to have","hatte","hat gehabt"],
-["werden","to become","wurde","ist geworden"],
-["gehen","to go","ging","ist gegangen"],
-["kommen","to come","kam","ist gekommen"],
-["fahren","to drive, to go","fuhr","ist gefahren"],
-["essen","to eat","aß","hat gegessen"],
-["trinken","to drink","trank","hat getrunken"],
-["schlafen","to sleep","schlief","hat geschlafen"],
-["sehen","to see","sah","hat gesehen"],
-["lesen","to read","las","hat gelesen"],
-["schreiben","to write","schrieb","hat geschrieben"],
-["sprechen","to speak","sprach","hat gesprochen"],
-["nehmen","to take","nahm","hat genommen"],
-["geben","to give","gab","hat gegeben"],
-["finden","to find","fand","hat gefunden"],
-["bleiben","to stay","blieb","ist geblieben"],
-["helfen","to help","half","hat geholfen"],
-["treffen","to meet","traf","hat getroffen"],
-["laufen","to run, to walk","lief","ist gelaufen"],
-["fliegen","to fly","flog","ist geflogen"],
-["stehen","to stand","stand","hat gestanden"],
-["sitzen","to sit","saß","hat gesessen"],
-["liegen","to lie","lag","hat gelegen"],
-["tragen","to carry, to wear","trug","hat getragen"],
-["waschen","to wash","wusch","hat gewaschen"],
-["vergessen","to forget","vergaß","hat vergessen"],
-["verstehen","to understand","verstand","hat verstanden"],
-["anrufen","to call","rief an","hat angerufen"],
-["einladen","to invite","lud ein","hat eingeladen"],
-["aufstehen","to get up","stand auf","ist aufgestanden"],
-["anfangen","to begin","fing an","hat angefangen"],
-["mitkommen","to come along","kam mit","ist mitgekommen"],
-["bekommen","to get, to receive","bekam","hat bekommen"]
+["sein","to be","war","ist gewesen","Ich bin noch nie in Rom gewesen.","Gestern war er nicht im Büro."],
+["haben","to have","hatte","hat gehabt","Wir haben viel Glück gehabt.","Als Kind hatte sie einen Hund."],
+["werden","to become","wurde","ist geworden","Aus dem Plan ist nichts geworden.","Es wurde plötzlich sehr kalt."],
+["gehen","to go","ging","ist gegangen","Wir sind zu Fuß nach Hause gegangen.","Er ging jeden Morgen ins Büro."],
+["kommen","to come","kam","ist gekommen","Der Brief ist heute gekommen.","Sie kam pünktlich zur Sitzung."],
+["fahren","to drive, to go","fuhr","ist gefahren","Wir sind ans Meer gefahren.","Er fuhr langsam durch die Stadt."],
+["essen","to eat","aß","hat gegessen","Ich habe zu viel gegessen.","Sie aß nur eine Kleinigkeit."],
+["trinken","to drink","trank","hat getrunken","Er hat drei Tassen Kaffee getrunken.","Sie trank ein Glas Wasser."],
+["schlafen","to sleep","schlief","hat geschlafen","Ich habe schlecht geschlafen.","Das Kind schlief sofort ein."],
+["sehen","to see","sah","hat gesehen","Wir haben den Film gestern gesehen.","Er sah sie zum ersten Mal."],
+["lesen","to read","las","hat gelesen","Ich habe die Zeitung gelesen.","Sie las den Brief zweimal."],
+["schreiben","to write","schrieb","hat geschrieben","Er hat mir eine Mail geschrieben.","Sie schrieb ihm jede Woche."],
+["sprechen","to speak","sprach","hat gesprochen","Ich habe mit dem Chef gesprochen.","Er sprach sehr leise."],
+["nehmen","to take","nahm","hat genommen","Wir haben den Bus genommen.","Sie nahm den ersten Zug."],
+["geben","to give","gab","hat gegeben","Er hat mir seine Nummer gegeben.","Sie gab ihm das Buch zurück."],
+["finden","to find","fand","hat gefunden","Ich habe den Schlüssel gefunden.","Er fand die Idee gut."],
+["bleiben","to stay","blieb","ist geblieben","Wir sind zu Hause geblieben.","Sie blieb noch eine Stunde."],
+["helfen","to help","half","hat geholfen","Er hat mir beim Umzug geholfen.","Die Nachbarn halfen uns sofort."],
+["treffen","to meet","traf","hat getroffen","Wir haben uns im Park getroffen.","Er traf sie zufällig."],
+["laufen","to run, to walk","lief","ist gelaufen","Sie ist zehn Kilometer gelaufen.","Er lief jeden Morgen im Park."],
+["fliegen","to fly","flog","ist geflogen","Wir sind nach Wien geflogen.","Sie flog zum ersten Mal allein."],
+["stehen","to stand","stand","hat gestanden","Das Auto hat vor der Tür gestanden.","Er stand lange an der Kasse."],
+["sitzen","to sit","saß","hat gesessen","Wir haben im Wartezimmer gesessen.","Sie saß am Fenster."],
+["liegen","to lie","lag","hat gelegen","Der Brief hat auf dem Tisch gelegen.","Das Buch lag unter dem Bett."],
+["tragen","to carry, to wear","trug","hat getragen","Sie hat den Koffer allein getragen.","Er trug einen dunklen Mantel."],
+["waschen","to wash","wusch","hat gewaschen","Ich habe die Wäsche gewaschen.","Sie wusch das Auto am Samstag."],
+["vergessen","to forget","vergaß","hat vergessen","Ich habe den Termin vergessen.","Er vergaß seinen Ausweis."],
+["verstehen","to understand","verstand","hat verstanden","Ich habe die Frage nicht verstanden.","Sie verstand ihn sofort."],
+["anrufen","to call","rief an","hat angerufen","Er hat mich gestern angerufen.","Sie rief ihre Eltern an."],
+["einladen","to invite","lud ein","hat eingeladen","Wir haben alle Kollegen eingeladen.","Er lud zwanzig Gäste ein."],
+["aufstehen","to get up","stand auf","ist aufgestanden","Ich bin um sechs aufgestanden.","Er stand jeden Tag früh auf."],
+["anfangen","to begin","fing an","hat angefangen","Der Kurs hat gestern angefangen.","Die Sitzung fing spät an."],
+["mitkommen","to come along","kam mit","ist mitgekommen","Sie ist gestern mitgekommen.","Er kam nicht mit."],
+["bekommen","to get, to receive","bekam","hat bekommen","Ich habe deine Nachricht bekommen.","Sie bekam eine gute Note."]
 ];
 
 const SENTENCES_A21 = [
@@ -2658,42 +2668,42 @@ const GRAMMAR_A22 = [
 ];
 
 const VERBS_A22 = [
-["beginnen","to begin","begann","hat begonnen"],
-["bringen","to bring","brachte","hat gebracht"],
-["denken","to think","dachte","hat gedacht"],
-["kennen","to know (a person)","kannte","hat gekannt"],
-["wissen","to know (a fact)","wusste","hat gewusst"],
-["heißen","to be called","hieß","hat geheißen"],
-["halten","to hold, to stop","hielt","hat gehalten"],
-["lassen","to let, to leave","ließ","hat gelassen"],
-["rufen","to call, to shout","rief","hat gerufen"],
-["schließen","to close","schloss","hat geschlossen"],
-["singen","to sing","sang","hat gesungen"],
-["schwimmen","to swim","schwamm","ist geschwommen"],
-["steigen","to climb, to rise","stieg","ist gestiegen"],
-["ziehen","to pull, to move","zog","ist gezogen"],
-["gefallen","to please, to be liked","gefiel","hat gefallen"],
-["verlieren","to lose","verlor","hat verloren"],
-["gewinnen","to win","gewann","hat gewonnen"],
-["bitten","to ask, to request","bat","hat gebeten"],
-["leihen","to lend, to borrow","lieh","hat geliehen"],
-["scheinen","to shine, to seem","schien","hat geschienen"],
-["versprechen","to promise","versprach","hat versprochen"],
-["vergleichen","to compare","verglich","hat verglichen"],
-["entscheiden","to decide","entschied","hat entschieden"],
-["empfehlen","to recommend","empfahl","hat empfohlen"],
-["beschließen","to decide, to resolve","beschloss","hat beschlossen"],
-["verbringen","to spend (time)","verbrachte","hat verbracht"],
-["mitbringen","to bring along","brachte mit","hat mitgebracht"],
-["ausgehen","to go out","ging aus","ist ausgegangen"],
-["abfahren","to depart","fuhr ab","ist abgefahren"],
-["ankommen","to arrive","kam an","ist angekommen"],
-["umziehen","to move house","zog um","ist umgezogen"],
-["zurückkommen","to come back","kam zurück","ist zurückgekommen"],
-["kennenlernen","to get to know","lernte kennen","hat kennengelernt"],
-["stattfinden","to take place","fand statt","hat stattgefunden"],
-["wehtun","to hurt","tat weh","hat wehgetan"],
-["einschlafen","to fall asleep","schlief ein","ist eingeschlafen"]
+["beginnen","to begin","begann","hat begonnen","Der Film hat schon begonnen.","Die Sitzung begann um neun."],
+["bringen","to bring","brachte","hat gebracht","Er hat mir einen Kaffee gebracht.","Sie brachte die Kinder zur Schule."],
+["denken","to think","dachte","hat gedacht","Ich habe oft an dich gedacht.","Er dachte lange über die Frage nach."],
+["kennen","to know (a person)","kannte","hat gekannt","Ich habe ihn seit der Schule gekannt.","Sie kannte die Stadt sehr gut."],
+["wissen","to know (a fact)","wusste","hat gewusst","Davon habe ich nichts gewusst.","Er wusste die Antwort nicht."],
+["heißen","to be called","hieß","hat geheißen","Meine Großmutter hat Anna geheißen.","Der Hund hieß Rex."],
+["halten","to hold, to stop","hielt","hat gehalten","Der Zug hat hier nicht gehalten.","Der Bus hielt vor der Schule."],
+["lassen","to let, to leave","ließ","hat gelassen","Ich habe die Tasche im Auto gelassen.","Er ließ das Fenster offen."],
+["rufen","to call, to shout","rief","hat gerufen","Jemand hat um Hilfe gerufen.","Sie rief laut seinen Namen."],
+["schließen","to close","schloss","hat geschlossen","Der Laden hat früher geschlossen.","Er schloss leise die Tür."],
+["singen","to sing","sang","hat gesungen","Die Kinder haben ein Lied gesungen.","Sie sang den ganzen Weg."],
+["schwimmen","to swim","schwamm","ist geschwommen","Wir sind im See geschwommen.","Er schwamm jeden Morgen."],
+["steigen","to climb, to rise","stieg","ist gestiegen","Die Preise sind stark gestiegen.","Die Temperatur stieg schnell."],
+["ziehen","to pull, to move","zog","ist gezogen","Sie ist nach Berlin gezogen.","Er zog im Sommer nach Köln."],
+["gefallen","to please, to be liked","gefiel","hat gefallen","Die Wohnung hat uns gut gefallen.","Der Film gefiel ihr sehr."],
+["verlieren","to lose","verlor","hat verloren","Ich habe meinen Ausweis verloren.","Er verlor das Spiel knapp."],
+["gewinnen","to win","gewann","hat gewonnen","Unsere Mannschaft hat gewonnen.","Sie gewann den ersten Preis."],
+["bitten","to ask, to request","bat","hat gebeten","Er hat mich um Hilfe gebeten.","Sie bat ihn um Geduld."],
+["leihen","to lend, to borrow","lieh","hat geliehen","Sie hat mir ihr Auto geliehen.","Er lieh sich ein Fahrrad."],
+["scheinen","to shine, to seem","schien","hat geschienen","Die Sonne hat den ganzen Tag geschienen.","Es schien alles in Ordnung."],
+["versprechen","to promise","versprach","hat versprochen","Du hast mir etwas anderes versprochen.","Er versprach, pünktlich zu sein."],
+["vergleichen","to compare","verglich","hat verglichen","Wir haben die Preise verglichen.","Sie verglich die beiden Angebote."],
+["entscheiden","to decide","entschied","hat entschieden","Wir haben uns anders entschieden.","Er entschied sich für die Stelle."],
+["empfehlen","to recommend","empfahl","hat empfohlen","Der Arzt hat mir Ruhe empfohlen.","Sie empfahl uns ein Restaurant."],
+["beschließen","to decide, to resolve","beschloss","hat beschlossen","Wir haben beschlossen zu bleiben.","Er beschloss, das Auto zu verkaufen."],
+["verbringen","to spend (time)","verbrachte","hat verbracht","Wir haben den Sommer am Meer verbracht.","Sie verbrachte ein Jahr in Wien."],
+["mitbringen","to bring along","brachte mit","hat mitgebracht","Er hat Kuchen mitgebracht.","Sie brachte Blumen mit."],
+["ausgehen","to go out","ging aus","ist ausgegangen","Wir sind gestern Abend ausgegangen.","Er ging früher oft aus."],
+["abfahren","to depart","fuhr ab","ist abgefahren","Der Zug ist pünktlich abgefahren.","Der Bus fuhr ohne uns ab."],
+["ankommen","to arrive","kam an","ist angekommen","Wir sind spät angekommen.","Der Brief kam erst gestern an."],
+["umziehen","to move house","zog um","ist umgezogen","Wir sind letzten Monat umgezogen.","Sie zog nach München um."],
+["zurückkommen","to come back","kam zurück","ist zurückgekommen","Er ist gestern zurückgekommen.","Sie kam nie wieder zurück."],
+["kennenlernen","to get to know","lernte kennen","hat kennengelernt","Wir haben uns im Kurs kennengelernt.","Er lernte sie in Berlin kennen."],
+["stattfinden","to take place","fand statt","hat stattgefunden","Das Fest hat im Garten stattgefunden.","Die Prüfung fand am Montag statt."],
+["wehtun","to hurt","tat weh","hat wehgetan","Der Rücken hat mir tagelang wehgetan.","Der Kopf tat ihm sehr weh."],
+["einschlafen","to fall asleep","schlief ein","ist eingeschlafen","Das Kind ist sofort eingeschlafen.","Er schlief vor dem Fernseher ein."]
 ];
 
 const SENTENCES_A22 = [
@@ -2955,51 +2965,51 @@ const GRAMMAR_B21 = [
 ];
 
 const VERBS_B21 = [
-["anerkennen","to acknowledge, to recognise","erkannte an","hat anerkannt"],
-["aufheben","to lift, to keep, to cancel","hob auf","hat aufgehoben"],
-["ausschließen","to exclude, to rule out","schloss aus","hat ausgeschlossen"],
-["befehlen","to order, to command","befahl","hat befohlen"],
-["begreifen","to grasp, to comprehend","begriff","hat begriffen"],
-["beitreten","to join","trat bei","ist beigetreten"],
-["sich beziehen auf","to refer to","bezog sich","hat sich bezogen"],
-["biegen","to bend","bog","hat gebogen"],
-["braten","to fry, to roast","briet","hat gebraten"],
-["durchsetzen","to push through","setzte durch","hat durchgesetzt"],
-["eingreifen","to intervene","griff ein","hat eingegriffen"],
-["entnehmen","to take from, to gather from","entnahm","hat entnommen"],
-["entsprechen","to correspond to","entsprach","hat entsprochen"],
-["festhalten","to hold on to, to record","hielt fest","hat festgehalten"],
-["graben","to dig","grub","hat gegraben"],
-["heben","to lift, to raise","hob","hat gehoben"],
-["hervorheben","to emphasise","hob hervor","hat hervorgehoben"],
-["kriechen","to crawl","kroch","ist gekrochen"],
-["laden","to load; to invite","lud","hat geladen"],
-["meiden","to avoid","mied","hat gemieden"],
-["nachweisen","to prove, to demonstrate","wies nach","hat nachgewiesen"],
-["pfeifen","to whistle","pfiff","hat gepfiffen"],
-["reiten","to ride (a horse)","ritt","ist geritten"],
-["reißen","to tear","riss","hat gerissen"],
-["schaffen","to create","schuf","hat geschaffen"],
-["schleichen","to creep, to sneak","schlich","ist geschlichen"],
-["schmelzen","to melt","schmolz","ist geschmolzen"],
-["schreien","to shout, to scream","schrie","hat geschrien"],
-["schwören","to swear, to vow","schwor","hat geschworen"],
-["stechen","to sting, to prick","stach","hat gestochen"],
-["stehlen","to steal","stahl","hat gestohlen"],
-["stoßen","to push, to bump","stieß","hat gestoßen"],
-["streichen","to paint; to delete","strich","hat gestrichen"],
-["treiben","to drive, to do (sport)","trieb","hat getrieben"],
-["übernehmen","to take over","übernahm","hat übernommen"],
-["überwinden","to overcome","überwand","hat überwunden"],
-["unterlassen","to refrain from","unterließ","hat unterlassen"],
-["verderben","to spoil, to go off","verdarb","ist verdorben"],
-["verzichten auf","to do without","verzichtete","hat verzichtet"],
-["vorziehen","to prefer","zog vor","hat vorgezogen"],
-["weisen","to point, to show","wies","hat gewiesen"],
-["werben","to advertise, to recruit","warb","hat geworben"],
-["wiegen","to weigh","wog","hat gewogen"],
-["zusammenfassen","to summarise","fasste zusammen","hat zusammengefasst"],
-["zwingen","to force","zwang","hat gezwungen"]
+["anerkennen","to acknowledge, to recognise","erkannte an","hat anerkannt","Die Behörde hat den Abschluss anerkannt.","Er erkannte seinen Fehler offen an."],
+["aufheben","to lift, to keep, to cancel","hob auf","hat aufgehoben","Das Gericht hat das Urteil aufgehoben.","Sie hob den Brief jahrelang auf."],
+["ausschließen","to exclude, to rule out","schloss aus","hat ausgeschlossen","Wir haben einen Fehler nicht ausgeschlossen.","Er schloss eine Rückkehr aus."],
+["befehlen","to order, to command","befahl","hat befohlen","Niemand hat ihm das befohlen.","Der Chef befahl absolute Ruhe."],
+["begreifen","to grasp, to comprehend","begriff","hat begriffen","Ich habe die Regel endlich begriffen.","Sie begriff sofort das Problem."],
+["beitreten","to join","trat bei","ist beigetreten","Sie ist dem Verein beigetreten.","Er trat der Partei früh bei."],
+["sich beziehen auf","to refer to","bezog sich","hat sich bezogen","Ich habe mich auf Ihre Mail bezogen.","Sie bezog sich auf den Vertrag."],
+["biegen","to bend","bog","hat gebogen","Der Wind hat die Äste gebogen.","Er bog das Blech vorsichtig."],
+["braten","to fry, to roast","briet","hat gebraten","Sie hat das Fleisch zu lange gebraten.","Er briet zwei Eier."],
+["durchsetzen","to push through","setzte durch","hat durchgesetzt","Er hat seinen Vorschlag durchgesetzt.","Sie setzte die Änderung durch."],
+["eingreifen","to intervene","griff ein","hat eingegriffen","Die Polizei hat sofort eingegriffen.","Der Chef griff persönlich ein."],
+["entnehmen","to take from, to gather from","entnahm","hat entnommen","Ich habe das dem Bericht entnommen.","Sie entnahm der Mail den Termin."],
+["entsprechen","to correspond to","entsprach","hat entsprochen","Das hat nicht den Regeln entsprochen.","Der Preis entsprach der Qualität."],
+["festhalten","to hold on to, to record","hielt fest","hat festgehalten","Wir haben das Ergebnis schriftlich festgehalten.","Er hielt an seiner Meinung fest."],
+["graben","to dig","grub","hat gegraben","Sie haben einen tiefen Graben gegraben.","Der Hund grub im Garten."],
+["heben","to lift, to raise","hob","hat gehoben","Er hat den Koffer allein gehoben.","Sie hob die Hand."],
+["hervorheben","to emphasise","hob hervor","hat hervorgehoben","Sie hat den zweiten Punkt hervorgehoben.","Er hob die Bedeutung hervor."],
+["kriechen","to crawl","kroch","ist gekrochen","Das Kind ist unter den Tisch gekrochen.","Der Verkehr kroch im Schritttempo."],
+["laden","to load; to invite","lud","hat geladen","Wir haben die Kisten ins Auto geladen.","Er lud das Gepäck ein."],
+["meiden","to avoid","mied","hat gemieden","Sie hat das Thema konsequent gemieden.","Er mied den Streit."],
+["nachweisen","to prove, to demonstrate","wies nach","hat nachgewiesen","Die Studie hat den Effekt nachgewiesen.","Sie wies den Zusammenhang nach."],
+["pfeifen","to whistle","pfiff","hat gepfiffen","Der Schiedsrichter hat gepfiffen.","Jemand pfiff auf der Straße."],
+["reiten","to ride (a horse)","ritt","ist geritten","Sie ist am Strand geritten.","Er ritt jeden Sonntag."],
+["reißen","to tear","riss","hat gerissen","Das Seil ist plötzlich gerissen.","Der Wind riss das Plakat ab."],
+["schaffen","to create","schuf","hat geschaffen","Er hat etwas völlig Neues geschaffen.","Sie schuf ein eigenes Konzept."],
+["schleichen","to creep, to sneak","schlich","ist geschlichen","Die Katze ist ins Zimmer geschlichen.","Er schlich leise die Treppe hinauf."],
+["schmelzen","to melt","schmolz","ist geschmolzen","Der Schnee ist über Nacht geschmolzen.","Das Eis schmolz in der Sonne."],
+["schreien","to shout, to scream","schrie","hat geschrien","Das Baby hat die ganze Nacht geschrien.","Er schrie vor Schmerz."],
+["schwören","to swear, to vow","schwor","hat geschworen","Er hat vor Gericht geschworen.","Sie schwor, nichts gesagt zu haben."],
+["stechen","to sting, to prick","stach","hat gestochen","Eine Mücke hat mich gestochen.","Die Sonne stach uns ins Gesicht."],
+["stehlen","to steal","stahl","hat gestohlen","Jemand hat mein Fahrrad gestohlen.","Er stahl ihr die Zeit."],
+["stoßen","to push, to bump","stieß","hat gestoßen","Ich habe mir den Kopf gestoßen.","Sie stieß versehentlich an den Tisch."],
+["streichen","to paint; to delete","strich","hat gestrichen","Wir haben die Wand weiß gestrichen.","Er strich den Punkt von der Liste."],
+["treiben","to drive, to do (sport)","trieb","hat getrieben","Er hat viel Sport getrieben.","Der Wind trieb das Boot ans Ufer."],
+["übernehmen","to take over","übernahm","hat übernommen","Sie hat die Leitung übernommen.","Er übernahm die Kosten."],
+["überwinden","to overcome","überwand","hat überwunden","Sie hat ihre Angst überwunden.","Er überwand alle Zweifel."],
+["unterlassen","to refrain from","unterließ","hat unterlassen","Er hat jede Kritik unterlassen.","Sie unterließ jeden Kommentar."],
+["verderben","to spoil, to go off","verdarb","ist verdorben","Das Fleisch ist im Zug verdorben.","Der Regen verdarb uns den Tag."],
+["verzichten auf","to do without","verzichtete","hat verzichtet","Wir haben auf den Urlaub verzichtet.","Sie verzichtete auf ihren Anteil."],
+["vorziehen","to prefer","zog vor","hat vorgezogen","Ich habe den früheren Termin vorgezogen.","Er zog das zweite Angebot vor."],
+["weisen","to point, to show","wies","hat gewiesen","Sie hat uns den Weg gewiesen.","Der Bericht wies auf Probleme hin."],
+["werben","to advertise, to recruit","warb","hat geworben","Die Firma hat um neue Kunden geworben.","Sie warb für ihr Projekt."],
+["wiegen","to weigh","wog","hat gewogen","Das Paket hat drei Kilo gewogen.","Der Koffer wog deutlich mehr."],
+["zusammenfassen","to summarise","fasste zusammen","hat zusammengefasst","Er hat die Ergebnisse zusammengefasst.","Sie fasste den Text kurz zusammen."],
+["zwingen","to force","zwang","hat gezwungen","Niemand hat ihn dazu gezwungen.","Der Regen zwang uns ins Haus."]
 ];
 
 const SENTENCES_B21 = [
@@ -3244,51 +3254,51 @@ const GRAMMAR_B22 = [
 ];
 
 const VERBS_B22 = [
-["abwägen","to weigh up","wog ab","hat abgewogen"],
-["anfechten","to contest, to challenge","focht an","hat angefochten"],
-["aufweisen","to show, to exhibit","wies auf","hat aufgewiesen"],
-["ausweichen","to dodge, to avoid","wich aus","ist ausgewichen"],
-["bestehen auf","to insist on","bestand","hat bestanden"],
-["betragen","to amount to","betrug","hat betragen"],
-["sich bewähren","to prove its worth","bewährte sich","hat sich bewährt"],
-["binden","to tie, to bind","band","hat gebunden"],
-["dringen","to penetrate, to press","drang","ist gedrungen"],
-["einreichen","to submit","reichte ein","hat eingereicht"],
-["entgegenkommen","to meet halfway","kam entgegen","ist entgegengekommen"],
-["enthalten","to contain","enthielt","hat enthalten"],
-["erwägen","to consider","erwog","hat erwogen"],
-["gelingen","to succeed","gelang","ist gelungen"],
-["gleichen","to resemble","glich","hat geglichen"],
-["gleiten","to glide, to slide","glitt","ist geglitten"],
-["hervorgehen aus","to emerge from","ging hervor","ist hervorgegangen"],
-["klingen","to sound","klang","hat geklungen"],
-["kneifen","to pinch","kniff","hat gekniffen"],
-["nachgeben","to give in","gab nach","hat nachgegeben"],
-["preisen","to praise","pries","hat gepriesen"],
-["reiben","to rub, to grate","rieb","hat gerieben"],
-["scheiden","to separate, to divorce","schied","ist geschieden"],
-["schwellen","to swell","schwoll","ist geschwollen"],
-["schwinden","to dwindle","schwand","ist geschwunden"],
-["sinnen","to ponder","sann","hat gesonnen"],
-["spinnen","to spin; to be crazy","spann","hat gesponnen"],
-["stecken","to put, to stick","steckte","hat gesteckt"],
-["steigern","to increase","steigerte","hat gesteigert"],
-["stinken","to stink","stank","hat gestunken"],
-["trügen","to deceive","trog","hat getrogen"],
-["übertreffen","to surpass","übertraf","hat übertroffen"],
-["umgehen mit","to deal with","ging um","ist umgegangen"],
-["unterliegen","to be subject to; to lose","unterlag","ist unterlegen"],
-["verbergen","to conceal","verbarg","hat verborgen"],
-["vergehen","to pass (of time)","verging","ist vergangen"],
-["verleihen","to award; to lend","verlieh","hat verliehen"],
-["vermeiden","to avoid","vermied","hat vermieden"],
-["verweisen auf","to refer to","verwies","hat verwiesen"],
-["weichen","to yield, to give way","wich","ist gewichen"],
-["widerlegen","to refute","widerlegte","hat widerlegt"],
-["winden","to wind","wand","hat gewunden"],
-["zunehmen","to increase","nahm zu","hat zugenommen"],
-["zurückgreifen auf","to fall back on","griff zurück","hat zurückgegriffen"],
-["zutreffen","to be true, to apply","traf zu","hat zugetroffen"]
+["abwägen","to weigh up","wog ab","hat abgewogen","Wir haben Nutzen und Risiko abgewogen.","Er wog beide Möglichkeiten ab."],
+["anfechten","to contest, to challenge","focht an","hat angefochten","Sie hat das Urteil angefochten.","Er focht die Entscheidung an."],
+["aufweisen","to show, to exhibit","wies auf","hat aufgewiesen","Die Studie hat klare Lücken aufgewiesen.","Der Bericht wies mehrere Fehler auf."],
+["ausweichen","to dodge, to avoid","wich aus","ist ausgewichen","Der Fahrer ist dem Hund ausgewichen.","Sie wich der Frage geschickt aus."],
+["bestehen auf","to insist on","bestand","hat bestanden","Der Kunde hat auf einem Rabatt bestanden.","Er bestand auf einer schriftlichen Zusage."],
+["betragen","to amount to","betrug","hat betragen","Die Gebühr hat 37 Euro betragen.","Der Schaden betrug mehrere tausend Euro."],
+["sich bewähren","to prove its worth","bewährte sich","hat sich bewährt","Das Verfahren hat sich bewährt.","Die Methode bewährte sich schnell."],
+["binden","to tie, to bind","band","hat gebunden","Sie hat die Blumen zu einem Strauß gebunden.","Er band den Vertrag an eine Frist."],
+["dringen","to penetrate, to press","drang","ist gedrungen","Wasser ist in den Keller gedrungen.","Der Lärm drang durch die Wand."],
+["einreichen","to submit","reichte ein","hat eingereicht","Ich habe den Antrag eingereicht.","Sie reichte die Unterlagen ein."],
+["entgegenkommen","to meet halfway","kam entgegen","ist entgegengekommen","Die Firma ist uns beim Preis entgegengekommen.","Er kam uns auf halbem Weg entgegen."],
+["enthalten","to contain","enthielt","hat enthalten","Der Preis hat das Frühstück enthalten.","Die Packung enthielt zwölf Stück."],
+["erwägen","to consider","erwog","hat erwogen","Wir haben einen Umzug erwogen.","Sie erwog, das Angebot anzunehmen."],
+["gelingen","to succeed","gelang","ist gelungen","Der Versuch ist uns gelungen.","Der Kuchen gelang beim zweiten Mal."],
+["gleichen","to resemble","glich","hat geglichen","Die Kopie hat dem Original geglichen.","Sein Zimmer glich einer Baustelle."],
+["gleiten","to glide, to slide","glitt","ist geglitten","Das Boot ist über das Wasser geglitten.","Der Schlitten glitt den Hang hinunter."],
+["hervorgehen aus","to emerge from","ging hervor","ist hervorgegangen","Das ist aus dem Bericht hervorgegangen.","Die Idee ging aus einem Gespräch hervor."],
+["klingen","to sound","klang","hat geklungen","Dein Vorschlag hat gut geklungen.","Die Erklärung klang plausibel."],
+["kneifen","to pinch","kniff","hat gekniffen","Er hat mich in den Arm gekniffen.","Die Schuhe kniffen an der Ferse."],
+["nachgeben","to give in","gab nach","hat nachgegeben","Keine Seite hat nachgegeben.","Er gab am Ende doch nach."],
+["preisen","to praise","pries","hat gepriesen","Die Kritik hat das Buch gepriesen.","Man pries ihn als großes Talent."],
+["reiben","to rub, to grate","rieb","hat gerieben","Sie hat den Käse gerieben.","Er rieb sich müde die Augen."],
+["scheiden","to separate, to divorce","schied","ist geschieden","Die beiden sind seit Jahren geschieden.","Der Fluss schied die zwei Dörfer."],
+["schwellen","to swell","schwoll","ist geschwollen","Das Knie ist stark geschwollen.","Der Fuß schwoll über Nacht an."],
+["schwinden","to dwindle","schwand","ist geschwunden","Die Hoffnung ist langsam geschwunden.","Sein Einfluss schwand mit den Jahren."],
+["sinnen","to ponder","sann","hat gesonnen","Er hat lange über eine Antwort gesonnen.","Sie sann auf einen Ausweg."],
+["spinnen","to spin; to be crazy","spann","hat gesponnen","Früher hat man Wolle von Hand gesponnen.","Er spann eine unglaubliche Geschichte."],
+["stecken","to put, to stick","steckte","hat gesteckt","Ich habe den Brief in die Tasche gesteckt.","Der Schlüssel steckte noch im Schloss."],
+["steigern","to increase","steigerte","hat gesteigert","Die Firma hat den Umsatz gesteigert.","Er steigerte das Tempo deutlich."],
+["stinken","to stink","stank","hat gestunken","Der Müll hat fürchterlich gestunken.","Es stank im ganzen Treppenhaus."],
+["trügen","to deceive","trog","hat getrogen","Der Schein hat oft getrogen.","Sein Gedächtnis trog ihn selten."],
+["übertreffen","to surpass","übertraf","hat übertroffen","Das Ergebnis hat alle Erwartungen übertroffen.","Sie übertraf ihren eigenen Rekord."],
+["umgehen mit","to deal with","ging um","ist umgegangen","Er ist sehr sorgfältig damit umgegangen.","Sie ging offen mit Kritik um."],
+["unterliegen","to be subject to; to lose","unterlag","ist unterlegen","Die Firma ist strengen Regeln unterlegen.","Er unterlag im Finale knapp."],
+["verbergen","to conceal","verbarg","hat verborgen","Sie hat ihre Enttäuschung verborgen.","Er verbarg das Geschenk im Schrank."],
+["vergehen","to pass (of time)","verging","ist vergangen","Seitdem sind drei Jahre vergangen.","Die Zeit verging viel zu schnell."],
+["verleihen","to award; to lend","verlieh","hat verliehen","Man hat ihr einen Preis verliehen.","Die Jury verlieh ihm den ersten Platz."],
+["vermeiden","to avoid","vermied","hat vermieden","Wir haben unnötige Kosten vermieden.","Sie vermied jeden Streit."],
+["verweisen auf","to refer to","verwies","hat verwiesen","Der Text hat auf eine Studie verwiesen.","Er verwies auf die alte Regel."],
+["weichen","to yield, to give way","wich","ist gewichen","Der Nebel ist am Morgen gewichen.","Sie wich keinen Schritt zurück."],
+["widerlegen","to refute","widerlegte","hat widerlegt","Die Studie hat die Annahme widerlegt.","Er widerlegte das Argument schnell."],
+["winden","to wind","wand","hat gewunden","Der Weg hat sich den Berg hinauf gewunden.","Der Fluss wand sich durch das Tal."],
+["zunehmen","to increase","nahm zu","hat zugenommen","Der Verkehr hat deutlich zugenommen.","Die Kritik nahm rasch zu."],
+["zurückgreifen auf","to fall back on","griff zurück","hat zurückgegriffen","Wir haben auf ältere Daten zurückgegriffen.","Er griff auf alte Kontakte zurück."],
+["zutreffen","to be true, to apply","traf zu","hat zugetroffen","Das hat nur teilweise zugetroffen.","Die Beschreibung traf genau zu."]
 ];
 
 const SENTENCES_B22 = [
@@ -4543,17 +4553,168 @@ const store = {
 };
 
 /* =====================================================================
+   KONTO & SYNC  (optional — die App funktioniert auch ohne)
+   ===================================================================== */
+const SUPA_URL = "https://vkgqkhevtvhrcttyirgs.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrZ3FraGV2dHZocmN0dHlpcmdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2OTI1ODksImV4cCI6MjEwMzI2ODU4OX0.OYrvtT_aGDPAPRqw83P4ot25F2bGUIiYH_QbSrrLuBk";
+const AUTH_KEY = "dekurs-auth";
+
+let AUTH = null;          // {access_token, refresh_token, email, user_id}
+let SYNC_STATE = "";      // message shown in Fortschritt
+
+function loadAuth(){
+  try{ const s = localStorage.getItem(AUTH_KEY); if(s) AUTH = JSON.parse(s); }catch(e){}
+}
+function saveAuth(){
+  try{ AUTH ? localStorage.setItem(AUTH_KEY, JSON.stringify(AUTH)) : localStorage.removeItem(AUTH_KEY); }catch(e){}
+}
+async function api(path, opts){
+  opts = opts || {};
+  const headers = Object.assign({
+    "apikey": SUPA_KEY,
+    "Content-Type": "application/json"
+  }, opts.headers || {});
+  if(AUTH && AUTH.access_token && !headers.Authorization)
+    headers.Authorization = "Bearer " + AUTH.access_token;
+  const res = await fetch(SUPA_URL + path, Object.assign({}, opts, {headers}));
+  const text = await res.text();
+  let body = null;
+  try{ body = text ? JSON.parse(text) : null; }catch(e){ body = text; }
+  if(!res.ok) throw new Error((body && (body.msg || body.message || body.error_description)) || ("HTTP " + res.status));
+  return body;
+}
+
+/* ---------- sign in with e-mail and password ---------- */
+async function signUp(email, password){
+  const r = await api("/auth/v1/signup", {method:"POST", body: JSON.stringify({email, password})});
+  if(r && r.access_token){
+    AUTH = {access_token:r.access_token, refresh_token:r.refresh_token, email, user_id:r.user && r.user.id};
+    saveAuth(); return true;
+  }
+  return false;                       // account made but e-mail confirmation is still switched on
+}
+async function signIn(email, password){
+  const r = await api("/auth/v1/token?grant_type=password", {method:"POST", body: JSON.stringify({email, password})});
+  AUTH = {access_token:r.access_token, refresh_token:r.refresh_token, email, user_id:r.user && r.user.id};
+  saveAuth();
+  return AUTH;
+}
+async function refreshSession(){
+  if(!AUTH || !AUTH.refresh_token) return false;
+  try{
+    const r = await api("/auth/v1/token?grant_type=refresh_token", {
+      method:"POST", headers:{Authorization:"Bearer " + SUPA_KEY},
+      body: JSON.stringify({refresh_token: AUTH.refresh_token})});
+    AUTH.access_token = r.access_token; AUTH.refresh_token = r.refresh_token; saveAuth();
+    return true;
+  }catch(e){ return false; }
+}
+function signOut(){ AUTH = null; saveAuth(); }
+
+/* ---------- merging two versions of the same learner ---------- */
+function mergeProgress(a, b){
+  // a = local, b = remote. Neither wins outright: we keep the better of each card.
+  if(!b) return a;
+  if(!a) return b;
+  const out = Object.assign({}, a, {
+    p: Object.assign({}, a.p || {}),
+    stamps: Object.assign({}, b.stamps || {}, a.stamps || {}),
+    hist: Object.assign({}, a.hist || {}),
+    ansBySec: Object.assign({}, a.ansBySec || {}),
+    bonusBySec: Object.assign({}, a.bonusBySec || {})
+  });
+  // cards: the more advanced record wins; ties go to the later due date
+  const rp = b.p || {};
+  for(const k in rp){
+    const mine = out.p[k], theirs = rp[k];
+    if(!mine){ out.p[k] = theirs; continue; }
+    if(theirs.b > mine.b || (theirs.b === mine.b && theirs.d > mine.d)) out.p[k] = theirs;
+    else if(theirs.b === mine.b && theirs.d === mine.d)
+      out.p[k] = {b:mine.b, d:mine.d, n:Math.max(mine.n||0, theirs.n||0), k:Math.max(mine.k||0, theirs.k||0)};
+  }
+  // per-day history: whichever device recorded more that day
+  const rh = b.hist || {};
+  for(const d in rh) out.hist[d] = Math.max(out.hist[d] || 0, rh[d]);
+  // counters: keep the best
+  out.xp        = Math.max(a.xp||0, b.xp||0);
+  out.streak    = Math.max(a.streak||0, b.streak||0);
+  out.bestCombo = Math.max(a.bestCombo||0, b.bestCombo||0);
+  out.blitzBest = Math.max(a.blitzBest||0, b.blitzBest||0);
+  out.sessions  = Math.max(a.sessions||0, b.sessions||0);
+  out.goalDay   = Math.max(a.goalDay||0, b.goalDay||0);
+  out.lastBackup= Math.max(a.lastBackup||0, b.lastBackup||0);
+  out.days      = [...new Set([...(a.days||[]), ...(b.days||[])])].sort((x,y)=>x-y).slice(-90);
+  out.fullDays  = [...new Set([...(a.fullDays||[]), ...(b.fullDays||[])])].sort((x,y)=>x-y).slice(-90);
+  out.levelDays = Object.assign({}, b.levelDays || {}, a.levelDays || {});
+  // today's counters belong to whichever device did more today
+  if((b.dayD||0) > (a.dayD||0)){ out.dayD = b.dayD; out.dayXp = b.dayXp; out.ansBySec = b.ansBySec || {}; }
+  else if((b.dayD||0) === (a.dayD||0)){
+    out.dayXp = Math.max(a.dayXp||0, b.dayXp||0);
+    const rb = b.ansBySec || {};
+    for(const s in rb) out.ansBySec[s] = Math.max(out.ansBySec[s] || 0, rb[s]);
+  }
+  out.name   = a.name || b.name;
+  out.course = a.course || b.course;
+  return out;
+}
+
+/* ---------- pull, merge, push ---------- */
+async function syncNow(silent){
+  if(!AUTH){ return false; }
+  if(!navigator.onLine){ SYNC_STATE = "offline — wird später synchronisiert"; return false; }
+  try{
+    let rows;
+    try{
+      rows = await api("/rest/v1/progress?select=data,updated_at");
+    }catch(e){
+      if(!(await refreshSession())) throw e;
+      rows = await api("/rest/v1/progress?select=data,updated_at");
+    }
+    const remote = rows && rows[0] ? rows[0].data : null;
+    const merged = mergeProgress(P, remote);
+    P = merged;
+    await store.save(P);
+    await api("/rest/v1/progress?on_conflict=user_id", {
+      method:"POST",
+      headers:{Prefer:"resolution=merge-duplicates,return=minimal"},
+      body: JSON.stringify({user_id: AUTH.user_id, data: P, updated_at: new Date().toISOString()})
+    });
+    P.lastSync = Date.now();
+    await store.save(P);
+    SYNC_STATE = "zuletzt synchronisiert: gerade eben";
+    if(!silent && typeof renderStats === "function" && S.mode === "stats") renderStats();
+    return true;
+  }catch(e){
+    SYNC_STATE = "Sync fehlgeschlagen: " + e.message;
+    return false;
+  }
+}
+let syncTimer = null;
+function syncSoon(){                       // called after a session, debounced
+  if(!AUTH) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => syncNow(true), 3000);
+}
+
+/* =====================================================================
    GAME RULES
    ===================================================================== */
 const DAY = () => Math.floor(Date.now()/864e5);
 const STEPS = {1:1, 2:2, 3:4, 4:8, 5:16};
 const SESSION = 16;
 const GOAL = 120;                  // Punkte pro Tag
-const APP_VERSION = "32";
+const APP_VERSION = "43";
 const MINUTES = [10, 15, 25, 40];      // wählbares Tagesziel
 const SEC_PER_CARD = 15;               // Erfahrungswert fürs Tippen einer Karte
 const goalMin = () => P.goalMin || 15;
-const dailyCards = () => Math.round(goalMin() * 60 / SEC_PER_CARD);
+// feste Tagesverteilung bei 15 Minuten; andere Ziele skalieren proportional
+const BASE = {vocab:30, grammar:15, verbs:8, satz:8};
+const dailyCards = () => SECS.reduce((a,k) => a + BASE_SCALED()[k], 0);
+const BASE_SCALED = () => {
+  const f = goalMin() / 15, out = {};
+  ["vocab","grammar","verbs","satz"].forEach(k => out[k] = Math.max(1, Math.round(BASE[k] * f)));
+  return out;
+};
 const SECOF = {v:"vocab", g:"grammar", b:"verbs", s:"satz"};
 
 const LEVELS = [
@@ -4644,29 +4805,7 @@ const secDone = m => (P.ansBySec || {})[CV + "|" + m] || 0;
 const ansToday = () => SECS.reduce((a,m) => a + secDone(m), 0);
 const bonus = () => (P.bonusBySec || {})[CV] || 0;   // extra rounds pulled forward today
 // the day's cards are split across the sections in proportion to their size
-function secShares(){
-  const sm = S.mode, stp = S.topic;
-  const sizes = {}; let total = 0;
-  SECS.forEach(k => { S.mode = k; S.topic = null; const n = pool(k).length; sizes[k] = n; total += n; });
-  S.mode = sm; S.topic = stp;
-
-  const daily = dailyCards(), MIN = 3;
-  const raw = {}, out = {};
-  let sum = 0;
-  SECS.forEach(k => { raw[k] = daily * sizes[k] / total; out[k] = Math.max(MIN, Math.floor(raw[k])); sum += out[k]; });
-
-  // hand out the remainder to the biggest fractions so the total lands exactly on target
-  const order = SECS.slice().sort((a,b) => (raw[b]-out[b]) - (raw[a]-out[a]));
-  let i = 0, guard = 0;
-  while(sum < daily && guard++ < 999){ out[order[i++ % order.length]]++; sum++; }
-  i = 0; guard = 0;
-  while(sum > daily && guard++ < 999){
-    const k = order[order.length - 1 - (i++ % order.length)];
-    if(out[k] > MIN){ out[k]--; sum--; }
-    else if(SECS.every(x => out[x] <= MIN)) break;
-  }
-  return out;
-}
+function secShares(){ return BASE_SCALED(); }
 function secTarget(m){ return secShares()[m] * (1 + bonus()); }
 const secLeft = m => Math.max(0, secTarget(m) - secDone(m));
 const dayTarget = () => SECS.reduce((a,m) => a + secTarget(m), 0);
@@ -4888,6 +5027,21 @@ function hintSentence(ex, de){
   if(reflexive) out = out.replace(/(^|\s)(mich|dich|sich|uns|euch|mir|dir)(?=\s|$|[.,!?;:])/gi, (m, p1) => p1 + MASK);
   return out;
 }
+function verbHint(sent, v){
+  const rx = s => s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  const MASK = "\u2013\u2013\u2013\u2013\u2013\u2013";
+  let out = sent;
+  const AUX = ["habe","hast","hat","haben","habt","hatte","hattest","hatten","hattet",
+               "bin","bist","ist","sind","seid","war","warst","waren","wart"];
+  AUX.forEach(a => {
+    out = out.replace(new RegExp("(^|\\s)" + a + "(?=\\s|$|[.,!?;:])", "gi"), (m,p1) => p1 + MASK);
+  });
+  [v[3], v[2]].forEach(form => String(form || "").split(/\s+/).forEach(part => {
+    if(!part) return;
+    out = out.replace(new RegExp("(^|\\s)" + rx(part) + "(?=\\s|$|[.,!?;:])", "gi"), (m,p1) => p1 + MASK);
+  }));
+  return out;
+}
 function wordClass(de){
   if(/^(der|die|das)\s/i.test(de)) return "Nomen";
   if(/^sich\s/i.test(de) || /(en|ern|eln)$/.test(deBase(de).split(" ")[0])) return "Verb";
@@ -4903,6 +5057,13 @@ function pop(text){
   e.className = "pop"; e.textContent = text;
   document.body.appendChild(e);
   setTimeout(()=>e.remove(), 950);
+}
+function secProgress(m){
+  const sm = S.mode, stp = S.topic; S.mode = m; S.topic = null;
+  let sum = 0, n = 0;
+  pool(m).forEach(id => { const r = rec(id); n++; if(r) sum += r.b; });
+  S.mode = sm; S.topic = stp;
+  return n ? Math.round(sum / (n * 5) * 100) : 0;
 }
 function sectionStats(k){
   const sm = S.mode, st = S.topic;
@@ -5109,6 +5270,79 @@ function renderWelcome(){
 }
 
 /* =====================================================================
+   FORTSCHRITTS-PANELS (werden in Fortschritt angezeigt)
+   ===================================================================== */
+function progressPanels(){
+  const keys = [["vocab","Vokabeln"],["grammar","Grammatik"],["verbs","Verben"],["satz","Satzbau"]];
+  const fc = levelForecast();
+  const strip = [];
+  for(let i=6;i>=0;i--){
+    const dd = DAY() - i;
+    const state = fullDays().includes(dd) ? "full" : (P.days||[]).includes(dd) ? "part" : "none";
+    strip.push(`<i data-day="${state}"></i>`);
+  }
+
+  // one timeline: seven days behind, today, six ahead
+  const hist = P.hist || {};
+  const wd = ["S","M","D","M","D","F","S"];
+  const dayLetter = d => wd[new Date(d*864e5).getUTCDay()];
+
+  const dueOn = (d, includeOverdue) => {
+    let n = 0;
+    SECS.forEach(m => {
+      const sm = S.mode, stp = S.topic; S.mode = m; S.topic = null;
+      pool(m).forEach(id => { const r = rec(id); if(r && (includeOverdue ? r.d <= d : r.d === d)) n++; });
+      S.mode = sm; S.topic = stp;
+    });
+    return n;
+  };
+
+  const line = [];
+  for(let i=6;i>=1;i--){ const d = DAY()-i; line.push({d, n: hist[d] || 0, kind:"past"}); }
+  line.push({d: DAY(), n: ansToday(), kind:"today"});
+  for(let i=1;i<=6;i++){ const d = DAY()+i; line.push({d, n: dueOn(d, false), kind:"future"}); }
+  const peak = Math.max(1, ...line.map(x=>x.n));
+
+  const weekDone = line.filter(x=>x.kind!=="future").reduce((a,x)=>a+x.n, 0);
+  const weekAhead = line.filter(x=>x.kind==="future").reduce((a,x)=>a+x.n, 0);
+  const activeDays = line.filter(x=>x.kind!=="future" && x.n>0).length;
+  const dueNow = dueOn(DAY(), true);
+
+  const mastery = keys.map(([k,name])=>{
+    const pct = secProgress(k);
+    return `<div class="mrow"><span class="mname">${name}</span>
+      <span class="mtrack"><i style="width:${pct}%"></i></span>
+      <span class="mnum">${pct}%</span></div>`;
+  }).join("");
+
+
+  return `
+  <p class="eyebrow">Verlauf</p>
+  <div class="panel">
+    <div class="wrapline"><span><b class="k-past">■</b> gemacht</span><span><b class="k-fut">■</b> fällig</span></div>
+    <div class="chart line">${line.map(x=>`<i style="height:${x.n ? Math.max(10, Math.round(x.n/peak*100)) : 4}%" data-kind="${x.kind}"></i>`).join("")}</div>
+    <div class="chartlabels">${line.map(x=>`<span>${x.n || "·"}</span>`).join("")}</div>
+    <div class="chartlabels dim">${line.map(x=>`<span data-today="${x.kind==="today"?1:0}">${dayLetter(x.d)}</span>`).join("")}</div>
+    <div class="wrapline foot"><span>${weekDone} Karten in 7 Tagen · ${activeDays} Tage geübt</span></div>
+    <div class="wrapline"><span>heute fällig: ${dueNow} · nächste 6 Tage: ${weekAhead}</span></div>
+    <div class="mastery">${mastery}</div>
+    <p class="fcnote" style="margin-top:10px">Balken links vom heutigen Tag sind erledigte Karten, rechts davon Wiederholungen, die noch kommen. Die Prozente zeigen, wie weit die Karten eines Bereichs im Kasten vorgerückt sind.</p>
+  </div>
+
+  <div class="streakwrap">
+    <div class="wrapline"><span>Letzte 7 Tage</span><span>${studyStreak()} in Folge</span></div>
+    <div class="streakline">${strip.join("")}</div>
+    <div class="wrapline foot">
+      <span>${fc.activeDays ? "Tag " + fc.activeDays + " auf " + CV : "Stufe " + CV}</span>
+      <span>${fc.seen} von ${fc.size} Karten begonnen</span>
+    </div>
+    ${fc.unseen
+      ? `<p class="fcnote">Bei diesem Tempo hast du in etwa <b>${fc.days} Tag${fc.days===1?"":"en"}</b> jede Karte einmal gesehen. Bis sie dann wirklich sitzen, vergehen noch rund zwei Wochen Wiederholung.</p>`
+      : `<p class="fcnote">Du hast jede Karte dieser Stufe schon gesehen — jetzt zählt nur noch das Wiederholen.</p>`}
+  </div>`;
+}
+
+/* =====================================================================
    ÜBERSICHT (home)
    ===================================================================== */
 function backupNag(){
@@ -5168,46 +5402,6 @@ function renderHome(){
     </li>`;
   }).join("");
 
-  const fc = levelForecast();
-  const strip = [];
-  for(let i=6;i>=0;i--){
-    const dd = DAY() - i;
-    const state = fullDays().includes(dd) ? "full" : (P.days||[]).includes(dd) ? "part" : "none";
-    strip.push(`<i data-day="${state}"></i>`);
-  }
-
-  // what has been done, and what is coming back
-  const hist = P.hist || {};
-  const past = [];
-  for(let i=13;i>=0;i--){ const d = DAY()-i; past.push({d, n: hist[d] || 0}); }
-  const peakPast = Math.max(1, ...past.map(x=>x.n));
-
-  const soon = [];
-  for(let i=0;i<7;i++){
-    const d = DAY()+i;
-    let n = 0;
-    SECS.forEach(m => {
-      const sm = S.mode, stp = S.topic; S.mode = m; S.topic = null;
-      pool(m).forEach(id => { const r = rec(id); if(r && (i===0 ? r.d <= d : r.d === d)) n++; });
-      S.mode = sm; S.topic = stp;
-    });
-    soon.push({d, n});
-  }
-  const peakSoon = Math.max(1, ...soon.map(x=>x.n));
-  const wd = ["So","Mo","Di","Mi","Do","Fr","Sa"];
-  const dayName = d => wd[new Date(d*864e5).getUTCDay()];
-
-  const solidTotal = keys.reduce((a,[k]) => a + st[k].solid, 0);
-  const seenTotal = keys.reduce((a,[k]) => a + (st[k].n - st[k].fresh), 0);
-  const sizeTotal = keys.reduce((a,[k]) => a + st[k].n, 0);
-
-  const mastery = keys.map(([k,name])=>{
-    const s = st[k];
-    return `<div class="mrow"><span class="mname">${name}</span>
-      <span class="mtrack"><i style="width:${Math.round(s.solid/s.n*100)}%"></i></span>
-      <span class="mnum">${s.solid}/${s.n}</span></div>`;
-  }).join("");
-
   $("#stage").innerHTML = `
   <div class="hero">
     <p class="who">${hello}.</p>
@@ -5222,44 +5416,14 @@ function renderHome(){
   </div>
 
   ${backupNag()}
-  <div class="streakwrap">
-    <div class="wrapline"><span>Letzte 7 Tage</span><span>${studyStreak()} in Folge</span></div>
-    <div class="streakline">${strip.join("")}</div>
-    <div class="wrapline foot">
-      <span>${fc.activeDays ? "Tag " + fc.activeDays + " auf " + CV : "Stufe " + CV}</span>
-      <span>${fc.seen} von ${fc.size} Karten begonnen</span>
-    </div>
-    ${fc.unseen
-      ? `<p class="fcnote">Bei diesem Tempo hast du in etwa <b>${fc.days} Tag${fc.days===1?"":"en"}</b> jede Karte einmal gesehen. Bis sie dann wirklich sitzen, vergehen noch rund zwei Wochen Wiederholung.</p>`
-      : `<p class="fcnote">Du hast jede Karte dieser Stufe schon gesehen — jetzt zählt nur noch das Wiederholen.</p>`}
-  </div>
-
-  <p class="eyebrow" style="margin:24px 0 0">Rückblick</p>
-  <div class="panel">
-    <div class="wrapline"><span>Karten pro Tag</span><span>letzte 14 Tage</span></div>
-    <div class="chart">${past.map(x=>`<i style="height:${x.n ? Math.max(8, Math.round(x.n/peakPast*100)) : 3}%" data-today="${x.d===DAY()?1:0}" title="${x.n}"></i>`).join("")}</div>
-    <div class="wrapline foot"><span>${Object.values(hist).reduce((a,b)=>a+b,0)} Karten insgesamt</span><span>${seenTotal} von ${sizeTotal} begonnen · ${solidTotal} sitzen</span></div>
-    <div class="mastery">${mastery}</div>
-  </div>
-
-  <p class="eyebrow" style="margin:24px 0 0">Ausblick</p>
-  <div class="panel">
-    <div class="wrapline"><span>Wiederholungen</span><span>nächste 7 Tage</span></div>
-    <div class="chart soon">${soon.map(x=>`<i style="height:${x.n ? Math.max(8, Math.round(x.n/peakSoon*100)) : 3}%" data-today="${x.d===DAY()?1:0}"></i>`).join("")}</div>
-    <div class="chartlabels">${soon.map(x=>`<span>${x.n||""}</span>`).join("")}</div>
-    <div class="chartlabels dim">${soon.map(x=>`<span>${dayName(x.d)}</span>`).join("")}</div>
-  </div>
-
   <p class="eyebrow" style="margin:24px 0 0">Mehr</p>
   <div class="sect">
-    <button data-go="welcome"><div class="row"><span><b>Alle Stufen</b><span class="sub2">Kursstufe wählen und vergleichen</span></span>
-      <span class="due">${COURSE_ORDER.length} Stufen</span></div></button>
+    <button data-go="sheet"><div class="row"><span><b>Spickzettel</b><span class="sub2">Regeln, Verben und Wortschatz auf einen Blick</span></span>
+      <span class="due">${CV}</span></div></button>
     <button data-go="blitz"><div class="row"><span><b>Blitz</b><span class="sub2">60 Sekunden gemischt</span></span>
       <span class="due">Rekord ${P.blitzBest}</span></div></button>
     <button data-go="stats"><div class="row"><span><b>Fortschritt</b><span class="sub2">Kasten, Stempel, Sicherung</span></span>
       <span class="due">${Object.keys(P.stamps).length}/${STAMPS.length} Stempel</span></div></button>
-    <button data-go="sheet"><div class="row"><span><b>Spickzettel</b><span class="sub2">Regeln, Verben und Wortschatz auf einen Blick</span></span>
-      <span class="due">${CV}</span></div></button>
   </div>`;
 
   $("#stage").querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
@@ -5506,6 +5670,7 @@ function renderVerb(id){
     <div class="tab"><span>${esc(VHEAD)}</span>${comboHTML()}</div>
     <p class="prompt"><small>Infinitiv</small>${esc(v[0])}</p>
     <p class="sub">${esc(v[1])}</p>
+    ${v[4] ? `<div class="hint"><em>Kontext</em>${esc(verbHint(v[4], v))}</div>` : ""}
     <div class="field"><label for="f1">${esc(VFIELDS[0])}</label><input id="f1" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="…"></div>
     <div class="field"><label for="f2">${esc(VFIELDS[1])}</label><input id="f2" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="hat / ist …"></div>
     <div id="verd"></div>
@@ -5525,7 +5690,7 @@ function renderVerb(id){
     $("#f2").dataset.state = ok2 ? "right" : "wrong";
     $("#verd").innerHTML = `<div class="verdict" data-tone="${ok?"right":"wrong"}">
       <h4>${ok ? "Beide richtig" : "So heißt es"}</h4>
-      <p><strong>${esc(v[0])} — ${esc(v[2])} — ${esc(v[3])}</strong>${ok ? "" : `<br><span class="why">${
+      <p><strong>${esc(v[0])} — ${esc(v[2])} — ${esc(v[3])}</strong>${v[5] ? `<br><span class="vex"><b>${esc(VFIELDS[0])}</b> ${esc(v[5])}</span>` : ""}${v[4] ? `<br><span class="vex"><b>${esc(VFIELDS[1])}</b> ${esc(v[4])}</span>` : ""}${ok ? "" : `<br><span class="why">${
         /^ist /.test(v[3])
           ? "Perfekt mit <b>sein</b> — das machen Verben der Bewegung und der Zustandsänderung."
           : "Perfekt mit <b>haben</b> — so bilden es die meisten Verben."
@@ -5616,6 +5781,7 @@ function renderDone(){
       <button class="btn" id="stats">Zur Übersicht</button>
     </div>
   </div>` + railHTML();
+  syncSoon();
   $("#again").onclick = () => go(S.mode);
   $("#stats").onclick = () => go("home");
 }
@@ -5926,8 +6092,7 @@ function renderStats(){
     <div class="stat"><b>${P.bestCombo}</b><span>längste serie</span></div>
   </div>
   <div class="divider"></div>
-  <p class="eyebrow">${CV} · ${seen} von ${courseSize(CV)} Karten angefangen</p>
-  <div class="bars">${rows}</div>
+  ${progressPanels()}
   <div class="divider"></div>
   <p class="eyebrow">Karteikasten</p>
   ${kastenBoard()}
@@ -5946,6 +6111,26 @@ function renderStats(){
   <p class="eyebrow">Name</p>
   <p class="note">Angemeldet als <b>${esc(P.name && P.name !== "–" ? P.name : "ohne Namen")}</b> · <button class="tiny" id="rename">ändern</button></p>
   <div class="divider"></div>
+  <p class="eyebrow">Konto</p>
+  ${AUTH
+    ? `<p class="note">Angemeldet als <b>${esc(AUTH.email)}</b>. Dein Fortschritt wird nach jeder Sitzung gesichert und auf allen Geräten zusammengeführt, auf denen du dich anmeldest.</p>
+       <p class="note" id="syncstate">${esc(SYNC_STATE || (P.lastSync ? "zuletzt synchronisiert: " + new Date(P.lastSync).toLocaleString("de-DE") : "noch nicht synchronisiert"))}</p>
+       <div class="actions">
+         <button class="btn ghost" id="syncbtn">Jetzt synchronisieren</button>
+         <button class="btn ghost" id="signout">Abmelden</button>
+       </div>`
+    : `<p class="note">Ohne Konto bleibt alles nur auf diesem Gerät. Mit einem Konto kannst du denselben Stand auf Handy und Rechner benutzen.</p>
+       <div class="field"><label for="mail">E-Mail</label>
+         <input id="mail" type="email" inputmode="email" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="du@beispiel.de"></div>
+       <div class="field"><label for="pw">Passwort</label>
+         <input id="pw" type="password" autocomplete="current-password" placeholder="mindestens 6 Zeichen"></div>
+       <div class="actions">
+         <button class="btn" id="signin">Anmelden</button>
+         <button class="btn ghost" id="signup">Konto erstellen</button>
+       </div>
+       <p class="note" id="authmsg"></p>`}
+  <div class="divider"></div>
+
   <p class="eyebrow">Sicherung${P.lastBackup ? " · zuletzt vor " + (DAY()-P.lastBackup) + " Tagen" : ""}</p>
   <p class="note">Progress is stored in this browser. If you clear the browser data or open the file on another device, save a backup first and load it there.</p>
   <div class="actions">
@@ -5962,6 +6147,54 @@ function renderStats(){
     P.goalMin = +b.dataset.cap;
     store.save(P); renderStats();
   });
+  if($("#syncbtn")) $("#syncbtn").onclick = async () => {
+    $("#syncstate").textContent = "synchronisiere …";
+    await syncNow(true);
+    $("#syncstate").textContent = SYNC_STATE;
+  };
+  if($("#signout")) $("#signout").onclick = () => {
+    if(!confirm("Abmelden? Dein Fortschritt bleibt auf diesem Gerät erhalten.")) return;
+    signOut(); renderStats();
+  };
+  const authFields = () => ({
+    mail: ($("#mail").value || "").trim(),
+    pw: $("#pw").value || "",
+    msg: $("#authmsg")
+  });
+  const validAuth = (f) => {
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.mail)){ f.msg.textContent = "Bitte eine gültige E-Mail-Adresse eingeben."; return false; }
+    if(f.pw.length < 6){ f.msg.textContent = "Das Passwort braucht mindestens 6 Zeichen."; return false; }
+    return true;
+  };
+  if($("#signin")) $("#signin").onclick = async () => {
+    const f = authFields(); if(!validAuth(f)) return;
+    f.msg.textContent = "melde an …";
+    try{
+      await signIn(f.mail, f.pw);
+      f.msg.textContent = "angemeldet — synchronisiere …";
+      await syncNow(true);
+      renderStats();
+    }catch(e){
+      f.msg.textContent = /Invalid login/i.test(e.message)
+        ? "E-Mail oder Passwort stimmt nicht. Neu hier? Dann „Konto erstellen“."
+        : "Anmeldung fehlgeschlagen: " + e.message;
+    }
+  };
+  if($("#signup")) $("#signup").onclick = async () => {
+    const f = authFields(); if(!validAuth(f)) return;
+    f.msg.textContent = "erstelle Konto …";
+    try{
+      const done = await signUp(f.mail, f.pw);
+      if(!done){ f.msg.textContent = "Konto erstellt. Bitte bestätige zuerst die E-Mail und melde dich dann an."; return; }
+      f.msg.textContent = "Konto erstellt — synchronisiere …";
+      await syncNow(true);
+      renderStats();
+    }catch(e){
+      f.msg.textContent = /already registered|already been registered/i.test(e.message)
+        ? "Diese E-Mail hat schon ein Konto. Nimm „Anmelden“."
+        : "Konnte kein Konto erstellen: " + e.message;
+    }
+  };
   $("#rename").onclick = () => {
     const n = prompt("Wie heißt du?", P.name === "–" ? "" : P.name);
     if(n === null) return;
@@ -6013,8 +6246,11 @@ document.addEventListener("keydown", e => {
 
 /* ---------- Start ---------- */
 (async function(){
+  loadAuth();
   const saved = await store.load();
   if(saved) P = Object.assign(P, saved);
+  if(AUTH){ refreshSession().then(() => syncNow(true)); }
+  window.addEventListener("online", () => { if(AUTH) syncNow(true); });
   useCourse(P.course || "B1.1");
   touchDay();
   // migrate progress saved before courses existed
