@@ -5346,6 +5346,7 @@ function progressPanels(){
    ÜBERSICHT (home)
    ===================================================================== */
 function backupNag(){
+  if(AUTH) return "";                     // signed in: progress is synced to the account after every session
   const cards = Object.keys(P.p).length;
   if(cards < 25) return "";
   const age = P.lastBackup ? DAY() - P.lastBackup : 999;
@@ -6132,7 +6133,7 @@ function renderStats(){
   <div class="divider"></div>
 
   <p class="eyebrow">Sicherung${P.lastBackup ? " · zuletzt vor " + (DAY()-P.lastBackup) + " Tagen" : ""}</p>
-  <p class="note">Progress is stored in this browser. If you clear the browser data or open the file on another device, save a backup first and load it there.</p>
+  <p class="note">Der Fortschritt liegt in diesem Browser. Wenn du die Browserdaten löschst oder die App auf einem anderen Gerät öffnest, speichere vorher eine Sicherung und lade sie dort.</p>
   <div class="actions">
     <button class="btn ghost" id="exp">Sicherung speichern</button>
     <button class="btn ghost" id="imp">Sicherung laden</button>
