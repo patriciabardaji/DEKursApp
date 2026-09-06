@@ -32,7 +32,11 @@ time by tapping the DEKurs title; each level keeps its own box.
   of them counts. Small typos are graded "Fast" and still count; if the app is wrong you can
   mark your own answer as correct.
 - **Grammatik** — fill-the-gap multiple choice, grouped by topic (8–16 topics per level), with
-  a short English explanation after each answer.
+  a short English explanation after each answer. A wrong answer also shows the topic's rule in
+  plain words. The **§** button on the card opens the cheat sheet for the current topic: the rule,
+  two worked examples, the matching reference tables, and the rest of the level's tables folded
+  away. Looking it up before answering costs no points, but the card then stays in its box and
+  comes back tomorrow instead of moving up. Opening it after answering has no effect.
 - **Verben** — type two forms of a verb. Which forms depends on the level: Präsens (du / er)
   at A1.1, Präsens + Perfekt at A1.2, Präteritum + Perfekt from A2.1 upwards.
 - **Satzbau** — rebuild a German sentence from shuffled word chips, given the English.
@@ -128,6 +132,9 @@ object in the *KURSE* block wires them to the level names.
 ```
 
 Cheat-sheet tables live in `TABLES`, and `LEVEL_TABLES` says which tables each level shows.
+`RULES` holds the plain-language rule per grammar topic key (shown in the § panel, on the
+Spickzettel and under a wrong answer), and `SHEET_FOR` maps a topic key to the tables that help
+with it. A new grammar topic needs an entry in both.
 
 ## Develop and deploy
 
@@ -140,7 +147,15 @@ python3 -m http.server 8000     # then open http://localhost:8000/
 While developing, tick *Update on reload* under DevTools → Application → Service Workers,
 otherwise you keep seeing the cached copy.
 
-Before pushing, check that the inline script still parses:
+There is one automated test. It loads the app in jsdom, clicks through grammar cards and checks
+the § panel, the peek rule and that no card's answer leaks into its own cheat sheet:
+
+```sh
+npm i --no-save jsdom          # once; node_modules is git-ignored
+node tests/grammar-sheet.test.js
+```
+
+Before pushing, also check that the inline script still parses:
 
 ```sh
 node -e 'const h=require("fs").readFileSync("index.html","utf8");
