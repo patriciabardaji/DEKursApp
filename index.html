@@ -184,6 +184,7 @@ input{font:inherit;color:inherit}
   border:1px solid var(--ink-14);border-radius:6px;
   font-family:var(--serif);font-size:20px;
 }
+.field input.form{font-family:var(--sans);font-size:16px;padding:12px 14px}   /* name, e-mail, password: plain text, not answer fields */
 .field input[data-state="right"]{border-color:var(--petrol);box-shadow:inset 3px 0 0 var(--petrol)}
 .field input[data-state="wrong"]{border-color:var(--rot);box-shadow:inset 3px 0 0 var(--rot)}
 
@@ -4738,7 +4739,7 @@ const DAY = () => Math.floor(Date.now()/864e5);
 const STEPS = {1:1, 2:2, 3:4, 4:8, 5:16};
 const SESSION = 16;
 const GOAL = 120;                  // Punkte pro Tag
-const APP_VERSION = "49";
+const APP_VERSION = "50";
 const MINUTES = [10, 15, 25, 40];      // wählbares Tagesziel
 const SEC_PER_CARD = 15;               // Erfahrungswert fürs Tippen einer Karte
 const goalMin = () => P.goalMin || 15;
@@ -5230,11 +5231,11 @@ function renderName(){
     <div class="tab"><span>Willkommen</span><span>DEKurs</span></div>
     <p class="hsub" style="margin-top:4px">Mit Konto läuft dein Fortschritt auf Handy und Rechner gleich. Ohne Konto bleibt er nur auf diesem Gerät.</p>
     <div class="field"><label for="nm">Wie heißt du?</label>
-      <input id="nm" autocomplete="given-name" autocapitalize="words" spellcheck="false" placeholder="Vorname" maxlength="24"></div>
+      <input class="form" id="nm" autocomplete="given-name" autocapitalize="words" spellcheck="false" placeholder="Vorname" maxlength="24"></div>
     <div class="field"><label for="mail">E-Mail</label>
-      <input id="mail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="du@beispiel.de"></div>
+      <input class="form" id="mail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="du@beispiel.de"></div>
     <div class="field"><label for="pw">Passwort</label>
-      <input id="pw" type="password" autocomplete="current-password" placeholder="mindestens 6 Zeichen"></div>
+      <input class="form" id="pw" type="password" autocomplete="current-password" placeholder="mindestens 6 Zeichen"></div>
     <p class="note" id="authmsg"></p>
     <div class="actions">
       <button class="btn" id="signup">Konto erstellen</button>
@@ -6376,9 +6377,9 @@ function renderStats(){
        </div>`
     : `<p class="note">Ohne Konto bleibt alles nur auf diesem Gerät. Mit einem Konto kannst du denselben Stand auf Handy und Rechner benutzen.</p>
        <div class="field"><label for="mail">E-Mail</label>
-         <input id="mail" type="email" inputmode="email" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="du@beispiel.de"></div>
+         <input class="form" id="mail" type="email" inputmode="email" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="du@beispiel.de"></div>
        <div class="field"><label for="pw">Passwort</label>
-         <input id="pw" type="password" autocomplete="current-password" placeholder="mindestens 6 Zeichen"></div>
+         <input class="form" id="pw" type="password" autocomplete="current-password" placeholder="mindestens 6 Zeichen"></div>
        <div class="actions">
          <button class="btn" id="signin">Anmelden</button>
          <button class="btn ghost" id="signup">Konto erstellen</button>
