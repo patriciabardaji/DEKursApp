@@ -4742,7 +4742,7 @@ const DAY = () => Math.floor(Date.now()/864e5);
 const STEPS = {1:1, 2:2, 3:4, 4:8, 5:16};
 const SESSION = 16;
 const GOAL = 120;                  // Punkte pro Tag
-const APP_VERSION = "51";
+const APP_VERSION = "52";
 const MINUTES = [10, 15, 25, 40];      // wählbares Tagesziel
 const SEC_PER_CARD = 15;               // Erfahrungswert fürs Tippen einer Karte
 const goalMin = () => P.goalMin || 15;
@@ -5310,7 +5310,7 @@ const needsIntro = () => !P.introSeen && Object.keys(P.p).length === 0;
 function renderIntro(){
   const pts = [
     ["#9B8AD4", "A plan every day.", "The home screen shows what's due today, about 15 minutes. Reviews come first, then new cards."],
-    ["#6FA8D8", "Five boxes.", "Every card climbs one box when you get it right and comes back after 1, 2, 4, 8 and 16 days. A wrong answer sends it back to box 1."],
+    ["#6FA8D8", "Five boxes.", "The goal is to memorise. Every card climbs one box when you get it right and comes back after 1, 2, 4, 8 and 16 days. A wrong answer sends it back to box 1, and you see it again tomorrow until it sticks."],
     ["#DC87A2", "Four sections and Blitz.", "Vokabeln, Grammatik, Verben, Satzbau. Blitz is a 60-second bonus round that never touches your boxes."],
     ["#5CB795", "Type, don't guess.", "Typos and missing umlauts are fine. If you were right anyway, say so with one tap. On a grammar card the § button shows the rule."],
     ["#E5A063", "Your progress travels with you.", "With an account the same box lives on your phone and your computer. The ⓘ in every section explains the exercise in English."]
@@ -5338,14 +5338,14 @@ function guideHTML(){
       <li>In the menu (three dots) choose <b>Install app</b> or <b>Add to Home screen</b>.</li>
       <li>Open the app once from the new icon while you're still online.</li>`
     : `
-      <li>On your phone: open this page in the browser and use the menu to <b>add it to the home screen</b>.</li>
-      <li>On a computer: just bookmark it — the app runs the same, only without its own icon.</li>`;
+      <li><b>On a computer (Chrome):</b> open the menu (⋮ top right) → <b>Cast, Save, and Share</b> → <b>Install DEKurs</b>. It opens in its own window with its own icon. In Safari on a Mac: <b>File → Add to Dock</b>.</li>
+      <li><b>On your phone:</b> open this page in Safari (iPhone) or Chrome (Android) and add it to the home screen — the exact steps appear here when you open the page on the phone.</li>`;
 
   const install = installed() ? "" : `
     <details class="guide">
       <summary>Add to your home screen<span>recommended</span></summary>
       <div class="guide-body">
-        <p>After that everything works offline, even on a plane, and your progress stays put. As a plain browser bookmark, Safari deletes the data after a week without a visit — an account protects you from that too.</p>
+        <p>If you want to use DEKurs offline — on a plane, on the underground — install it once. It then opens like an app, with its own icon, and your progress stays put. Left as a plain browser tab, Safari deletes the stored data after a week without a visit; an account protects you from that too.</p>
         <ol>${steps}</ol>
       </div>
     </details>`;
@@ -5355,7 +5355,7 @@ function guideHTML(){
       <summary>How it works<span>1 minute</span></summary>
       <div class="guide-body">
         <p><b>A plan every day.</b> The home screen shows what's due today: a goal of about 15 minutes split across the four sections — reviews first, then new cards. Finished early? Pull tomorrow's cards forward.</p>
-        <p><b>Five boxes.</b> Every card climbs one box when you get it right and comes back after 1, 2, 4, 8 and 16 days. A wrong answer sends it back to box 1.</p>
+        <p><b>Five boxes.</b> The goal is to memorise, not to get through. Every card climbs one box when you get it right and comes back after 1, 2, 4, 8 and 16 days. A wrong answer sends it back to box 1: you see the card again later in the same session and again tomorrow, until it sticks.</p>
         <p><b>Type, don't guess.</b> You write the translation yourself. Small typos and missing umlauts are accepted; if your answer was right anyway, mark it right yourself.</p>
         <p><b>Four sections.</b> Vokabeln, Grammatik, Verben and Satzbau — plus Blitz, one minute against the clock. Points, ranks and stamps reward sticking with it.</p>
         <p><b>Look things up.</b> The ⓘ in each section tab explains the exercise in English; the § on a grammar card opens the rule and the tables.</p>
