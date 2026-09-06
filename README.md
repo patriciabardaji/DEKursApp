@@ -69,7 +69,10 @@ Three layers, from simplest to most robust:
    home screen shows a backup reminder to users without an account.
 2. **Backup file.** In *Fortschritt → Sicherung*, **Sicherung speichern** downloads
    `karteikasten-fortschritt.json`; **Sicherung laden** restores it on another device.
-3. **Account (optional).** Sign up with e-mail and password in *Fortschritt → Konto*.
+3. **Account (optional).** The first-start screen asks for a name, e-mail and password:
+   **Konto erstellen** makes the account, **Anmelden** signs a returning user in and pulls their
+   name, level and progress from the account, **Ohne Konto weiter** skips it. Signing in or out
+   later is done in *Fortschritt → Konto*.
    After every session, on app start and whenever the device comes back online, the app
    pulls the remote copy, merges it with the local one and pushes the result back. The merge
    keeps the better of each card (higher box wins, ties go to the later due date), the higher
@@ -147,12 +150,15 @@ python3 -m http.server 8000     # then open http://localhost:8000/
 While developing, tick *Update on reload* under DevTools → Application → Service Workers,
 otherwise you keep seeing the cached copy.
 
-There is one automated test. It loads the app in jsdom, clicks through grammar cards and checks
-the § panel, the peek rule and that no card's answer leaks into its own cheat sheet:
+Two automated tests load the app in jsdom. One clicks through grammar cards and checks the §
+panel, the peek rule and that no card's answer leaks into its own cheat sheet; the other runs the
+first-start screen against a fake Supabase (sign-up, sign-in, wrong password, e-mail confirmation,
+skip):
 
 ```sh
 npm i --no-save jsdom          # once; node_modules is git-ignored
 node tests/grammar-sheet.test.js
+node tests/start-screen.test.js
 ```
 
 Before pushing, also check that the inline script still parses:

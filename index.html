@@ -4621,6 +4621,11 @@ async function refreshSession(){
   }catch(e){ return false; }
 }
 function signOut(){ AUTH = null; saveAuth(); }
+function authError(mail, pw){          // "" when the two fields are usable
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) return "Bitte eine gültige E-Mail-Adresse eingeben.";
+  if(pw.length < 6) return "Das Passwort braucht mindestens 6 Zeichen.";
+  return "";
+}
 
 /* ---------- merging two versions of the same learner ---------- */
 function mergeProgress(a, b){
@@ -4714,7 +4719,7 @@ const DAY = () => Math.floor(Date.now()/864e5);
 const STEPS = {1:1, 2:2, 3:4, 4:8, 5:16};
 const SESSION = 16;
 const GOAL = 120;                  // Punkte pro Tag
-const APP_VERSION = "45";
+const APP_VERSION = "46";
 const MINUTES = [10, 15, 25, 40];      // wählbares Tagesziel
 const SEC_PER_CARD = 15;               // Erfahrungswert fürs Tippen einer Karte
 const goalMin = () => P.goalMin || 15;
@@ -5200,23 +5205,76 @@ function renderEmpty(m){
    ERSTER START — Name
    ===================================================================== */
 function renderName(){
+  // first start: name + optional account in one step. Returning users sign in and get name and progress from the account.
   $("#stage").innerHTML = `
   <div class="card">
     <div class="tab"><span>Willkommen</span><span>DEKurs</span></div>
-    <p class="prompt"><small>Wie heißt du?</small></p>
-    <div class="field">
-      <input id="nm" autocomplete="given-name" autocapitalize="words" spellcheck="false" placeholder="Vorname" maxlength="24">
-    </div>
+    <p class="hsub" style="margin-top:4px">Mit Konto läuft dein Fortschritt auf Handy und Rechner gleich. Ohne Konto bleibt er nur auf diesem Gerät.</p>
+    <div class="field"><label for="nm">Wie heißt du?</label>
+      <input id="nm" autocomplete="given-name" autocapitalize="words" spellcheck="false" placeholder="Vorname" maxlength="24"></div>
+    <div class="field"><label for="mail">E-Mail</label>
+      <input id="mail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="du@beispiel.de"></div>
+    <div class="field"><label for="pw">Passwort</label>
+      <input id="pw" type="password" autocomplete="current-password" placeholder="mindestens 6 Zeichen"></div>
+    <p class="note" id="authmsg"></p>
     <div class="actions">
-      <button class="btn ghost" id="skip">Ohne Namen</button>
-      <button class="btn" id="ok">Weiter</button>
+      <button class="btn" id="signup">Konto erstellen</button>
+      <button class="btn ghost" id="signin">Anmelden</button>
     </div>
+    <p class="note" style="text-align:center;margin-top:18px"><button class="tiny" id="skip">Ohne Konto weiter</button></p>
   </div>`;
-  const go2 = () => { store.save(P); go("welcome"); };
+  const nm = () => $("#nm").value.trim().slice(0,24);
+  const msg = t => { $("#authmsg").textContent = t; };
+  const busy = on => ["#signup","#signin","#skip"].forEach(id => { $(id).disabled = on; });
+  const finish = () => {
+    // the account's name wins; otherwise the typed one; otherwise no name
+    P.name = (P.name && P.name !== "–") ? P.name : (nm() || "–");
+    store.save(P);
+    if(P.course && COURSES[P.course]){ useCourse(P.course); go("home"); } else go("welcome");
+  };
   $("#nm").focus();
-  $("#nm").addEventListener("keydown", e => { if(e.key === "Enter") $("#ok").click(); });
-  $("#ok").onclick = () => { P.name = $("#nm").value.trim().slice(0,24); go2(); };
-  $("#skip").onclick = () => { P.name = "–"; go2(); };
+  $("#nm").addEventListener("keydown", e => { if(e.key === "Enter") $("#mail").focus(); });
+  $("#mail").addEventListener("keydown", e => { if(e.key === "Enter") $("#pw").focus(); });
+  $("#pw").addEventListener("keydown", e => { if(e.key === "Enter") $("#signin").click(); });
+
+  $("#skip").onclick = () => { P.name = nm() || "–"; store.save(P); go("welcome"); };
+
+  $("#signup").onclick = async () => {
+    const mail = $("#mail").value.trim(), pw = $("#pw").value;
+    if(!nm()) return msg("Bitte sag uns deinen Vornamen.");
+    const err = authError(mail, pw); if(err) return msg(err);
+    busy(true); msg("erstelle Konto …");
+    try{
+      const done = await signUp(mail, pw);
+      if(!done){ msg("Konto erstellt. Bitte bestätige zuerst die E-Mail und melde dich dann hier an."); busy(false); return; }
+      P.name = nm();
+      msg("Konto erstellt — synchronisiere …");
+      await syncNow(true);
+      finish();
+    }catch(e){
+      busy(false);
+      msg(/already registered|already been registered/i.test(e.message)
+        ? "Diese E-Mail hat schon ein Konto. Nimm „Anmelden“."
+        : "Konnte kein Konto erstellen: " + e.message);
+    }
+  };
+
+  $("#signin").onclick = async () => {
+    const mail = $("#mail").value.trim(), pw = $("#pw").value;
+    const err = authError(mail, pw); if(err) return msg(err);
+    busy(true); msg("melde an …");
+    try{
+      await signIn(mail, pw);
+      msg("angemeldet — hole deinen Fortschritt …");
+      await syncNow(true);
+      finish();
+    }catch(e){
+      busy(false);
+      msg(/Invalid login/i.test(e.message)
+        ? "E-Mail oder Passwort stimmt nicht. Neu hier? Dann „Konto erstellen“."
+        : "Anmeldung fehlgeschlagen: " + e.message);
+    }
+  };
 }
 
 /* =====================================================================
@@ -6321,9 +6379,9 @@ function renderStats(){
     msg: $("#authmsg")
   });
   const validAuth = (f) => {
-    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.mail)){ f.msg.textContent = "Bitte eine gültige E-Mail-Adresse eingeben."; return false; }
-    if(f.pw.length < 6){ f.msg.textContent = "Das Passwort braucht mindestens 6 Zeichen."; return false; }
-    return true;
+    const err = authError(f.mail, f.pw);
+    if(err) f.msg.textContent = err;
+    return !err;
   };
   if($("#signin")) $("#signin").onclick = async () => {
     const f = authFields(); if(!validAuth(f)) return;
