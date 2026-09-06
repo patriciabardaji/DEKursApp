@@ -33,7 +33,7 @@ const tap = (t, chipIndex) => { const c = t.d.querySelector(`#bank .chip[data-i=
   // 1. correct sentence, but the two identical "ich" chips are tapped in swapped order (6 first, then 1)
   { const t = boot(); await tick(300); openCard(t, words); await tick();
     [0, 6, 2, 3, 4, 5, 1, 7, 8].forEach(i => tap(t, i));
-    ok(t.$("#line").textContent.replace(/\s+/g," ").trim() === "Weil ich krank war , bin ich zu Hause geblieben", "built sentence reads correctly");
+    ok([...t.d.querySelectorAll("#line .chip")].map(c => c.textContent).join(" ") === "Weil ich krank war , bin ich zu Hause geblieben", "built sentence reads correctly");
     t.$("#check").click(); await tick();
     ok(t.$("#verd h4") && t.$("#verd h4").textContent === "Richtig", `swapped identical chips → judged correct (got "${t.$("#verd h4") && t.$("#verd h4").textContent}")`);
     ok([...t.d.querySelectorAll("#line .chip")].every(c => c.dataset.state === "right"), "every chip is coloured right");
