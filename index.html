@@ -87,11 +87,12 @@ input{font:inherit;color:inherit}
 }
 .modes::-webkit-scrollbar{display:none}
 .mode{
-  flex:1 0 auto;padding:11px 16px;
+  flex:1 0 auto;padding:11px 16px;position:relative;text-align:center;
   font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
   color:var(--ink-60);border-bottom:2px solid transparent;white-space:nowrap;
 }
 .mode[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--signal);background:var(--ink-07)}
+.mode .info{position:absolute;right:12px;top:50%;transform:translateY(-50%);text-transform:none;letter-spacing:0}
 
 /* ---------- stage ---------- */
 .stage{
@@ -484,11 +485,12 @@ input{font:inherit;color:inherit}
   margin:0 0 16px;padding:14px 15px;border-radius:6px;
   background:var(--accent-soft);border:1px solid var(--accent);
 }
-.infobox b{font-family:var(--serif);font-size:16px;display:block;margin-bottom:6px}
+.infobox > b:first-child{font-family:var(--serif);font-size:16px;display:block;margin-bottom:6px}
+.infobox p b{color:var(--ink)}
 .infobox p{margin:0 0 8px;font-size:13.5px;line-height:1.6;color:var(--ink-60)}
 .infobox p:last-child{margin-bottom:0}
 .infobox i{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--ink)}
-.info.book{right:38px;font-style:normal;font-size:13px}
+.info.book{font-style:normal;font-size:13px}
 .sheetbox{margin:0 0 16px;padding:14px 15px;border-radius:6px;background:var(--accent-soft);border:1px solid var(--accent)}
 .sheetbox .sh-block{padding:10px 0}
 .sheetbox .sh-block:first-child{padding-top:0}
@@ -518,7 +520,7 @@ input{font:inherit;color:inherit}
 .verdict .regel .words span{font-size:13px}
 .hero, .card, .stage{position:relative}
 .stage > .info{top:2px;right:2px}
-.stage > .infobox{margin-top:30px}
+.stage > .infobox{margin:0 0 16px}
 /* ---------- home screen ---------- */
 .hero{border:1px solid var(--ink-14);border-top:4px solid var(--accent);border-radius:6px;padding:18px 18px 20px;background:var(--card)}
 .hero .who{font-family:var(--serif);font-size:26px;line-height:1.2;margin:0 0 3px}
@@ -4736,7 +4738,7 @@ const DAY = () => Math.floor(Date.now()/864e5);
 const STEPS = {1:1, 2:2, 3:4, 4:8, 5:16};
 const SESSION = 16;
 const GOAL = 120;                  // Punkte pro Tag
-const APP_VERSION = "48";
+const APP_VERSION = "49";
 const MINUTES = [10, 15, 25, 40];      // wählbares Tagesziel
 const SEC_PER_CARD = 15;               // Erfahrungswert fürs Tippen einer Karte
 const goalMin = () => P.goalMin || 15;
@@ -5176,7 +5178,7 @@ function nav(){
   const label = (MODES.find(m => m[0] === S.mode) || ["","Übung"])[1];
   bar.style.display = "flex";
   bar.className = "modes backbar";
-  bar.innerHTML = `<button class="mode" id="back">← Übersicht</button><button class="mode" aria-selected="true">${label}</button>`;
+  bar.innerHTML = `<button class="mode" id="back">← Übersicht</button><div class="mode" id="modetab" role="tab" aria-selected="true">${label}</div>`;
   $("#back").onclick = () => go("home");
 }
 function go(m){
@@ -6193,15 +6195,20 @@ const INFO = {
     <p>It earns points but deliberately does <b>not</b> move your cards between boxes, so a fast round can never disturb your review schedule.</p>`
 };
 function attachInfo(mode){
-  const card = document.querySelector("#stage .card, #stage .hero") || document.getElementById("stage");
-  if(!card || !INFO[mode] || card.querySelector("#infbtn")) return;
-  card.insertAdjacentHTML("afterbegin",
-    `<button class="info" id="infbtn" aria-label="Erklärung auf Englisch">i</button>
-     <div class="infobox hidden" id="infbox">${INFO[mode]()}</div>`);
-  document.getElementById("infbtn").onclick = () => {
-    const b = document.getElementById("infbox");
+  if(!INFO[mode]) return;
+  const stage = document.getElementById("stage");
+  const tab = document.getElementById("modetab");               // section tab in the top bar; hidden on the home screen
+  const host = tab || stage.querySelector(".card, .hero") || stage;
+  if(!document.getElementById("infbox"))                         // the box is wiped by every re-render, the tab button is not
+    (tab ? stage : host).insertAdjacentHTML("afterbegin", `<div class="infobox hidden" id="infbox">${INFO[mode]()}</div>`);
+  if(!document.getElementById("infbtn"))
+    host.insertAdjacentHTML(tab ? "beforeend" : "afterbegin", `<button class="info" id="infbtn" aria-label="Erklärung auf Englisch">i</button>`);
+  const btn = document.getElementById("infbtn");
+  btn.dataset.on = document.getElementById("infbox").classList.contains("hidden") ? "0" : "1";
+  btn.onclick = () => {
+    const b = document.getElementById("infbox"); if(!b) return;
     b.classList.toggle("hidden");
-    document.getElementById("infbtn").dataset.on = b.classList.contains("hidden") ? "0" : "1";
+    btn.dataset.on = b.classList.contains("hidden") ? "0" : "1";
   };
 }
 

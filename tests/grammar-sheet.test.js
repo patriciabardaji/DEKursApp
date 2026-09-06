@@ -29,6 +29,10 @@ const wrongOpt = id => [...d.querySelectorAll(".opt")].find(x => x.dataset.v !==
   w.go("grammar"); await tick();
   const id1 = S.queue[S.i];
   ok(!!$("#shbtn") && !!$("#infbtn"), "grammar card has both § and ⓘ buttons");
+  ok(!!$("#modes #modetab #infbtn") && !$("#stage #infbtn") && !!$("#stage .card #shbtn"), "ⓘ sits in the section tab of the top bar, § in the card corner");
+  $("#infbtn").click();
+  ok($("#stage > #infbox") && !$("#infbox").classList.contains("hidden") && /Grammar/.test($("#infbox").textContent) && $("#infbtn").dataset.on === "1", "ⓘ opens the explanation above the card");
+  $("#infbtn").click(); ok($("#infbox").classList.contains("hidden"), "ⓘ closes it again");
   ok($("#shbox").classList.contains("hidden") && S.peeked === false, "sheet panel starts hidden, peeked=false");
   const topic1 = G()[IDX(id1)][0];
   const box = $("#shbox");
@@ -58,6 +62,7 @@ const wrongOpt = id => [...d.querySelectorAll(".opt")].find(x => x.dataset.v !==
   // --- card 2: no peek, right → box 2, due +2
   const id2 = S.queue[S.i];
   ok(S.peeked === false, "peeked resets on next card");
+  ok(!!$("#modes #infbtn") && !!$("#infbox") && $("#infbox").classList.contains("hidden"), "after moving to the next card the ⓘ is still in the tab and the box is closed");
   clickOpt(answerOf(id2));
   ok($("#verd h4").textContent === "Richtig", `plain verdict without peek: "${$("#verd h4").textContent}"`);
   ok(!$("#verd .regel"), "right answer keeps the verdict short (no rule block)");
@@ -89,6 +94,12 @@ const wrongOpt = id => [...d.querySelectorAll(".opt")].find(x => x.dataset.v !==
   ok(nTables === 8 && nBlocks === 8 + 13, `Spickzettel B1.1: ${nTables} tables (expect 8), ${nBlocks} blocks (expect 21)`);
   ok(d.querySelectorAll("#stage .ex.drill").length === 13 * 2 && d.querySelectorAll("#stage .ex-en").length === 13, "Spickzettel topic blocks keep two drill sentences and add the translated example");
   ok(!d.querySelector("#stage .grid .sh-table") && !d.querySelector("#stage table.grid"), "no table carries the layout class .grid any more");
+
+  // --- home keeps its ⓘ on the hero card (no section tab there); blitz intro uses the tab
+  w.go("home"); await tick();
+  ok(!!$("#stage .hero #infbtn") && !$("#modes #infbtn"), "home: ⓘ stays on the hero card");
+  w.go("blitz"); await tick();
+  ok(!!$("#modes #modetab #infbtn"), "blitz intro: ⓘ in the Blitz tab");
 
   // --- Fortschritt: one Konto section with the backup file folded in
   w.go("stats"); await tick();
