@@ -33,9 +33,10 @@ time by tapping the DEKurs title; each level keeps its own box.
   mark your own answer as correct.
 - **Grammatik** — fill-the-gap multiple choice, grouped by topic (8–16 topics per level), with
   a short English explanation after each answer. A wrong answer also shows the topic's rule in
-  plain words. The **§** button on the card opens the cheat sheet for the current topic: the rule,
-  two worked examples, the matching reference tables, and the rest of the level's tables folded
-  away. Looking it up before answering costs no points, but the card then stays in its box and
+  plain words with the topic's key words translated. The **§** button on the card opens the cheat
+  sheet for the current topic: the rule in one sentence, the key words with their English meaning,
+  one translated example, the matching reference tables side by side, and the rest of the level's
+  tables folded away. Looking it up before answering costs no points, but the card then stays in its box and
   comes back tomorrow instead of moving up. Opening it after answering has no effect.
 - **Verben** — type two forms of a verb. Which forms depends on the level: Präsens (du / er)
   at A1.1, Präsens + Perfekt at A1.2, Präteritum + Perfekt from A2.1 upwards.
@@ -72,7 +73,7 @@ Three layers, from simplest to most robust:
 3. **Account (optional).** The first-start screen asks for a name, e-mail and password:
    **Konto erstellen** makes the account, **Anmelden** signs a returning user in and pulls their
    name, level and progress from the account, **Ohne Konto weiter** skips it. Signing in or out
-   later is done in *Fortschritt → Konto*.
+   later is done in *Fortschritt → Konto*, which also holds the backup-file buttons.
    After every session, on app start and whenever the device comes back online, the app
    pulls the remote copy, merges it with the local one and pushes the result back. The merge
    keeps the better of each card (higher box wins, ties go to the later due date), the higher
@@ -135,9 +136,10 @@ object in the *KURSE* block wires them to the level names.
 ```
 
 Cheat-sheet tables live in `TABLES`, and `LEVEL_TABLES` says which tables each level shows.
-`RULES` holds the plain-language rule per grammar topic key (shown in the § panel, on the
-Spickzettel and under a wrong answer), and `SHEET_FOR` maps a topic key to the tables that help
-with it. A new grammar topic needs an entry in both.
+`RULES` holds one entry per grammar topic key: `r` the rule in one sentence, `w` the key words
+as `[German, English]` pairs, `ex` one `[German, English]` example (shown in the § panel, on the
+Spickzettel and under a wrong answer). `SHEET_FOR` maps a topic key to the tables that help with
+it. A new grammar topic needs an entry in both.
 
 ## Develop and deploy
 

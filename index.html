@@ -441,9 +441,9 @@ input{font:inherit;color:inherit}
 .sh-rules{margin:8px 0 0;padding-left:19px}
 .sh-rules li{font-size:14px;line-height:1.6;color:var(--ink-60);margin-bottom:6px}
 
-.sh-table.grid td, .sh-table.grid th{padding:6px 8px 6px 0;font-size:14px}
-.sh-table.grid td.rowhead{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-38);white-space:nowrap}
-.sh-table.grid td{font-family:var(--mono);font-size:13px}
+.sh-table.ref td, .sh-table.ref th{padding:6px 8px 6px 0;font-size:14px}
+.sh-table.ref td.rowhead{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-38);white-space:nowrap}
+.sh-table.ref td{font-family:var(--mono);font-size:13px}
 .sh-table.verbs td{font-size:14px}
 .sh-table.verbs td.en{font-size:12px}
 .guide-body{overflow-x:auto}
@@ -489,16 +489,33 @@ input{font:inherit;color:inherit}
 .infobox p:last-child{margin-bottom:0}
 .infobox i{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--ink)}
 .info.book{right:38px;font-style:normal;font-size:13px}
-.sh-block .rule b{display:block;color:var(--ink);font-weight:600;margin-bottom:3px}
-.verdict .regel{margin:10px 0 0;padding-top:9px;border-top:1px solid var(--ink-14);font-size:13.5px;line-height:1.55;color:var(--ink-60)}
-.verdict .regel b{display:block;color:var(--ink);font-weight:600;margin-bottom:3px}
+.sheetbox{margin:0 0 16px;padding:14px 15px;border-radius:6px;background:var(--accent-soft);border:1px solid var(--accent)}
 .sheetbox .sh-block{padding:10px 0}
 .sheetbox .sh-block:first-child{padding-top:0}
 .sheetbox .sh-block h4{font-size:15px}
-.sheetbox .sh-block .ex{font-size:15px}
 .sheetbox .guide{margin-top:10px;background:transparent}
 .sheetbox .guide summary{padding:11px 12px;font-size:15px}
 .sheetbox .guide-body{padding:0 12px 10px}
+.tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0 22px;align-items:start}
+.tables .sh-block{min-width:0}
+.tables .sh-block.wide{grid-column:1 / -1}
+.tables .sh-block:not(.wide) .sh-table.ref{table-layout:fixed}
+.tables .sh-block:not(.wide) .sh-table.ref td, .tables .sh-block:not(.wide) .sh-table.ref th{padding-right:4px}
+.tables .sh-block:not(.wide) .sh-table.ref td{font-size:11.5px}
+.tables .sh-block:not(.wide) .sh-table.ref td.rowhead, .tables .sh-block:not(.wide) .sh-table.ref th:first-child{width:25%;font-size:8.5px;letter-spacing:.04em}
+.tables .sh-block:not(.wide) .sh-table.ref th{font-size:8.5px;letter-spacing:.04em}
+.sh-block .rule b{display:block;color:var(--ink);font-weight:600;font-size:14.5px;line-height:1.5}
+.words{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:3px 20px;margin:9px 0 0}
+.words span{font-size:13.5px;line-height:1.5;color:var(--ink-60)}
+.words b{color:var(--ink);font-weight:600;font-family:var(--serif);margin-right:6px}
+.sh-block .ex-en{margin:0 0 6px;font-size:13px;line-height:1.5;color:var(--ink-60)}
+.sh-block .ex{margin-top:9px}
+.sh-block .ex.drill{margin-top:4px}
+.verdict .regel{margin:10px 0 0;padding-top:9px;border-top:1px solid var(--ink-14)}
+.verdict .regel .rule{margin:0}
+.verdict .regel .rule b{font-size:13.5px}
+.verdict .regel .words{margin-top:6px}
+.verdict .regel .words span{font-size:13px}
 .hero, .card, .stage{position:relative}
 .stage > .info{top:2px;right:2px}
 .stage > .infobox{margin-top:30px}
@@ -4719,7 +4736,7 @@ const DAY = () => Math.floor(Date.now()/864e5);
 const STEPS = {1:1, 2:2, 3:4, 4:8, 5:16};
 const SESSION = 16;
 const GOAL = 120;                  // Punkte pro Tag
-const APP_VERSION = "46";
+const APP_VERSION = "47";
 const MINUTES = [10, 15, 25, 40];      // wählbares Tagesziel
 const SEC_PER_CARD = 15;               // Erfahrungswert fürs Tippen einer Karte
 const goalMin = () => P.goalMin || 15;
@@ -5710,7 +5727,7 @@ function renderGrammar(id){
     <button class="info book" id="shbtn" aria-label="Spickzettel zu diesem Thema">§</button>
     <div class="tab"><span>${esc(topic)}</span>${comboHTML()}</div>
     <p class="prompt">${esc(g[1])}</p>
-    <div class="infobox sheetbox hidden" id="shbox">${sheetHTML(g[0], id)}</div>
+    <div class="sheetbox hidden" id="shbox">${sheetHTML(g[0], id)}</div>
     <div class="opts" id="opts">${opts.map(o=>`<button class="opt" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div>
     <div id="verd"></div>
     <div class="actions hidden" id="act"><button class="btn wide" id="go">Weiter</button></div>
@@ -5734,7 +5751,7 @@ function renderGrammar(id){
       <h4>${ok ? (S.peeked ? "Richtig — nachgeschlagen" : "Richtig") : "Nicht ganz"}</h4>
       <p><strong>${esc(g[1].replace("___", g[3]))}</strong><br>${g[4]}${ok && S.peeked
         ? `<br><span class="why">Die Karte bleibt in Kasten ${r ? r.b : 1} und kommt morgen noch einmal.</span>` : ""}</p>
-      ${!ok && RULES[g[0]] ? `<p class="regel">${RULES[g[0]]}</p>` : ""}</div>`;
+      ${!ok && RULES[g[0]] ? `<div class="regel">${ruleHTML(g[0], false)}</div>` : ""}</div>`;
     $("#act").classList.remove("hidden");
     $("#go").onclick = () => next(ok);
     $("#go").focus();
@@ -5976,8 +5993,8 @@ const TABLES = {
   faelle: {t:"Artikel und Fälle", head:["","maskulin","feminin","neutrum","Plural"], rows:[
     ["Nominativ","der","die","das","die"],
     ["Akkusativ","den","die","das","die"],
-    ["Dativ","dem","der","dem","den …-n"],
-    ["Genitiv","des …-s","der","des …-s","der"]]},
+    ["Dativ","dem","der","dem","den …‑n"],
+    ["Genitiv","des …‑s","der","des …‑s","der"]]},
   unbest: {t:"Unbestimmter Artikel & kein", head:["","maskulin","feminin","neutrum","Plural"], rows:[
     ["Nominativ","ein","eine","ein","keine"],
     ["Akkusativ","einen","eine","ein","keine"],
@@ -6050,100 +6067,102 @@ const SHEET_FOR = {
   irreal:["kii"], modsatz:["konn"], finkon:["konn"], temp2:["konn"], genprap:["faelle","praep"], mittel:["konn"],
   neg2:["unbest"], adjprap:["praep","adjend"], konjrede:["kii"]
 };
-// one plain rule per grammar topic — shown in the § panel, on the Spickzettel and under a wrong answer
+// one plain rule per grammar topic: r = the rule, w = key words with English, ex = one translated example.
+// Shown in the § panel, on the Spickzettel and under a wrong answer.
 const RULES = {
   // A1.1
-  konj: "<b>Present tense: verb stem + the ending for the person.</b> ich -e · du -st · er/sie/es -t · wir -en · ihr -t · sie/Sie -en. wohnen → ich wohne, du wohnst, er wohnt.",
-  seinhaben: "<b>sein and haben are irregular — learn the forms by heart.</b> sein: ich bin · du bist · er ist · wir sind · ihr seid · sie sind. haben: ich habe · du hast · er hat · wir haben · ihr habt · sie haben.",
-  frage: "<b>A question word asks for one piece of information, and the verb comes right after it.</b> Wie? = how (also for names: Wie heißt du?) · Wo? = where · Woher? = where from · Wohin? = where to · Was? = what · Wer? = who · Wann? = when.",
-  artikel: "<b>Every noun has a gender: der (masculine), die (feminine), das (neuter). The plural is always die.</b> Learn the article with the word. Endings that help: -ung, -heit, -keit, -schaft → die · -chen, -lein → das.",
-  akk: "<b>The direct object takes the accusative. Only the masculine changes: der → den, ein → einen.</b> Ich habe einen Bruder. Feminine, neuter and plural stay the same: die, das, eine, ein.",
-  pron: "<b>A pronoun replaces a noun and keeps its gender.</b> der Mann → er · die Frau → sie · das Kind → es · plural → sie. The gender follows the word, not the thing: der Tisch → er.",
-  poss: "<b>Possessive articles (mein, dein, sein, ihr, unser, euer, Ihr) take the endings of ein/kein.</b> Masculine and neuter: no ending (mein Vater, mein Kind). Feminine and plural: -e (meine Mutter, meine Eltern).",
-  neg: "<b>kein negates a noun, nicht negates everything else.</b> Ich habe kein Auto (noun). Das ist nicht gut (adjective). Ich komme nicht (verb). kein takes the endings of ein: kein, keine, keinen.",
+  konj:{r:"Present tense: take the verb stem and add the ending for the person.", w:[["ich -e","I"],["du -st","you"],["er/sie/es -t","he/she/it"],["wir -en","we"],["ihr -t","you (plural)"],["sie/Sie -en","they / you (formal)"]], ex:["Wir wohnen in Hamburg und du wohnst in Kiel.","We live in Hamburg and you live in Kiel."]},
+  seinhaben:{r:"sein (to be) and haben (to have) are irregular. Learn each form by heart.", w:[["ich bin / habe","I am / have"],["du bist / hast","you are / have"],["er ist / hat","he is / has"],["wir sind / haben","we are / have"],["ihr seid / habt","you are / have"],["sie sind / haben","they are / have"]], ex:["Wir sind müde und haben Hunger.","We are tired and hungry."]},
+  frage:{r:"A question word asks for one piece of information. The verb comes right after it.", w:[["wie","how (also for names: Wie heißt du?)"],["wo","where"],["woher","where from"],["wohin","where to"],["was","what"],["wer","who"],["wann","when"],["wie viel","how much"]], ex:["Wohin fährst du im Urlaub?","Where are you going on holiday?"]},
+  artikel:{r:"Every noun has a gender: der, die or das. The plural is always die. Learn the article together with the word.", w:[["der","the (masculine)"],["die","the (feminine, and all plurals)"],["das","the (neuter)"],["-ung, -heit, -keit","always die"],["-chen, -lein","always das"]], ex:["Die Lampe und der Stuhl sind neu.","The lamp and the chair are new."]},
+  akk:{r:"The direct object takes the accusative. Only the masculine changes: der becomes den, ein becomes einen.", w:[["den / einen","the / a (masculine object)"],["die / eine","the / a (feminine)"],["das / ein","the / a (neuter)"],["die","the (plural)"]], ex:["Ich suche einen Stift und eine Lampe.","I'm looking for a pen and a lamp."]},
+  pron:{r:"A pronoun replaces a noun and keeps its gender, even for things.", w:[["er","he, or it for der-words"],["sie","she, or it for die-words"],["es","it for das-words"],["sie","they"],["wir","we"],["ihr","you (plural)"]], ex:["Der Kaffee ist heiß. Er schmeckt gut.","The coffee is hot. It tastes good."]},
+  poss:{r:"Possessive articles take the endings of ein: no ending for masculine and neuter, -e for feminine and plural.", w:[["mein","my"],["dein","your"],["sein","his / its"],["ihr","her / their"],["unser","our"],["euer","your (plural)"],["Ihr","your (formal)"]], ex:["Das ist unser Haus und das ist unsere Straße.","This is our house and this is our street."]},
+  neg:{r:"kein negates a noun. nicht negates everything else: verbs, adjectives, and nouns with der/die/das or mein.", w:[["kein / keine","no, not a (before a noun)"],["nicht","not"]], ex:["Ich habe keine Zeit, und ich bin nicht müde.","I have no time, and I am not tired."]},
   // A1.2
-  unreg: "<b>Some verbs change their vowel, but only in the du- and er/sie/es-form.</b> e → i/ie: sprechen → du sprichst, lesen → er liest. a → ä: fahren → du fährst, er fährt. ich, wir, ihr, sie keep the normal stem.",
-  modal: "<b>The modal verb (können, müssen, wollen, dürfen, sollen, mögen) stands in position 2; the other verb goes to the end as an infinitive.</b> ich and er/sie/es share one form without ending: ich kann, er kann · ich muss, er muss. Ich kann heute nicht kommen.",
-  trenn: "<b>Separable verbs split: the verb is conjugated in position 2 and the prefix goes to the very end.</b> aufstehen → Ich stehe um sieben auf. anfangen → Wann fängt der Film an? Typical prefixes: an-, auf-, aus-, ein-, mit-, zu-.",
-  perf: "<b>Perfekt = haben or sein in position 2 + Partizip II at the end.</b> Most verbs take haben: Ich habe gearbeitet. Movement from A to B and change of state take sein: Ich bin gefahren, er ist eingeschlafen. Also sein, bleiben, werden → sein.",
-  dat: "<b>The dative marks the person something is given to or done for; also after helfen, danken, gefallen, gehören and es geht.</b> der/das → dem · die → der · plural → den (+ -n). Pronouns: mir, dir, ihm, ihr, ihm, uns, euch, ihnen.",
-  prep: "<b>Places: nach for cities and countries, zu for people and places you go to, in for entering a building. Time: um for clock times, am for days, im for months.</b> nach Berlin · zum Arzt (zu + dem) · ins Kino (in + das) · um acht · am Montag · im Mai.",
-  imp: "<b>Imperative: du-form without du and without -st; ihr-form without ihr; Sie-form = infinitive + Sie.</b> Komm! · Kommt! · Kommen Sie! Vowel-change verbs keep the change: Sprich langsamer! Separable verbs split: Steh auf!",
-  konn: "<b>und, aber, oder, denn, sondern join two main clauses and do not change the word order.</b> The verb stays in position 2 in both parts: Ich lerne Deutsch, denn ich wohne in Berlin. denn = because · aber = but · sondern = but rather (after a negation).",
+  unreg:{r:"Some verbs change their vowel, but only for du and er/sie/es. ich, wir, ihr and sie keep the normal stem.", w:[["e → i / ie","sprechen → du sprichst · lesen → er liest"],["a → ä","fahren → du fährst · schlafen → er schläft"],["au → äu","laufen → er läuft"]], ex:["Sie schläft lange und er liest die Zeitung.","She sleeps in and he reads the newspaper."]},
+  modal:{r:"The modal verb stands in position 2, the other verb goes to the end as an infinitive. ich and er/sie/es share one form without ending.", w:[["können","can, to be able to"],["müssen","must, to have to"],["wollen","to want to"],["dürfen","may, to be allowed to"],["sollen","should, to be supposed to"],["möchten","would like to"]], ex:["Er muss morgen früh arbeiten.","He has to work early tomorrow."]},
+  trenn:{r:"Separable verbs split: the verb is conjugated in position 2 and its prefix goes to the very end of the sentence.", w:[["aufstehen","to get up"],["anrufen","to phone"],["einkaufen","to shop"],["anfangen","to begin"],["mitkommen","to come along"],["ausgehen","to go out"]], ex:["Wir kaufen am Samstag ein.","We do the shopping on Saturday."]},
+  perf:{r:"Perfekt = haben or sein in position 2 + Partizip II at the end. Most verbs take haben; movement and change of state take sein.", w:[["hat gemacht","did, has done"],["hat gesehen","saw, has seen"],["ist gegangen","went (movement)"],["ist eingeschlafen","fell asleep (change of state)"],["ist geblieben","stayed (sein, bleiben, werden take sein)"]], ex:["Sie hat gekocht und dann ist sie ins Bett gegangen.","She cooked and then she went to bed."]},
+  dat:{r:"The dative marks the person something is given to or done for. Also after helfen, danken, gefallen, gehören and es geht.", w:[["dem","the (masculine / neuter dative)"],["der","the (feminine dative)"],["den … -n","the (plural dative)"],["mir / dir","to me / to you"],["ihm / ihr","to him / to her"],["uns / euch / ihnen","to us / you / them"]], ex:["Das Buch gehört meiner Schwester.","The book belongs to my sister."]},
+  prep:{r:"Places: nach for cities and countries, zu for people and places you go to, in for entering a building. Time: um for clock times, am for days, im for months.", w:[["nach","to (cities, countries)"],["zu / zum / zur","to (people, places)"],["in / ins","into"],["um","at (clock time)"],["am","on (day)"],["im","in (month, season)"]], ex:["Um neun gehe ich ins Büro, am Freitag fahre ich nach Wien.","At nine I go to the office, on Friday I'm going to Vienna."]},
+  imp:{r:"Imperative: du-form without du and without -st; ihr-form without ihr; Sie-form = infinitive + Sie.", w:[["Komm!","Come! (du)"],["Kommt!","Come! (ihr)"],["Kommen Sie!","Come! (Sie)"],["Sprich!","Speak! (the vowel change stays)"],["Steh auf!","Get up! (separable verb splits)"]], ex:["Nehmt bitte eure Bücher!","Please take your books! (to several people)"]},
+  konn:{r:"und, aber, oder, denn, sondern join two main clauses. The word order does not change: the verb stays in position 2 in both parts.", w:[["und","and"],["aber","but"],["oder","or"],["denn","because"],["sondern","but rather (after a negation)"]], ex:["Wir bleiben zu Hause, denn es regnet.","We're staying home, because it's raining."]},
   // A2.1
-  prat: "<b>For sein, haben and modal verbs use the Präteritum instead of the Perfekt.</b> sein: ich war · du warst · er war · wir waren · ihr wart · sie waren. haben: ich hatte · du hattest · er hatte · wir hatten. Modals: konnte, musste, wollte, durfte, sollte.",
-  wechs: "<b>an, auf, hinter, in, neben, über, unter, vor, zwischen take the accusative for a movement (Wohin?) and the dative for a position (Wo?).</b> Ich lege das Buch auf den Tisch (wohin → Akk). Das Buch liegt auf dem Tisch (wo → Dat).",
-  poss2: "<b>Possessive articles change like ein/kein in every case.</b> Nominativ: mein Vater, meine Mutter · Akkusativ: meinen Vater · Dativ: meinem Vater, meiner Mutter, meinen Eltern. Ich suche meinen Schlüssel. Sie hilft ihrem Bruder.",
-  komp: "<b>Comparative: adjective + -er (… als). Superlative: am + adjective + -sten, or der/die/das + -ste before a noun.</b> schnell → schneller als → am schnellsten. Short adjectives with a, o, u often take an umlaut: groß → größer → am größten. Irregular: gut → besser → am besten · viel → mehr → am meisten · gern → lieber → am liebsten.",
-  neb2: "<b>After weil and dass the conjugated verb goes to the end of the clause.</b> Ich bleibe zu Hause, weil ich krank bin. Er sagt, dass er später kommt. A comma always separates the two clauses.",
-  refl2: "<b>Reflexive verbs need a pronoun that points back to the subject: mich, dich, sich, uns, euch, sich.</b> Ich freue mich · du ziehst dich an · er wäscht sich. With an extra object the pronoun becomes dative: Ich wasche mir die Hände.",
-  dako: "<b>With geben, schenken, zeigen, erklären … the person is dative and the thing is accusative.</b> Er gibt mir (Dat) das Buch (Akk). Ich schenke ihr (Dat) eine Uhr (Akk). Person first, thing second.",
-  zeit: "<b>am for days and parts of the day · im for months and seasons · um for clock times · seit for something that still continues · vor for 'ago'.</b> am Montag · am Abend · im Sommer · im Mai · um acht Uhr · seit zwei Jahren · vor einer Woche. Years take no preposition: 2020 or im Jahr 2020.",
-  adj1: "<b>After der, die, das the adjective ends in -e in the nominative (and feminine/neuter accusative); everywhere else in -en.</b> der kleine Tisch · die blaue Jacke · das neue Auto · but: den kleinen Tisch, dem kleinen Tisch, die kleinen Tische.",
-  ord: "<b>Ordinal numbers: 1–19 add -te (dritte and siebte are irregular), from 20 add -ste. They take adjective endings.</b> der erste Mai · am dritten Juni (am → dative -en) · der zwanzigste. In writing a dot marks the ordinal: der 3. Juni.",
+  prat:{r:"For sein, haben and the modal verbs use the Präteritum instead of the Perfekt.", w:[["war / waren","was / were"],["hatte / hatten","had"],["konnte","could"],["musste","had to"],["wollte","wanted to"],["durfte","was allowed to"],["sollte","was supposed to"]], ex:["Wir waren gestern im Kino und hatten viel Spaß.","We were at the cinema yesterday and had a lot of fun."]},
+  wechs:{r:"These nine prepositions take the accusative for a movement (Wohin?) and the dative for a position (Wo?).", w:[["an","at, on (a wall)"],["auf","on (top of)"],["in","in, into"],["hinter","behind"],["neben","next to"],["über","above, over"],["unter","under"],["vor","in front of"],["zwischen","between"]], ex:["Ich stelle die Tasse in den Schrank. Jetzt steht sie im Schrank.","I put the cup into the cupboard. Now it is in the cupboard."]},
+  poss2:{r:"Possessive articles change like ein/kein in every case: -en for the masculine accusative, -em / -er / -en in the dative.", w:[["meinen","my (masculine object)"],["meinem","to my (masculine / neuter)"],["meiner","to my (feminine)"],["meinen … -n","to my (plural)"],["ihrem","to her / their (masculine / neuter)"],["seinem","to his (masculine / neuter)"]], ex:["Er zeigt seinem Freund seine neue Wohnung.","He shows his friend his new flat."]},
+  komp:{r:"Comparative: adjective + -er (… als). Superlative: am + adjective + -sten, or der/die/das …-ste before a noun.", w:[["größer als","bigger than"],["am größten","the biggest"],["gut → besser → am besten","good, better, best"],["viel → mehr → am meisten","much, more, most"],["gern → lieber → am liebsten","gladly, rather, most of all"]], ex:["Der Bus ist billiger, aber der Zug ist am schnellsten.","The bus is cheaper, but the train is the fastest."]},
+  neb2:{r:"After weil and dass the conjugated verb goes to the end of the clause. A comma separates the two clauses.", w:[["weil","because"],["dass","that"]], ex:["Ich glaube, dass er heute keine Zeit hat.","I think that he has no time today."]},
+  refl2:{r:"Reflexive verbs need a pronoun that points back to the subject.", w:[["mich","myself"],["dich","yourself"],["sich","himself, herself, themselves"],["uns","ourselves"],["euch","yourselves"],["sich freuen","to be glad"],["sich anziehen","to get dressed"],["sich waschen","to wash oneself"]], ex:["Wir treffen uns um acht vor dem Kino.","We're meeting at eight in front of the cinema."]},
+  dako:{r:"With verbs like geben, schenken, zeigen and erklären the person is dative and the thing is accusative. Person first, thing second.", w:[["geben","to give"],["schenken","to give as a present"],["zeigen","to show"],["erklären","to explain"],["bringen","to bring"],["empfehlen","to recommend"]], ex:["Der Lehrer erklärt den Kindern die Aufgabe.","The teacher explains the task to the children."]},
+  zeit:{r:"am for days and parts of the day, im for months and seasons, um for clock times, seit for something that still continues, vor for 'ago'.", w:[["am Montag","on Monday"],["am Abend","in the evening"],["im Juli","in July"],["im Winter","in winter"],["um acht Uhr","at eight o'clock"],["seit zwei Jahren","for two years (and still)"],["vor einer Woche","a week ago"]], ex:["Seit einem Jahr lerne ich Deutsch, am Dienstag habe ich Kurs.","I've been learning German for a year, on Tuesday I have class."]},
+  adj1:{r:"After der, die, das the adjective ends in -e in the nominative (and feminine / neuter accusative), everywhere else in -en.", w:[["der kleine Tisch","the small table (nominative)"],["die blaue Jacke","the blue jacket"],["das neue Auto","the new car"],["den kleinen Tisch","the small table (accusative)"],["dem kleinen Tisch","(dative)"],["die kleinen Tische","(plural)"]], ex:["Die rote Tasche gefällt mir, aber den grünen Schal nehme ich.","I like the red bag, but I'll take the green scarf."]},
+  ord:{r:"Ordinal numbers: 1–19 add -te (dritte and siebte are irregular), from 20 add -ste. They take adjective endings; in writing a dot marks them.", w:[["der erste","the first"],["der zweite","the second"],["der dritte","the third"],["der siebte","the seventh"],["der zwanzigste","the twentieth"],["am ersten Mai","on the first of May"]], ex:["Mein Geburtstag ist am siebten August.","My birthday is on the seventh of August."]},
   // A2.2
-  wenn: "<b>wenn = whenever / if (repeated or future) · als = when (one single time in the past) · obwohl = although. All three send the verb to the end.</b> Wenn ich Zeit habe, gehe ich schwimmen. Als ich klein war, wohnten wir in Köln. Obwohl es regnet, gehen wir raus.",
-  adj2: "<b>After ein, kein, mein the adjective shows the gender itself: -er, -e, -es. Without any article the adjective takes the ending the article would have.</b> ein guter Plan · eine schöne Wohnung · ein neues Auto · guter Kaffee · kaltes Wasser.",
-  rel1: "<b>The relative pronoun looks like the definite article. Gender and number come from the noun before it, the case from its job inside the relative clause. The verb goes to the end.</b> der Mann, der nebenan wohnt (subject → der) · das Buch, das ich gekauft habe (object → das) · der Mann, den ich kenne (masculine object → den).",
-  k2: "<b>Konjunktiv II for polite requests and wishes: könnte, hätte, wäre, würde + Infinitiv.</b> Könnten Sie mir helfen? Ich hätte gern einen Kaffee. Ich würde gern kommen. For most other verbs use würde + infinitive.",
-  pas1: "<b>Passive present: werden (conjugated) + Partizip II at the end. The thing that is done becomes the subject.</b> Das Formular wird ausgefüllt. Die Briefe werden gebracht. wird for singular, werden for plural.",
-  gen1: "<b>Genitive shows possession: der/das → des + -s on the noun, die → der. Also after wegen, trotz, während.</b> das Auto meines Vaters · die Farbe der Wohnung · wegen des Regens. In speech von + Dativ is common instead: das Auto von meinem Vater.",
-  vpr1: "<b>Many verbs come with a fixed preposition — learn verb + preposition + case as one unit.</b> warten auf + Akk · sich freuen auf/über + Akk · sich interessieren für + Akk · denken an + Akk · sprechen mit + Dat · träumen von + Dat.",
-  zu1: "<b>zu + Infinitiv stands at the end of the clause. um … zu = in order to (same subject) · ohne … zu = without doing.</b> Ich habe vergessen, dich anzurufen (separable verb: zu in the middle). Ich fahre Rad, um Geld zu sparen. Er ging, ohne zu grüßen.",
-  fut1: "<b>Future: werden in position 2 + infinitive at the end.</b> ich werde · du wirst · er wird · wir werden · ihr werdet · sie werden. Morgen werde ich früher aufstehen. For plans the present tense with a time word also works: Morgen fahre ich nach Berlin.",
-  ind1: "<b>Indirect questions are subordinate clauses: keep the question word (wann, wo, warum …) or use ob for yes/no questions; the verb goes to the end.</b> Weißt du, wann der Zug fährt? Ich weiß nicht, ob er kommt.",
+  wenn:{r:"wenn = whenever or if. als = when, for one single time in the past. obwohl = although. All three send the verb to the end.", w:[["wenn","whenever / if"],["als","when (once, in the past)"],["obwohl","although"]], ex:["Als wir in Rom waren, hat es jeden Tag geregnet.","When we were in Rome, it rained every day."]},
+  adj2:{r:"After ein, kein, mein the adjective shows the gender itself: -er, -e, -es. Without any article it takes the ending the article would have.", w:[["ein guter Plan","a good plan (masculine)"],["eine schöne Wohnung","a nice flat (feminine)"],["ein neues Auto","a new car (neuter)"],["guter Kaffee","good coffee (no article)"],["kaltes Wasser","cold water"]], ex:["Wir haben ein kleines Haus mit einem großen Garten.","We have a small house with a big garden."]},
+  rel1:{r:"The relative pronoun looks like the definite article. Gender and number come from the noun before it, the case from its job inside the relative clause. The verb goes to the end.", w:[["der / die / das","who, which (subject)"],["den","whom, which (masculine object)"],["dem / der","to whom (dative)"],["die","who, which (plural)"]], ex:["Das ist die Frau, die neben uns wohnt.","That's the woman who lives next to us."]},
+  k2:{r:"Konjunktiv II makes requests and wishes polite: könnte, hätte, wäre, würde + Infinitiv.", w:[["könnte","could"],["hätte","would have"],["wäre","would be"],["würde … machen","would do"],["möchte","would like"]], ex:["Ich würde gern ein Zimmer reservieren.","I would like to book a room."]},
+  pas1:{r:"Passive present: werden (conjugated) + Partizip II at the end. The thing that is done becomes the subject.", w:[["wird gemacht","is done, is being done"],["werden gemacht","are done (plural)"],["von","by (the doer)"]], ex:["Die Wohnung wird jeden Freitag geputzt.","The flat is cleaned every Friday."]},
+  gen1:{r:"Genitive shows possession: des + -s for der and das, der for die. Also after wegen, trotz, während.", w:[["des Vaters","of the father"],["der Mutter","of the mother"],["des Kindes","of the child"],["wegen","because of"],["trotz","despite"],["während","during"]], ex:["Wegen des Wetters bleibt das Schwimmbad heute zu.","Because of the weather the pool stays closed today."]},
+  vpr1:{r:"Many verbs come with a fixed preposition. Learn verb + preposition + case as one unit.", w:[["warten auf + Akk","to wait for"],["sich freuen auf + Akk","to look forward to"],["sich freuen über + Akk","to be happy about"],["sich interessieren für + Akk","to be interested in"],["denken an + Akk","to think of"],["sprechen mit + Dat","to talk to"],["träumen von + Dat","to dream of"]], ex:["Wir freuen uns auf den Urlaub.","We're looking forward to the holiday."]},
+  zu1:{r:"zu + Infinitiv stands at the end of the clause. um … zu means in order to, ohne … zu means without doing.", w:[["zu + Infinitiv","to (do something)"],["um … zu","in order to"],["ohne … zu","without (doing)"],["anzurufen","to phone (separable verb: zu goes in the middle)"]], ex:["Ich spare Geld, um ein Fahrrad zu kaufen.","I'm saving money in order to buy a bike."]},
+  fut1:{r:"Future: werden in position 2 + infinitive at the end. For plans the present tense with a time word also works.", w:[["ich werde","I will"],["du wirst","you will"],["er wird","he will"],["wir werden","we will"],["ihr werdet","you will"],["sie werden","they will"]], ex:["Nächste Woche werden wir das Haus streichen.","Next week we will paint the house."]},
+  ind1:{r:"Indirect questions are subordinate clauses: keep the question word, or use ob for yes/no questions. The verb goes to the end.", w:[["ob","whether / if"],["wann","when"],["wo","where"],["warum","why"],["wie","how"]], ex:["Kannst du mir sagen, wo der Bahnhof ist?","Can you tell me where the station is?"]},
   // B1.1
-  neb: "<b>weil, dass, obwohl, wenn, ob, damit, bevor, nachdem send the conjugated verb to the end of the clause.</b> Ich nehme den Zug, weil er billiger ist. Compare: denn keeps the verb in position 2 (main clause), and wegen takes a noun in the genitive, not a clause.",
-  kon2: "<b>Konjunktiv II for politeness, wishes, advice and unreal situations: wäre, hätte, könnte, würde + Infinitiv.</b> An deiner Stelle würde ich … · Wenn ich Zeit hätte, … · Könnten Sie …? The umlaut makes the difference: konnte = could (past), könnte = could (polite / unreal).",
-  rel: "<b>The relative pronoun looks like the definite article. Gender and number come from the noun it refers to; the case comes from its job inside the relative clause. Verb at the end.</b> Subject → der/die/das · direct object → den/die/das · dative verb or preposition → dem/der/dem · plural dative → denen. Der Kollege, der mir geholfen hat (subject) · der Vertrag, den ich unterschrieben habe (object) · die Kollegin, mit der ich arbeite.",
-  adj: "<b>The adjective ending shows what the article does not show.</b> After der/die/das: -e in the nominative (and fem./neut. accusative), otherwise -en. After ein/kein/mein: -er (masc.), -e (fem.), -es (neut.) in the nominative; -en for masculine accusative and every dative. No article: the adjective takes the article's ending (guter Kaffee, kaltes Wasser). See the Adjektivendungen table.",
-  vpr: "<b>Verb + fixed preposition — the preposition decides the case.</b> warten auf + Akk · sich interessieren für + Akk · sich freuen auf/über + Akk · teilnehmen an + Dat · sich beschweren bei + Dat. Referring to a thing: da(r) + preposition (darauf). Asking: wo(r) + preposition (worauf?).",
-  wpr: "<b>an, auf, hinter, in, neben, über, unter, vor, zwischen: accusative for a movement (wohin?), dative for a position (wo?).</b> Ich hänge das Bild an die Wand (wohin → Akk). Das Bild hängt an der Wand (wo → Dat).",
-  zu: "<b>zu + Infinitiv at the end of the clause. um … zu (in order to) and ohne … zu need the same subject in both parts; damit is used when the subjects differ.</b> Ich habe vergessen, die Rechnung zu bezahlen. Ich fahre Rad, um Geld zu sparen. Ich erkläre es, damit du es verstehst. Separable verbs: anzurufen.",
-  pas: "<b>Passive = werden + Partizip II. Present: wird gemacht · past: wurde gemacht · Perfekt: ist gemacht worden.</b> Die Rechnung wird heute geschrieben. Das Haus wurde letztes Jahr gedämmt. The doer, if mentioned, comes with von + Dativ.",
-  kom: "<b>Comparative: -er + als. Superlative: am -sten, or der/die/das -ste with an ending before a noun.</b> größer als · am größten · der kürzeste Weg. Umlaut on many short adjectives (groß, alt, jung, kurz, lang). Irregular: gut → besser → am besten · viel → mehr → am meisten · gern → lieber → am liebsten · hoch → höher → am höchsten.",
-  gen: "<b>Genitive: des + -(e)s for masculine and neuter, der for feminine and plural. Required after wegen, trotz, während, statt, aufgrund, innerhalb.</b> das Auto des Nachbarn · die Farbe der Wohnung · wegen des Wetters · trotz der Kälte.",
-  refl: "<b>The reflexive pronoun is accusative (mich, dich, sich, uns, euch, sich) — unless the verb already has a direct object; then it is dative (mir, dir, sich, uns, euch, sich).</b> Ich freue mich auf das Wochenende. Ich habe mir die Wohnung angesehen (die Wohnung is the object → mir).",
-  ind: "<b>Indirect questions: keep the W-word or use ob for yes/no questions, and put the verb at the end.</b> Können Sie mir sagen, wann der Zug fährt? Ich weiß nicht, ob das Büro offen ist.",
+  neb:{r:"These conjunctions send the conjugated verb to the end of the clause. Compare: denn keeps the verb in position 2, and wegen takes a noun, not a clause.", w:[["weil","because"],["dass","that"],["obwohl","although"],["wenn","if / whenever"],["ob","whether"],["damit","so that"],["bevor","before"],["nachdem","after"]], ex:["Wir fahren mit dem Rad, obwohl es kalt ist.","We're cycling although it's cold."]},
+  kon2:{r:"Konjunktiv II for politeness, wishes, advice and unreal situations: wäre, hätte, könnte, würde + Infinitiv. The umlaut makes the difference: konnte = could (past), könnte = could (polite or unreal).", w:[["wäre","would be"],["hätte","would have"],["könnte","could"],["würde … machen","would do"],["sollte","should"],["an deiner Stelle","if I were you"]], ex:["Wenn ich mehr Zeit hätte, würde ich öfter kochen.","If I had more time, I would cook more often."]},
+  rel:{r:"The relative pronoun looks like the definite article. Gender and number come from the noun it refers to, the case from its job inside the relative clause. The verb goes to the end.", w:[["der / die / das","who, which (subject)"],["den","whom, which (masculine object)"],["dem / der / dem","to whom (dative)"],["denen","to whom (plural dative)"],["mit dem / mit der","with whom"]], ex:["Die Nachbarin, der ich geholfen habe, hat mir Kuchen gebracht.","The neighbour I helped brought me cake."]},
+  adj:{r:"The adjective ending shows what the article does not show. After der/die/das: -e or -en. After ein/kein/mein: -er, -e, -es in the nominative, otherwise -en. Without an article the adjective takes the article's own ending.", w:[["der gute Plan","the good plan"],["ein guter Plan","a good plan"],["die gute Idee","the good idea"],["eine gute Idee","a good idea"],["das gute Essen","the good food"],["ein gutes Essen","a good meal"],["mit dem guten Plan","with the good plan (dative: -en)"]], ex:["Sie trägt einen roten Mantel und eine schwarze Tasche.","She's wearing a red coat and a black bag."]},
+  vpr:{r:"Verb + fixed preposition: the preposition decides the case. For things use da(r) + preposition, to ask use wo(r) + preposition.", w:[["warten auf + Akk","to wait for"],["sich interessieren für + Akk","to be interested in"],["sich freuen auf + Akk","to look forward to"],["teilnehmen an + Dat","to take part in"],["sich beschweren bei + Dat","to complain to"],["darauf / worauf?","for it / for what?"]], ex:["Sie nimmt an einem Deutschkurs teil und freut sich darauf.","She's taking part in a German course and is looking forward to it."]},
+  wpr:{r:"an, auf, hinter, in, neben, über, unter, vor, zwischen: accusative for a movement (wohin?), dative for a position (wo?).", w:[["an","at, on (a wall)"],["auf","on"],["in","in / into"],["hinter","behind"],["neben","next to"],["über","above"],["unter","under"],["vor","in front of"],["zwischen","between"]], ex:["Ich stelle die Lampe neben das Sofa. Jetzt steht sie neben dem Sofa.","I put the lamp next to the sofa. Now it stands next to the sofa."]},
+  perf:{r:"Perfekt = haben or sein + Partizip II at the end. The Präteritum is one word and is preferred for sein, haben and modal verbs.", w:[["hat gearbeitet","worked (regular)"],["hat gelesen","read (irregular)"],["ist gefahren","drove (movement takes sein)"],["ist aufgewacht","woke up (change of state)"],["hat studiert","studied (-ieren verbs: no ge-)"],["hat verstanden","understood (inseparable prefix: no ge-)"]], ex:["Gestern habe ich lange geschlafen und bin dann joggen gegangen.","Yesterday I slept in and then went jogging."]},
+  zu:{r:"zu + Infinitiv stands at the end of the clause. um … zu and ohne … zu need the same subject in both parts; damit is used when the subjects differ.", w:[["zu + Infinitiv","to (do something)"],["um … zu","in order to"],["ohne … zu","without (doing)"],["damit","so that (different subject)"],["anstatt … zu","instead of (doing)"]], ex:["Er lernt jeden Abend, um die Prüfung zu bestehen.","He studies every evening in order to pass the exam."]},
+  pas:{r:"Passive = werden + Partizip II. Present: wird gemacht. Past: wurde gemacht. Perfekt: ist gemacht worden. The doer, if named, comes with von.", w:[["wird gemacht","is being done"],["wurde gemacht","was done"],["ist gemacht worden","has been done"],["von + Dat","by"]], ex:["Die Fenster wurden gestern geputzt.","The windows were cleaned yesterday."]},
+  kom:{r:"Comparative: -er + als. Superlative: am -sten, or der/die/das -ste with an ending before a noun. Many short adjectives take an umlaut.", w:[["größer als","bigger than"],["am größten","the biggest"],["der kürzeste Weg","the shortest way"],["gut → besser → am besten","good, better, best"],["viel → mehr → am meisten","much, more, most"],["hoch → höher → am höchsten","high, higher, highest"]], ex:["Dieses Café ist gemütlicher, aber das andere hat den besten Kuchen.","This café is cosier, but the other one has the best cake."]},
+  gen:{r:"Genitive: des + -(e)s for masculine and neuter, der for feminine and plural. Required after wegen, trotz, während, statt, aufgrund, innerhalb.", w:[["des Nachbarn","of the neighbour"],["der Firma","of the company"],["wegen","because of"],["trotz","despite"],["während","during"],["statt","instead of"],["innerhalb","within"]], ex:["Trotz des Regens haben wir den Ausflug gemacht.","Despite the rain we went on the trip."]},
+  refl:{r:"The reflexive pronoun is accusative (mich, dich, sich …) unless the verb already has a direct object. Then it is dative (mir, dir, sich …).", w:[["sich freuen auf","to look forward to"],["sich etwas ansehen","to have a look at something"],["sich die Hände waschen","to wash one's hands"],["sich erinnern an","to remember"],["sich beeilen","to hurry"]], ex:["Ich ziehe mich an und dann putze ich mir die Zähne.","I get dressed and then I brush my teeth."]},
+  ind:{r:"Indirect questions: keep the W-word or use ob for yes/no questions, and put the verb at the end.", w:[["ob","whether"],["wann","when"],["wo","where"],["warum","why"],["wie lange","how long"]], ex:["Weißt du, ob der Supermarkt heute offen ist?","Do you know whether the supermarket is open today?"]},
   // B1.2
-  fut: "<b>Futur I: werden in position 2 + infinitive at the end — for predictions, promises and assumptions.</b> Nächstes Jahr werde ich in Hamburg arbeiten. Das wird schon klappen (assumption). Plans with a time word usually take the present tense instead.",
-  plus: "<b>Plusquamperfekt = hatte/war + Partizip II, for the earlier of two past events — typically after nachdem.</b> Nachdem wir gegessen hatten, sind wir losgefahren. Nachdem er angekommen war, rief er an. Verbs that take sein in the Perfekt take war here.",
-  temp: "<b>Time clauses send the verb to the end: bevor (before) · nachdem (after) · während (while) · seit/seitdem (since) · bis (until) · sobald (as soon as) · solange (as long as).</b> Bevor ich einkaufe, schreibe ich eine Liste. Seitdem ich in Berlin wohne, fahre ich Rad. Wir warten, bis der Regen aufhört.",
-  kaus: "<b>Reason and result: weil/da → verb at the end · deshalb/deswegen/daher are adverbs → the verb follows them directly · sodass introduces the result → verb at the end · aufgrund/wegen + noun in the genitive.</b> Es regnete, deshalb blieben wir zu Hause. Er verschlief, sodass er zu spät kam.",
-  k2v: "<b>Unreal past: hätte/wäre + Partizip II — in both the wenn-clause and the main clause.</b> Wenn ich das gewusst hätte, hätte ich dir geholfen. Er wäre gern mitgekommen (mitkommen → sein → wäre). With modal verbs: hätte … können / müssen.",
-  pasm: "<b>Passive with a modal verb: the modal stands in position 2, Partizip II + werden at the end.</b> Der Antrag muss bis Freitag eingereicht werden. Das Formular kann online ausgefüllt werden. Past: musste … eingereicht werden.",
-  ndek: "<b>n-nouns are masculine nouns that add -(e)n in every case except the nominative singular.</b> der Kollege → den/dem/des Kollegen · der Student → den Studenten · der Nachbar → den Nachbarn · der Herr → den Herrn. Typical: masculine nouns for people ending in -e, plus Mensch, Herr, Nachbar, Bauer.",
-  adjp: "<b>Some adjectives come with a fixed preposition — learn adjective + preposition + case.</b> stolz auf + Akk · zufrieden mit + Dat · interessiert an + Dat · verantwortlich für + Akk · abhängig von + Dat · begeistert von + Dat · verliebt in + Akk.",
-  posv: "<b>Verb pairs: the weak verb puts something somewhere (movement → accusative), the strong verb says where it is (position → dative).</b> legen / liegen · stellen / stehen · setzen / sitzen · hängen / hängen. Ich lege das Buch auf den Tisch. Das Buch liegt auf dem Tisch.",
-  zwei: "<b>Two-part connectors link two elements of the same kind.</b> sowohl … als auch = both … and · nicht nur … sondern auch = not only … but also · weder … noch = neither … nor · entweder … oder = either … or · zwar … aber = admittedly … but · je … desto = the … the.",
-  relw: "<b>was after alles, nichts, etwas, viel, wenig, das and after a whole sentence · wo for places · wo(r) + preposition for things.</b> Das ist alles, was ich weiß. Er kam zu spät, was mich ärgerte. Die Stadt, wo ich geboren bin. Das, worüber wir sprachen.",
-  nvv: "<b>Noun–verb combinations are fixed pairs: the noun carries the meaning, the verb is set. Learn them as one unit.</b> eine Entscheidung treffen · einen Vorschlag machen · eine Frage stellen · Kritik üben · Rücksicht nehmen · Bescheid geben. Not: eine Entscheidung machen.",
-  pers: "<b>Ways to avoid the passive: man + verb · sich lassen + Infinitiv (can be done) · sein + zu + Infinitiv (must / can be done) · adjectives ending in -bar.</b> Man kann das online ausfüllen. Das Problem lässt sich lösen. Die Aufgabe ist bis Freitag zu erledigen. Das ist machbar.",
-  lass: "<b>lassen + Infinitiv = to have something done (by someone else) or to let; in the Perfekt lassen stays an infinitive: hat … machen lassen. brauchen nicht / nur + zu + Infinitiv = don't need to / only need to.</b> Ich lasse mir die Haare schneiden. Er hat das Auto reparieren lassen. Du brauchst nicht zu kommen.",
-  partn: "<b>Partizip I (-end) as an adjective = happening now (active). Partizip II as an adjective = already done (passive). Adjectives after etwas, nichts, viel become nouns: capital letter + -es.</b> die spielenden Kinder · das gekochte Essen · etwas Neues · nichts Besonderes.",
-  wost: "<b>Middle-field order: time before manner before place (TeKaMoLo) · dative noun before accusative noun · pronouns before nouns.</b> Ich fahre morgen mit dem Zug nach Berlin. Er hat seiner Frau ein Buch geschenkt. Er hat es ihr geschenkt (two pronouns: accusative first).",
+  fut:{r:"Futur I: werden in position 2 + infinitive at the end. Used for predictions, promises and assumptions.", w:[["ich werde … machen","I will do"],["wohl / bestimmt / sicher","probably / surely (an assumption)"]], ex:["Im Sommer werden wir nach Portugal reisen.","In summer we will travel to Portugal."]},
+  plus:{r:"Plusquamperfekt = hatte or war + Partizip II, for the earlier of two past events. Typical after nachdem.", w:[["hatte gemacht","had done"],["war gegangen","had gone"],["nachdem","after"],["bevor","before"]], ex:["Nachdem ich die Prüfung bestanden hatte, habe ich gefeiert.","After I had passed the exam, I celebrated."]},
+  temp:{r:"Time clauses send the verb to the end.", w:[["bevor","before"],["nachdem","after"],["während","while"],["seit / seitdem","since (still going on)"],["bis","until"],["sobald","as soon as"],["solange","as long as"]], ex:["Wir warten hier, bis der Regen aufhört.","We'll wait here until the rain stops."]},
+  kaus:{r:"Reason and result: weil and da send the verb to the end. deshalb, deswegen, daher are adverbs, so the verb follows them. sodass gives the result with the verb at the end. wegen and aufgrund take a noun in the genitive.", w:[["weil / da","because"],["deshalb / deswegen / daher","therefore"],["sodass","so that (result)"],["wegen / aufgrund + Gen","because of"]], ex:["Der Zug hatte Verspätung, deshalb kamen wir zu spät.","The train was late, therefore we arrived late."]},
+  k2v:{r:"Unreal past: hätte or wäre + Partizip II, in both the wenn-clause and the main clause.", w:[["hätte gemacht","would have done"],["wäre gekommen","would have come"],["hätte … können","could have"],["hätte … sollen","should have"]], ex:["Wenn du angerufen hättest, wären wir gekommen.","If you had called, we would have come."]},
+  pasm:{r:"Passive with a modal verb: the modal stands in position 2, Partizip II + werden at the end.", w:[["muss gemacht werden","must be done"],["kann gemacht werden","can be done"],["soll gemacht werden","is supposed to be done"],["musste gemacht werden","had to be done"]], ex:["Die Rechnung muss bis Montag bezahlt werden.","The bill must be paid by Monday."]},
+  ndek:{r:"n-nouns are masculine nouns that add -(e)n in every case except the nominative singular.", w:[["der Kollege → den Kollegen","the colleague"],["der Student → den Studenten","the student"],["der Nachbar → den Nachbarn","the neighbour"],["der Herr → den Herrn","the gentleman"],["der Mensch → den Menschen","the person"],["der Junge → den Jungen","the boy"]], ex:["Wir haben dem neuen Kollegen alles gezeigt.","We showed the new colleague everything."]},
+  adjp:{r:"Some adjectives come with a fixed preposition. Learn adjective + preposition + case.", w:[["stolz auf + Akk","proud of"],["zufrieden mit + Dat","satisfied with"],["interessiert an + Dat","interested in"],["verantwortlich für + Akk","responsible for"],["abhängig von + Dat","dependent on"],["begeistert von + Dat","enthusiastic about"],["verliebt in + Akk","in love with"]], ex:["Sie ist verantwortlich für das Projekt und stolz auf ihr Team.","She is responsible for the project and proud of her team."]},
+  posv:{r:"Verb pairs: the weak verb puts something somewhere (movement, accusative), the strong verb says where it is (position, dative).", w:[["legen / liegen","to lay down / to lie"],["stellen / stehen","to stand something up / to stand"],["setzen / sitzen","to set / to sit"],["hängen / hängen","to hang up / to hang"]], ex:["Ich stelle die Vase auf den Tisch. Die Vase steht auf dem Tisch.","I put the vase on the table. The vase stands on the table."]},
+  zwei:{r:"Two-part connectors link two elements of the same kind.", w:[["sowohl … als auch","both … and"],["nicht nur … sondern auch","not only … but also"],["weder … noch","neither … nor"],["entweder … oder","either … or"],["zwar … aber","admittedly … but"],["je … desto","the … the"]], ex:["Entweder fahren wir ans Meer oder in die Berge.","Either we go to the sea or to the mountains."]},
+  relw:{r:"was after alles, nichts, etwas, viel, wenig, das and after a whole sentence. wo for places. wo(r) + preposition for things.", w:[["alles, was","everything that"],["nichts, was","nothing that"],["etwas, was","something that"],["da, wo","there where"],["worüber / wofür","about which / for which"]], ex:["Es gibt nichts, was ich lieber tue als lesen.","There's nothing I'd rather do than read."]},
+  nvv:{r:"Noun–verb combinations are fixed pairs: the noun carries the meaning, the verb is set. Learn them as one unit.", w:[["eine Entscheidung treffen","to make a decision"],["einen Vorschlag machen","to make a suggestion"],["eine Frage stellen","to ask a question"],["Kritik üben","to criticise"],["Rücksicht nehmen","to be considerate"],["Bescheid geben","to let someone know"]], ex:["Darf ich Ihnen eine Frage stellen?","May I ask you a question?"]},
+  pers:{r:"Ways to avoid the passive: man + verb, sich lassen + Infinitiv, sein + zu + Infinitiv, or adjectives ending in -bar.", w:[["man kann","one can, you can"],["lässt sich machen","can be done"],["ist zu machen","must be done, can be done"],["machbar","doable"]], ex:["Das Fenster lässt sich nicht mehr öffnen.","The window can't be opened any more."]},
+  lass:{r:"lassen + Infinitiv = to have something done, or to let. In the Perfekt lassen stays an infinitive. brauchen nicht / nur + zu + Infinitiv = don't need to / only need to.", w:[["etwas machen lassen","to have something done"],["jemanden gehen lassen","to let someone go"],["hat … reparieren lassen","had … repaired"],["nicht zu … brauchen","not to need to"],["nur zu … brauchen","to only need to"]], ex:["Wir lassen das Auto in der Werkstatt reparieren.","We're having the car repaired at the garage."]},
+  partn:{r:"Partizip I (-end) as an adjective = happening now. Partizip II as an adjective = already done. Adjectives after etwas, nichts, viel become nouns with a capital letter and -es.", w:[["die spielenden Kinder","the playing children"],["das gekochte Essen","the cooked food"],["die geöffnete Tür","the opened door"],["etwas Neues","something new"],["nichts Besonderes","nothing special"]], ex:["Der schlafende Hund liegt neben dem geöffneten Fenster.","The sleeping dog lies next to the opened window."]},
+  wost:{r:"Middle-field order: time before manner before place (TeKaMoLo). Dative noun before accusative noun. Pronouns before nouns.", w:[["wann → wie → wo","time → manner → place"],["Dativ vor Akkusativ","dative before accusative (two nouns)"],["Pronomen zuerst","pronouns first"]], ex:["Ich schicke meiner Tante heute per Post ein Paket.","I'm sending my aunt a parcel by post today."]},
   // B2.1
-  konj1: "<b>Indirect speech uses Konjunktiv I: verb stem + -e (er sage, er habe, er könne). sein is irregular: ich sei, du seist, er sei, wir seien.</b> Er sagte, er sei krank. Sie erklärte, sie habe keine Zeit. If Konjunktiv I looks like the indicative (wir haben), use Konjunktiv II instead (wir hätten).",
-  part1: "<b>Partizip I (infinitive + d) = active and at the same time. Partizip II = passive or completed. Both take normal adjective endings.</b> die lachenden Kinder (they are laughing) · das gekochte Essen (it has been cooked) · der geöffnete Brief · die steigenden Preise.",
-  nomi: "<b>Turning a clause into a noun phrase: weil → wegen + Gen · als/wenn (time) → bei + Dat · obwohl → trotz + Gen · damit / um zu → zu / für · nachdem → nach + Dat · bevor → vor + Dat.</b> Weil es regnete → Wegen des Regens. Als ich ankam → Bei meiner Ankunft.",
-  modsub: "<b>Modal verbs can express the speaker's judgement: muss = almost certain · dürfte = probably · könnte = possibly · soll = other people claim it · will = the person claims it.</b> Er muss krank sein (I'm sure). Sie soll im Ausland leben (people say). Er will nichts gewusst haben (he claims).",
-  fut2: "<b>Futur II = werden + Partizip II + haben/sein: something will be finished by a certain time, or a guess about the past.</b> Bis morgen werde ich den Bericht geschrieben haben. Er wird den Zug verpasst haben (probably missed it). haben or sein as in the Perfekt.",
-  konz: "<b>Contrast and concession: obwohl / obgleich → verb at the end · dennoch, trotzdem, allerdings, jedoch are adverbs → verb follows · zwar … aber · trotz + Gen · hingegen / dagegen = on the other hand.</b> Es regnete. Dennoch gingen wir spazieren. Der Plan ist gut, allerdings zu teuer.",
-  prad: "<b>Prepositional adverbs replace preposition + thing: da(r) + preposition in statements (darauf, damit, davon), wo(r) + preposition in questions (worauf?, womit?). For people use preposition + pronoun instead.</b> Ich warte darauf. Worüber habt ihr gesprochen? Ich warte auf ihn (person).",
-  ers: "<b>Passive substitutes: -bar (lösbar = can be solved) · sich lassen + Infinitiv (lässt sich lesen) · sein + zu + Infinitiv (ist zu erledigen = must / can be done) · -lich (verständlich) · man.</b> Das Problem ist leicht lösbar. Der Text lässt sich gut lesen. Die Aufgabe ist bis Freitag zu erledigen.",
-  relp: "<b>Relative clause with a preposition: preposition + relative pronoun in the case the preposition demands. For things also wo(r) + preposition, for places wo.</b> der Kollege, mit dem ich arbeite (mit → Dat) · das Thema, über das wir sprachen (über → Akk) · die Stadt, in der / wo ich wohne.",
-  fest: "<b>Verbs with a fixed preposition: the preposition has no meaning of its own, so learn verb + preposition + case.</b> hinweisen auf + Akk · zweifeln an + Dat · sich beziehen auf + Akk · verzichten auf + Akk · bestehen aus + Dat · sich beschäftigen mit + Dat · abhängen von + Dat · leiden unter + Dat.",
+  konj1:{r:"Indirect speech uses Konjunktiv I: verb stem + -e (er sage, er habe, er könne). sein is irregular: er sei, sie seien. If Konjunktiv I looks like the indicative, use Konjunktiv II instead.", w:[["er sei","he is (reported)"],["er habe","he has (reported)"],["er könne","he can (reported)"],["er werde","he will (reported)"],["sie hätten","they have (Konjunktiv II fallback)"]], ex:["Der Minister sagte, er habe keine Zeit für ein Interview.","The minister said he had no time for an interview."]},
+  part1:{r:"Partizip I (infinitive + d) = active and at the same time. Partizip II = passive or completed. Both take normal adjective endings.", w:[["lachend","laughing"],["steigend","rising"],["gekocht","cooked"],["geöffnet","opened"],["geschrieben","written"]], ex:["Die wartenden Fahrgäste lasen die ausgehängten Fahrpläne.","The waiting passengers read the posted timetables."]},
+  nomi:{r:"A clause can become a noun phrase with a preposition.", w:[["weil → wegen + Gen","because → because of"],["als / wenn → bei + Dat","when → at, on"],["obwohl → trotz + Gen","although → despite"],["nachdem → nach + Dat","after → after"],["bevor → vor + Dat","before → before"],["während → während + Gen","while → during"]], ex:["Bei der Ankunft am Flughafen wurde er abgeholt.","On arrival at the airport he was picked up."]},
+  modsub:{r:"Modal verbs can express the speaker's judgement instead of ability or duty.", w:[["muss","almost certainly (I'm sure)"],["dürfte","probably"],["könnte","possibly"],["soll","other people claim"],["will","the person claims"],["mag","may (concession)"]], ex:["Das Licht ist aus, sie dürften schon schlafen.","The light is off, they're probably asleep already."]},
+  fut2:{r:"Futur II = werden + Partizip II + haben or sein: something will be finished by a certain time, or a guess about the past.", w:[["wird gemacht haben","will have done"],["wird gegangen sein","will have gone"],["bis dann","by then"],["wohl","probably"]], ex:["Bis Freitag werden wir den Umzug erledigt haben.","By Friday we will have finished the move."]},
+  konz:{r:"Contrast and concession: obwohl and obgleich send the verb to the end. dennoch, trotzdem, allerdings, jedoch are adverbs, so the verb follows them. trotz takes the genitive.", w:[["obwohl / obgleich","although"],["dennoch / trotzdem","nevertheless"],["allerdings / jedoch","however"],["zwar … aber","admittedly … but"],["trotz + Gen","despite"],["hingegen / dagegen","on the other hand"]], ex:["Das Angebot ist günstig, jedoch nur bis Sonntag gültig.","The offer is cheap, however only valid until Sunday."]},
+  prad:{r:"Prepositional adverbs replace preposition + thing: da(r) + preposition in statements, wo(r) + preposition in questions. For people use preposition + pronoun.", w:[["darauf","on it, for it"],["damit","with it"],["davon","of it"],["worauf?","on what?"],["womit?","with what?"],["auf ihn / mit ihr","for him / with her (people)"]], ex:["Womit hast du das bezahlt? — Damit, mit der Karte.","What did you pay with? — With that, with the card."]},
+  ers:{r:"Passive substitutes: -bar, sich lassen + Infinitiv, sein + zu + Infinitiv, -lich, or man.", w:[["lösbar","solvable"],["lässt sich lesen","can be read"],["ist zu erledigen","is to be done"],["verständlich","understandable"],["man macht","one does"]], ex:["Der Vertrag ist bis Ende des Monats zu unterschreiben.","The contract is to be signed by the end of the month."]},
+  relp:{r:"Relative clause with a preposition: preposition + relative pronoun in the case the preposition demands. For things also wo(r) + preposition, for places wo.", w:[["mit dem / mit der","with whom"],["über den / über die","about whom"],["in dem / wo","in which, where"],["worüber","about which"],["wofür","for which"]], ex:["Das Café, in dem wir uns getroffen haben, gibt es nicht mehr.","The café where we met doesn't exist any more."]},
+  fest:{r:"Verbs with a fixed preposition: the preposition has no meaning of its own, so learn verb + preposition + case.", w:[["hinweisen auf + Akk","to point out"],["zweifeln an + Dat","to doubt"],["sich beziehen auf + Akk","to refer to"],["verzichten auf + Akk","to do without"],["bestehen aus + Dat","to consist of"],["sich beschäftigen mit + Dat","to deal with"],["abhängen von + Dat","to depend on"],["leiden unter + Dat","to suffer from"]], ex:["Der Erfolg hängt von der Vorbereitung ab.","Success depends on the preparation."]},
   // B2.2
-  irreal: "<b>Unreal comparison: als ob / als wenn + Konjunktiv II with the verb at the end — or als + Konjunktiv II with the verb right after als.</b> Er tut so, als ob er alles wüsste. = Er tut so, als wüsste er alles. Sie sieht aus, als ob sie geweint hätte.",
-  modsatz: "<b>Manner clauses: indem = by doing (the method) · dadurch, dass = by the fact that · ohne dass / ohne … zu = without · anstatt dass / anstatt … zu = instead of.</b> Man spart Energie, indem man weniger heizt. Er ging, ohne dass er sich verabschiedet hätte. Er redet, anstatt zu handeln.",
-  finkon: "<b>Purpose: um … zu (same subject) or damit (different subjects). Result: sodass (verb at the end) or so … dass. zu + adjective … als dass = too … for.</b> Ich rufe an, um den Termin zu bestätigen. Ich erkläre es dir, damit du es verstehst. Es war zu spät, als dass wir noch hätten gehen können.",
-  temp2: "<b>Fine time distinctions: kaum dass = hardly … when · sobald = as soon as · solange = as long as · sooft = whenever · seit(dem) = since (still going on) · bis = until · ehe = before.</b> Kaum dass wir angekommen waren, begann es zu regnen. Seit ich hier arbeite, hat sich viel verändert.",
-  genprap: "<b>Formal prepositions with the genitive: aufgrund (because of) · mittels (by means of) · hinsichtlich (regarding) · infolge (as a result of) · anlässlich (on the occasion of) · zugunsten (in favour of) · plus trotz, während, wegen, statt.</b> Aufgrund der hohen Kosten wurde das Projekt gestoppt. Mittels eines Programms.",
-  fvg: "<b>A Funktionsverbgefüge is a set noun + a 'light' verb that together mean one simple verb. The noun carries the meaning; verb and preposition are fixed.</b> in Frage stellen = anzweifeln · zur Verfügung stehen = verfügbar sein · in Anspruch nehmen = nutzen · zum Ausdruck bringen = ausdrücken · in Betracht ziehen = erwägen.",
-  mittel: "<b>Middle-field order: pronouns before nouns · two nouns → dative before accusative · two pronouns → accusative before dative · pronouns before time and place.</b> Ich habe ihm gestern die Unterlagen geschickt. Ich habe es ihm geschickt. Ich habe sie ihm gestern gegeben.",
-  neg2: "<b>kein for a noun without article or with ein · nicht for verbs, adjectives, adverbs and nouns with der/die/das or a possessive · weder … noch for two things. nicht stands before the part it negates, or at the end for the whole sentence.</b> Ich habe keine Zeit. Das Buch gefällt mir nicht. Das ist nicht mein Buch. Weder Zeit noch Lust.",
-  adjprap: "<b>Adjectives with a fixed preposition and case — learn the three together.</b> überzeugt von + Dat · fähig zu + Dat · abhängig von + Dat · verantwortlich für + Akk · interessiert an + Dat · stolz auf + Akk · zufrieden mit + Dat · begeistert von + Dat · bereit zu + Dat.",
-  konjrede: "<b>Reported speech about the past: Konjunktiv I of haben/sein + Partizip II — er habe gemacht, sie sei abgereist. Future: er werde kommen. If Konjunktiv I is not distinct, switch to Konjunktiv II (sie hätten gemacht).</b> Er sagte, er habe das nicht gewusst. Sie erklärte, sie sei früher abgereist."
+  irreal:{r:"Unreal comparison: als ob or als wenn + Konjunktiv II with the verb at the end, or als + Konjunktiv II with the verb right after als.", w:[["als ob","as if"],["als wenn","as if"],["als wäre / als hätte","as if (verb directly after als)"]], ex:["Er redet, als wäre er der Chef.","He talks as if he were the boss."]},
+  modsatz:{r:"Manner clauses say how something happens, or what does not happen.", w:[["indem","by (doing)"],["dadurch, dass","by the fact that"],["ohne dass / ohne … zu","without (doing)"],["anstatt dass / anstatt … zu","instead of (doing)"]], ex:["Sie verbesserte ihr Deutsch, indem sie jeden Tag las.","She improved her German by reading every day."]},
+  finkon:{r:"Purpose: um … zu with the same subject, damit with different subjects. Result: sodass or so … dass. zu + adjective … als dass = too … for.", w:[["um … zu","in order to"],["damit","so that (purpose)"],["sodass","so that (result)"],["so …, dass","so … that"],["zu …, als dass","too … for"]], ex:["Sie sprach so leise, dass niemand sie verstand.","She spoke so quietly that nobody understood her."]},
+  temp2:{r:"Fine time distinctions between clauses.", w:[["kaum dass","hardly … when"],["sobald","as soon as"],["solange","as long as"],["sooft","whenever"],["seit / seitdem","since (still going on)"],["bis","until"],["ehe","before"]], ex:["Sobald die Unterlagen da sind, melden wir uns.","As soon as the documents arrive, we'll get in touch."]},
+  genprap:{r:"Formal prepositions take the genitive.", w:[["aufgrund","because of"],["mittels","by means of"],["hinsichtlich","regarding"],["infolge","as a result of"],["anlässlich","on the occasion of"],["zugunsten","in favour of"],["trotz / während / wegen / statt","despite / during / because of / instead of"]], ex:["Infolge des Sturms fielen mehrere Züge aus.","As a result of the storm several trains were cancelled."]},
+  fvg:{r:"A Funktionsverbgefüge is a set noun + a light verb that together mean one simple verb. Noun, verb and preposition are fixed.", w:[["in Frage stellen","to question"],["zur Verfügung stehen","to be available"],["in Anspruch nehmen","to make use of"],["zum Ausdruck bringen","to express"],["in Betracht ziehen","to consider"],["eine Rolle spielen","to play a role"]], ex:["Der Preis spielt bei dieser Entscheidung keine Rolle.","Price plays no role in this decision."]},
+  mittel:{r:"Middle-field order: pronouns before nouns. Two nouns: dative before accusative. Two pronouns: accusative before dative. Pronouns before time and place.", w:[["ihm das Buch","to him the book (dative noun first)"],["es ihm","it to him (accusative pronoun first)"],["ihm gestern","pronoun before the time word"]], ex:["Hast du sie ihr schon gegeben? — Ja, ich habe sie ihr gestern gegeben.","Have you given it to her yet? — Yes, I gave it to her yesterday."]},
+  neg2:{r:"kein for a noun without article or with ein. nicht for verbs, adjectives, adverbs and nouns with der/die/das or a possessive. weder … noch for two things. nicht stands before the part it negates, or at the end for the whole sentence.", w:[["kein / keine","no, not a"],["nicht","not"],["weder … noch","neither … nor"],["nicht mehr","no longer"],["noch nicht","not yet"],["gar nicht","not at all"]], ex:["Er hat noch nicht angerufen und auch keine Nachricht geschickt.","He hasn't called yet and hasn't sent a message either."]},
+  adjprap:{r:"Adjectives with a fixed preposition and case: learn the three together.", w:[["überzeugt von + Dat","convinced of"],["fähig zu + Dat","capable of"],["abhängig von + Dat","dependent on"],["verantwortlich für + Akk","responsible for"],["interessiert an + Dat","interested in"],["stolz auf + Akk","proud of"],["zufrieden mit + Dat","satisfied with"],["bereit zu + Dat","ready for"]], ex:["Wir sind von der Qualität überzeugt und zur Zusammenarbeit bereit.","We're convinced of the quality and ready to cooperate."]},
+  konjrede:{r:"Reported speech about the past uses Konjunktiv I of haben or sein + Partizip II. The future uses werde + Infinitiv. If Konjunktiv I is not distinct, switch to Konjunktiv II.", w:[["er habe gemacht","he had done (reported)"],["sie sei gekommen","she had come (reported)"],["er werde kommen","he would come (reported)"],["sie hätten gemacht","they had done (Konjunktiv II fallback)"]], ex:["Die Zeugin sagte, sie habe den Unfall genau gesehen.","The witness said she had seen the accident clearly."]}
 };
 
 /* =====================================================================
@@ -6193,35 +6212,45 @@ function fillGap(g){
 }
 function tableHTML(key){
   const T = TABLES[key]; if(!T) return "";
-  return `<div class="sh-block">
+  // tables with long cell text need the full width; compact ones may share a row
+  const wide = T.rows.some(r => r.some(c => c.length > 14));
+  return `<div class="sh-block${wide ? " wide" : ""}">
     <h4>${esc(T.t)}</h4>
-    <table class="sh-table grid">
+    <table class="sh-table ref">
       <tr>${T.head.map(x=>`<th>${esc(x)}</th>`).join("")}</tr>
       ${T.rows.map(r=>`<tr>${r.map((c,i)=>`<td${i===0?' class="rowhead"':''}>${esc(c)}</td>`).join("")}</tr>`).join("")}
     </table>
   </div>`;
 }
-function topicBlockHTML(topicId, skipId){
-  // a grammar topic with two worked examples and its rule; skipId hides the card currently being asked
+function ruleHTML(topicId, withExample){
+  // the rule in one sentence, the key words with their English meaning, optionally one translated example
+  const R = RULES[topicId]; if(!R) return "";
+  const words = R.w && R.w.length
+    ? `<div class="words">${R.w.map(([d,e]) => `<span><b>${esc(d)}</b>${esc(e)}</span>`).join("")}</div>` : "";
+  const ex = withExample && R.ex
+    ? `<p class="ex">${esc(R.ex[0])}</p><p class="ex-en">${esc(R.ex[1])}</p>` : "";
+  return `<p class="rule"><b>${esc(R.r)}</b></p>${words}${ex}`;
+}
+function topicBlockHTML(topicId, skipId, withDrills){
+  // a grammar topic: rule, words, example — plus two drill sentences on the Spickzettel; skipId hides the card being asked
   const t = GTOPICS.find(x => x[0] === topicId) || [topicId, "Grammatik", ""];
   const items = GRAMMAR.map((g,i) => [g, CV + "|g" + i])
     .filter(([g,id]) => g[0] === topicId && id !== skipId).map(([g]) => g);
-  const shown = items.slice(0,2).map(g => `<p class="ex">${fillGap(g)}</p>`).join("");
-  const rule = RULES[topicId] || (items[0] ? items[0][4] : "");
+  const body = RULES[topicId] ? ruleHTML(topicId, true) : `<p class="rule">${items[0] ? items[0][4] : ""}</p>`;
+  const drills = withDrills ? items.slice(0,2).map(g => `<p class="ex drill">${fillGap(g)}</p>`).join("") : "";
   return `<div class="sh-block">
     <h4>${esc(t[1])}<span>${esc(t[2])}</span></h4>
-    ${shown}
-    <p class="rule">${rule}</p>
+    ${body}${drills}
   </div>`;
 }
 function sheetHTML(topicId, skipId){
   // the reference panel on a grammar card: rule first, matching tables, the rest of the level folded away
   const own = SHEET_FOR[topicId] || [];
   const rest = (LEVEL_TABLES[CV] || []).filter(k => !own.includes(k));
-  let html = topicBlockHTML(topicId, skipId)
-    + own.map(tableHTML).join("")
+  let html = topicBlockHTML(topicId, skipId, false)
+    + `<div class="tables">${own.map(tableHTML).join("")}</div>`
     + (rest.length ? `<details class="guide"><summary>Alle Tabellen dieser Stufe<span>${rest.length}</span></summary>
-        <div class="guide-body">${rest.map(tableHTML).join("")}</div></details>` : "");
+        <div class="guide-body"><div class="tables">${rest.map(tableHTML).join("")}</div></div></details>` : "");
   // never give the current answer away: wherever the panel quotes this exact sentence, show it with its gap
   const cur = skipId ? GRAMMAR[idx(skipId)] : null;
   if(cur){ const full = cur[1].replace("___", cur[3]);
@@ -6233,7 +6262,7 @@ function renderSheet(){
   const tables = (LEVEL_TABLES[CV] || []).map(tableHTML).join("");
 
   // grammar: every topic with two worked examples and the rule
-  const gram = GTOPICS.map(t => topicBlockHTML(t[0])).join("");
+  const gram = GTOPICS.map(t => topicBlockHTML(t[0], null, true)).join("");
 
   // verbs: the full table
   const verbs = VERBS.map(v =>
@@ -6346,14 +6375,8 @@ function renderStats(){
          <button class="btn ghost" id="signup">Konto erstellen</button>
        </div>
        <p class="note" id="authmsg"></p>`}
-  <div class="divider"></div>
-
-  <p class="eyebrow">Sicherung${P.lastBackup ? " · zuletzt vor " + (DAY()-P.lastBackup) + " Tagen" : ""}</p>
-  <p class="note">Der Fortschritt liegt in diesem Browser. Wenn du die Browserdaten löschst oder die App auf einem anderen Gerät öffnest, speichere vorher eine Sicherung und lade sie dort.</p>
-  <div class="actions">
-    <button class="btn ghost" id="exp">Sicherung speichern</button>
-    <button class="btn ghost" id="imp">Sicherung laden</button>
-  </div>
+  <p class="note" style="margin-top:16px">Zusätzlich als Datei${P.lastBackup ? " · zuletzt vor " + (DAY()-P.lastBackup) + " Tagen" : ""}:
+    <button class="tiny" id="exp">Sicherung speichern</button> · <button class="tiny" id="imp">Sicherung laden</button></p>
   <input type="file" id="file" accept="application/json" class="hidden">
   <div class="divider"></div>
   <div class="actions"><button class="btn ghost" id="reset">Fortschritt zurücksetzen</button></div>

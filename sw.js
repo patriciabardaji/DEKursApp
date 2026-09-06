@@ -1,4 +1,4 @@
-const CACHE = "dekurs-v46";
+const CACHE = "dekurs-v47";
 const CORE  = ["./", "./index.html"];                       // must be cached
 const EXTRA = ["./manifest.webmanifest", "./icon-192.png",  // nice to have
                "./icon-512.png", "./apple-touch-icon.png"];

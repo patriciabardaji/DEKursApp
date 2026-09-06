@@ -38,7 +38,12 @@ const wrongOpt = id => [...d.querySelectorAll(".opt")].find(x => x.dataset.v !==
      `panel shows ${box.querySelectorAll(".sh-table").length} tables (mapped ${mapped.length}, rest folded: ${box.querySelector("details") ? "yes" : "no"})`);
   const g1 = G()[IDX(id1)];
   ok(!box.textContent.includes(g1[1].replace("___", g1[3])), "panel does not show the current question's own sentence");
-  ok(box.querySelector(".sh-block .rule b") && box.querySelector(".sh-block .rule b").innerHTML === ev("RULES")[topic1].match(/<b>(.*?)<\/b>/)[1], "panel's first block is the topic's clear rule (headline matches)");
+  ok(box.querySelector(".sh-block .rule b") && box.querySelector(".sh-block .rule b").textContent === ev("RULES")[topic1].r, "panel's first block is the topic's rule");
+  ok(box.querySelectorAll(".sh-block .words span").length === ev("RULES")[topic1].w.length && /·|\w/.test(box.querySelector(".words b").textContent), `panel lists the topic's ${ev("RULES")[topic1].w.length} key words with English`);
+  ok(!!box.querySelector(".sh-block .ex") && !!box.querySelector(".sh-block .ex-en") && !box.querySelector(".ex.drill"), "panel shows one translated example and no untranslated drill sentences");
+  ok(!!box.querySelector(".tables .sh-table.ref"), "tables sit in the responsive .tables grid and no longer use the .grid class");
+  { w.useCourse("B1.1"); const h = w.sheetHTML("rel", "B1.1|g999");
+    ok(/sh-block wide">\s*<h4>Konnektoren/.test(h) && !/sh-block wide">\s*<h4>Artikel und F/.test(h), "long-text tables are marked wide, compact ones are not"); }
   $("#shbtn").click();
   ok(!$("#shbox").classList.contains("hidden") && $("#shbtn").dataset.on === "1", "§ click opens panel");
   ok(S.peeked === true, "peeking before answering sets S.peeked");
@@ -74,21 +79,31 @@ const wrongOpt = id => [...d.querySelectorAll(".opt")].find(x => x.dataset.v !==
   clickOpt(wrongOpt(id4));
   ok(!$("#verd .why"), "no 'bleibt in Kasten' note on a wrong answer");
   const rule4 = ev("RULES")[G()[IDX(id4)][0]];
-  ok(!!$("#verd .regel") && $("#verd .regel").innerHTML === rule4, "wrong answer shows the topic's clear rule under the explanation");
+  ok(!!$("#verd .regel .rule b") && $("#verd .regel .rule b").textContent === rule4.r && !!$("#verd .regel .words") && !$("#verd .regel .ex"), "wrong answer shows the topic's rule and words (no example) under the explanation");
   $("#go").click(); await tick();
   ok(Pp()[id4].b === 1 && Pp()[id4].d === DAY + 1 && S.queue.length === qlen + 1, `peek+wrong: box ${Pp()[id4].b} (expect 1), requeued: ${S.queue.length === qlen + 1}`);
 
   // --- Spickzettel page still renders with shared helpers
   w.go("sheet"); await tick();
-  const nTables = d.querySelectorAll("#stage .sh-table.grid").length, nBlocks = d.querySelectorAll("#stage .sh-block").length;
+  const nTables = d.querySelectorAll("#stage .sh-table.ref").length, nBlocks = d.querySelectorAll("#stage .sh-block").length;
   ok(nTables === 8 && nBlocks === 8 + 13, `Spickzettel B1.1: ${nTables} tables (expect 8), ${nBlocks} blocks (expect 21)`);
+  ok(d.querySelectorAll("#stage .ex.drill").length === 13 * 2 && d.querySelectorAll("#stage .ex-en").length === 13, "Spickzettel topic blocks keep two drill sentences and add the translated example");
+  ok(!d.querySelector("#stage .grid .sh-table") && !d.querySelector("#stage table.grid"), "no table carries the layout class .grid any more");
+
+  // --- Fortschritt: one Konto section with the backup file folded in
+  w.go("stats"); await tick();
+  const eyebrows = [...d.querySelectorAll("#stage .eyebrow")].map(e => e.textContent.trim());
+  ok(eyebrows.filter(t => t === "Konto").length === 1 && !eyebrows.some(t => /^Sicherung/.test(t)), `Fortschritt has one Konto section and no separate Sicherung section (${eyebrows.join(" | ")})`);
+  ok(!!$("#exp") && !!$("#imp") && !!$("#file") && !!$("#reset"), "backup save/load and reset are still there");
 
   // --- mapping sanity across all levels
   const allTopics = new Set(); Object.values(ev("COURSES")).forEach(c => c.gtopics.forEach(t => allTopics.add(t[0])));
   const badKeys = Object.keys(ev("SHEET_FOR")).filter(k => !allTopics.has(k));
   const badTables = Object.values(ev("SHEET_FOR")).flat().filter(k => !ev("TABLES")[k]);
-  const missingRules = [...allTopics].filter(k => !ev("RULES")[k]);
-  ok(missingRules.length === 0, `RULES covers all ${allTopics.size} topics; missing: [${missingRules}]`);
+  const RU = ev("RULES");
+  const missingRules = [...allTopics].filter(k => !RU[k]);
+  const malformed = Object.entries(RU).filter(([k,v]) => typeof v.r !== "string" || !v.r || !Array.isArray(v.w) || v.w.some(x => x.length !== 2) || !Array.isArray(v.ex) || v.ex.length !== 2);
+  ok(missingRules.length === 0 && malformed.length === 0, `RULES covers all ${allTopics.size} topics with rule, words and translated example; missing: [${missingRules}] malformed: [${malformed.map(x=>x[0])}]`);
   ok(badKeys.length === 0 && badTables.length === 0, `SHEET_FOR keys all real topics (${Object.keys(ev("SHEET_FOR")).length} of ${allTopics.size} topics mapped); unknown: [${badKeys}] [${badTables}]`);
 
   // --- every level: § panel renders for every grammar topic without throwing
