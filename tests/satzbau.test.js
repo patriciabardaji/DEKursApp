@@ -5,7 +5,7 @@ const html = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
 let fails = 0;
 const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if(!c) fails++; };
 const tick = (ms=60) => new Promise(r => setTimeout(r, ms));
-const seed = {name:"Test", course:"B1.1", p:{}, xp:0, streak:0, goalDay:0, dayD:0, dayXp:0, bestCombo:0, blitzBest:0,
+const seed = {name:"Test", course:"B1.1", introSeen:true, p:{}, xp:0, streak:0, goalDay:0, dayD:0, dayXp:0, bestCombo:0, blitzBest:0,
   stamps:{}, dir:"de", sessions:0, ansBySec:{}, bonusBySec:{}, hist:{}, lastBackup:0, goalMin:15};
 
 function boot(){

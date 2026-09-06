@@ -25,6 +25,14 @@ The whole app is one `index.html`. No framework, no build step, no dependencies.
 Progress is tracked per level. You pick a level on the welcome screen and can switch at any
 time by tapping the DEKurs title; each level keeps its own box.
 
+### First minutes
+
+The interface is deliberately German; every explanation is English. A new learner sees, in
+order: the first-start screen (name, optional account), a one-page **How DEKurs works** intro
+(shown once, only to someone with no cards answered yet), then the level picker with two folded
+guides, *Add to your home screen* and *How it works*. The first time a section is opened, its
+ⓘ explanation in the tab is open by default; after that it stays closed until tapped.
+
 ### Sections
 
 - **Vokabeln** — type the translation. Three directions, switchable on the card:
@@ -60,6 +68,18 @@ time by tapping the DEKurs title; each level keeps its own box.
   Zettelwirtschaft to Paragraphenreiter, and 14 stamps reward streaks, error-free sessions,
   mastered topics and more.
 - **Keyboard** (desktop): Enter or Space presses the primary button, keys 1–4 pick an option.
+
+## Sharing it
+
+Send the link with a couple of sentences, for example:
+
+> DEKurs is a small German trainer I use: vocabulary, grammar, verbs and sentence building from
+> A1 to B2, about 15 minutes a day. Open https://patriciabardaji.github.io/DEKursApp/ in Safari
+> (iPhone) or Chrome (Android), add it to your home screen, and pick your level. Everything is
+> explained in English on the first screen.
+
+The app takes it from there: intro page, install guide, and an explanation the first time each
+section is opened.
 
 ## Progress, account and backup
 

@@ -493,6 +493,9 @@ input{font:inherit;color:inherit}
 .infobox i{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--ink)}
 .info.book{font-style:normal;font-size:13px}
 .sheetbox{margin:0 0 16px;padding:14px 15px;border-radius:6px;background:var(--accent-soft);border:1px solid var(--accent)}
+.intro{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:10px}
+.intro li{padding:12px 14px 13px 16px;background:var(--card);border:1px solid var(--ink-14);border-left:5px solid var(--ic);border-radius:6px;font-size:14.5px;line-height:1.55;color:var(--ink-60)}
+.intro li b{display:block;color:var(--ink);font-family:var(--serif);font-size:17px;font-weight:600;margin-bottom:3px}
 .sheetbox .sh-block{padding:10px 0}
 .sheetbox .sh-block:first-child{padding-top:0}
 .sheetbox .sh-block h4{font-size:15px}
@@ -4739,7 +4742,7 @@ const DAY = () => Math.floor(Date.now()/864e5);
 const STEPS = {1:1, 2:2, 3:4, 4:8, 5:16};
 const SESSION = 16;
 const GOAL = 120;                  // Punkte pro Tag
-const APP_VERSION = "50";
+const APP_VERSION = "51";
 const MINUTES = [10, 15, 25, 40];      // wählbares Tagesziel
 const SEC_PER_CARD = 15;               // Erfahrungswert fürs Tippen einer Karte
 const goalMin = () => P.goalMin || 15;
@@ -5175,7 +5178,7 @@ function chrome(){
 }
 function nav(){
   const bar = $("#modes");
-  if(S.mode === "home" || S.mode === "welcome" || S.mode === "name"){ bar.style.display = "none"; bar.innerHTML = ""; return; }
+  if(S.mode === "home" || S.mode === "welcome" || S.mode === "name" || S.mode === "intro"){ bar.style.display = "none"; bar.innerHTML = ""; return; }
   const label = (MODES.find(m => m[0] === S.mode) || ["","Übung"])[1];
   bar.style.display = "flex";
   bar.className = "modes backbar";
@@ -5190,6 +5193,7 @@ function go(m){
   document.body.dataset.sec = m;
   nav(); chrome();
   if(m === "name") return renderName();
+  if(m === "intro") return renderIntro();
   if(m === "welcome") return renderWelcome();
   if(m === "home") return renderHome();
   if(m === "sheet") return renderSheet();
@@ -5250,14 +5254,15 @@ function renderName(){
     // the account's name wins; otherwise the typed one; otherwise no name
     P.name = (P.name && P.name !== "–") ? P.name : (nm() || "–");
     store.save(P);
-    if(P.course && COURSES[P.course]){ useCourse(P.course); go("home"); } else go("welcome");
+    if(needsIntro()) go("intro");
+    else if(P.course && COURSES[P.course]){ useCourse(P.course); go("home"); } else go("welcome");
   };
   $("#nm").focus();
   $("#nm").addEventListener("keydown", e => { if(e.key === "Enter") $("#mail").focus(); });
   $("#mail").addEventListener("keydown", e => { if(e.key === "Enter") $("#pw").focus(); });
   $("#pw").addEventListener("keydown", e => { if(e.key === "Enter") $("#signin").click(); });
 
-  $("#skip").onclick = () => { P.name = nm() || "–"; store.save(P); go("welcome"); };
+  $("#skip").onclick = () => { P.name = nm() || "–"; store.save(P); go(needsIntro() ? "intro" : "welcome"); };
 
   $("#signup").onclick = async () => {
     const mail = $("#mail").value.trim(), pw = $("#pw").value;
@@ -5300,38 +5305,61 @@ function renderName(){
 /* =====================================================================
    WILLKOMMEN — Kursstufe wählen
    ===================================================================== */
+// shown once, before the level picker, to anyone who has not answered a card yet
+const needsIntro = () => !P.introSeen && Object.keys(P.p).length === 0;
+function renderIntro(){
+  const pts = [
+    ["#9B8AD4", "A plan every day.", "The home screen shows what's due today, about 15 minutes. Reviews come first, then new cards."],
+    ["#6FA8D8", "Five boxes.", "Every card climbs one box when you get it right and comes back after 1, 2, 4, 8 and 16 days. A wrong answer sends it back to box 1."],
+    ["#DC87A2", "Four sections and Blitz.", "Vokabeln, Grammatik, Verben, Satzbau. Blitz is a 60-second bonus round that never touches your boxes."],
+    ["#5CB795", "Type, don't guess.", "Typos and missing umlauts are fine. If you were right anyway, say so with one tap. On a grammar card the § button shows the rule."],
+    ["#E5A063", "Your progress travels with you.", "With an account the same box lives on your phone and your computer. The ⓘ in every section explains the exercise in English."]
+  ];
+  $("#stage").innerHTML = `
+  <p class="eyebrow">Willkommen${P.name && P.name !== "–" ? ", " + esc(P.name) : ""}</p>
+  <h2 class="h">How DEKurs works</h2>
+  <p class="hsub">One minute, then you're off. The interface stays in German on purpose — the explanations are always in English.</p>
+  <ul class="intro">${pts.map(([c,t,d]) => `<li style="--ic:${c}"><b>${esc(t)}</b>${esc(d)}</li>`).join("")}</ul>
+  <div class="actions"><button class="btn wide" id="introgo">Los geht's</button></div>`;
+  $("#introgo").onclick = () => {
+    P.introSeen = true; store.save(P);
+    if(P.course && COURSES[P.course]){ useCourse(P.course); go("home"); } else go("welcome");
+  };
+}
+
 function guideHTML(){
   const steps = IS_IOS ? `
-      <li>Diese Seite in <b>Safari</b> öffnen — nicht in Chrome, dort fehlt die Funktion.</li>
-      <li>Unten auf das <b>Teilen-Symbol</b> tippen (Quadrat mit Pfeil nach oben).</li>
-      <li><b>Zum Home-Bildschirm</b> wählen und mit <b>Hinzufügen</b> bestätigen.</li>
-      <li>Die App einmal über das neue Symbol öffnen, solange du noch Internet hast.</li>`
+      <li>Open this page in <b>Safari</b>, not Chrome — only Safari can install it.</li>
+      <li>Tap the <b>Share</b> button (the square with the arrow pointing up).</li>
+      <li>Choose <b>Add to Home Screen</b> and confirm with <b>Add</b>.</li>
+      <li>Open the app once from the new icon while you're still online.</li>`
     : IS_ANDROID ? `
-      <li>Diese Seite in <b>Chrome</b> öffnen.</li>
-      <li>Im Menü (drei Punkte) <b>App installieren</b> oder <b>Zum Startbildschirm zufügen</b> wählen.</li>
-      <li>Die App einmal über das neue Symbol öffnen, solange du noch Internet hast.</li>`
+      <li>Open this page in <b>Chrome</b>.</li>
+      <li>In the menu (three dots) choose <b>Install app</b> or <b>Add to Home screen</b>.</li>
+      <li>Open the app once from the new icon while you're still online.</li>`
     : `
-      <li>Auf dem Handy: Seite im Browser öffnen und über das Menü <b>zum Startbildschirm hinzufügen</b>.</li>
-      <li>Am Rechner: Lesezeichen setzen — die App läuft auch so, nur ohne eigenes Symbol.</li>`;
+      <li>On your phone: open this page in the browser and use the menu to <b>add it to the home screen</b>.</li>
+      <li>On a computer: just bookmark it — the app runs the same, only without its own icon.</li>`;
 
   const install = installed() ? "" : `
     <details class="guide">
-      <summary>Auf den Homescreen legen<span>empfohlen</span></summary>
+      <summary>Add to your home screen<span>recommended</span></summary>
       <div class="guide-body">
-        <p>Danach läuft alles offline, auch im Flugzeug, und dein Fortschritt bleibt dauerhaft gespeichert. Nur als Lesezeichen im Browser löscht Safari die Daten, wenn du die Seite eine Woche nicht öffnest.</p>
+        <p>After that everything works offline, even on a plane, and your progress stays put. As a plain browser bookmark, Safari deletes the data after a week without a visit — an account protects you from that too.</p>
         <ol>${steps}</ol>
       </div>
     </details>`;
 
   return `${install}
     <details class="guide">
-      <summary>So funktioniert es<span>1 Minute</span></summary>
+      <summary>How it works<span>1 minute</span></summary>
       <div class="guide-body">
-        <p><b>Jeden Tag ein Plan.</b> Die Startseite zeigt, was heute ansteht: ein festes Tagesziel von rund 15 Minuten, aufgeteilt auf die vier Bereiche — fällige Wiederholungen zuerst, dann neue Karten. Wenn du früher fertig bist, kannst du den Stoff von morgen vorziehen.</p>
-        <p><b>Fünf Kästen.</b> Jede Karte wandert bei einer richtigen Antwort einen Kasten weiter und kommt später wieder — nach 1, 2, 4, 8 und 16 Tagen. Bei einer falschen Antwort geht sie zurück in Kasten 1.</p>
-        <p><b>Tippen statt raten.</b> Du schreibst die Übersetzung selbst. Kleine Tippfehler und fehlende Umlaute werden akzeptiert; wenn deine Antwort trotzdem richtig war, kannst du sie selbst als richtig werten.</p>
-        <p><b>Vier Bereiche.</b> Vokabeln, Grammatik, Verben und Satzbau — dazu Blitz, eine Minute auf Zeit. Punkte, Stufen und Stempel gibt es fürs Dranbleiben.</p>
-        <p><b>Sicherung nicht vergessen.</b> Alles liegt nur auf deinem Gerät. Unter <i>Fortschritt</i> kannst du eine Sicherungsdatei speichern und sie auf einem anderen Gerät wieder laden.</p>
+        <p><b>A plan every day.</b> The home screen shows what's due today: a goal of about 15 minutes split across the four sections — reviews first, then new cards. Finished early? Pull tomorrow's cards forward.</p>
+        <p><b>Five boxes.</b> Every card climbs one box when you get it right and comes back after 1, 2, 4, 8 and 16 days. A wrong answer sends it back to box 1.</p>
+        <p><b>Type, don't guess.</b> You write the translation yourself. Small typos and missing umlauts are accepted; if your answer was right anyway, mark it right yourself.</p>
+        <p><b>Four sections.</b> Vokabeln, Grammatik, Verben and Satzbau — plus Blitz, one minute against the clock. Points, ranks and stamps reward sticking with it.</p>
+        <p><b>Look things up.</b> The ⓘ in each section tab explains the exercise in English; the § on a grammar card opens the rule and the tables.</p>
+        <p><b>Keep your progress.</b> With an account (Fortschritt → Konto) the same box lives on your phone and your computer. Without one everything stays on this device — save a backup file now and then.</p>
       </div>
     </details>`;
 }
@@ -6200,8 +6228,10 @@ function attachInfo(mode){
   const stage = document.getElementById("stage");
   const tab = document.getElementById("modetab");               // section tab in the top bar; hidden on the home screen
   const host = tab || stage.querySelector(".card, .hero") || stage;
+  const firstVisit = !!tab && !(P.infoSeen && P.infoSeen[mode]);  // first time in a section: show the explanation once
   if(!document.getElementById("infbox"))                         // the box is wiped by every re-render, the tab button is not
-    (tab ? stage : host).insertAdjacentHTML("afterbegin", `<div class="infobox hidden" id="infbox">${INFO[mode]()}</div>`);
+    (tab ? stage : host).insertAdjacentHTML("afterbegin", `<div class="infobox${firstVisit ? "" : " hidden"}" id="infbox">${INFO[mode]()}</div>`);
+  if(firstVisit){ P.infoSeen = Object.assign({}, P.infoSeen, {[mode]: true}); store.save(P); }
   if(!document.getElementById("infbtn"))
     host.insertAdjacentHTML(tab ? "beforeend" : "afterbegin", `<button class="info" id="infbtn" aria-label="Erklärung auf Englisch">i</button>`);
   const btn = document.getElementById("infbtn");
@@ -6509,6 +6539,7 @@ document.addEventListener("keydown", e => {
   if(migrated) store.save(P);
   document.getElementById("brand").onclick = () => go("welcome");
   if(!P.name) go("name");
+  else if(needsIntro()) go("intro");
   else if(P.course && COURSES[P.course]){ useCourse(P.course); go("home"); }
   else go("welcome");
 })();

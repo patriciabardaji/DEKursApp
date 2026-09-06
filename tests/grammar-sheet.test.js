@@ -5,7 +5,7 @@ const vc = new VirtualConsole();
 const errors = [];
 vc.on("jsdomError", e => { if(!/Not implemented/.test(e.message)) errors.push(e.message); });
 vc.on("error", (...a) => errors.push(a.join(" ")));
-const seed = {name:"Test", course:"B1.1", p:{}, xp:0, streak:0, goalDay:0, dayD:0, dayXp:0, bestCombo:0, blitzBest:0,
+const seed = {name:"Test", course:"B1.1", introSeen:true, p:{}, xp:0, streak:0, goalDay:0, dayD:0, dayXp:0, bestCombo:0, blitzBest:0,
   stamps:{}, dir:"de", sessions:0, ansBySec:{}, bonusBySec:{}, hist:{}, lastBackup:0, goalMin:15};
 const dom = new JSDOM(html, {url:"http://localhost:8123/", runScripts:"dangerously", pretendToBeVisual:true, virtualConsole: vc,
   beforeParse(w){ w.localStorage.setItem("dekurs-v3", JSON.stringify(seed));
@@ -30,9 +30,10 @@ const wrongOpt = id => [...d.querySelectorAll(".opt")].find(x => x.dataset.v !==
   const id1 = S.queue[S.i];
   ok(!!$("#shbtn") && !!$("#infbtn"), "grammar card has both § and ⓘ buttons");
   ok(!!$("#modes #modetab #infbtn") && !$("#stage #infbtn") && !!$("#stage .card #shbtn"), "ⓘ sits in the section tab of the top bar, § in the card corner");
-  $("#infbtn").click();
-  ok($("#stage > #infbox") && !$("#infbox").classList.contains("hidden") && /Grammar/.test($("#infbox").textContent) && $("#infbtn").dataset.on === "1", "ⓘ opens the explanation above the card");
-  $("#infbtn").click(); ok($("#infbox").classList.contains("hidden"), "ⓘ closes it again");
+  ok($("#stage > #infbox") && !$("#infbox").classList.contains("hidden") && /Grammar/.test($("#infbox").textContent) && $("#infbtn").dataset.on === "1" && ev("P.infoSeen").grammar === true, "first visit: the explanation is open by itself above the card and remembered");
+  $("#infbtn").click(); ok($("#infbox").classList.contains("hidden") && $("#infbtn").dataset.on === "0", "ⓘ closes it");
+  $("#infbtn").click(); ok(!$("#infbox").classList.contains("hidden"), "ⓘ opens it again");
+  $("#infbtn").click(); ok($("#infbox").classList.contains("hidden"), "closed again before answering");
   ok($("#shbox").classList.contains("hidden") && S.peeked === false, "sheet panel starts hidden, peeked=false");
   const topic1 = G()[IDX(id1)][0];
   const box = $("#shbox");
@@ -99,7 +100,9 @@ const wrongOpt = id => [...d.querySelectorAll(".opt")].find(x => x.dataset.v !==
   w.go("home"); await tick();
   ok(!!$("#stage .hero #infbtn") && !$("#modes #infbtn"), "home: ⓘ stays on the hero card");
   w.go("blitz"); await tick();
-  ok(!!$("#modes #modetab #infbtn"), "blitz intro: ⓘ in the Blitz tab");
+  ok(!!$("#modes #modetab #infbtn") && !$("#infbox").classList.contains("hidden"), "blitz intro: ⓘ in the Blitz tab, open on the first visit");
+  w.go("home"); await tick(); w.go("blitz"); await tick();
+  ok($("#infbox").classList.contains("hidden"), "second visit to Blitz: explanation stays closed");
 
   // --- Fortschritt: one Konto section with the backup file folded in
   w.go("stats"); await tick();

@@ -49,7 +49,9 @@ const fill = ($, v) => { for(const [id, val] of Object.entries(v)){ $(id).value 
     ok(/Vornamen/.test($("#authmsg").textContent), "A: sign-up without a name asks for the name");
     fill($, {"#nm":"Pat", "#mail":"pat@example.de", "#pw":"secret7"});
     $("#signup").click(); await tick(200);
-    ok(!!t.d.querySelector(".level"), "A: after sign-up the level picker is shown");
+    ok(!!$("#introgo") && /How DEKurs works/.test($("#stage").textContent) && !t.d.querySelector(".level"), "A: after sign-up the English intro page is shown first");
+    $("#introgo").click(); await tick();
+    ok(!!t.d.querySelector(".level") && ev("P.introSeen") === true, "A: 'Los geht's' leads to the level picker and remembers the intro");
     ok(ev("P.name") === "Pat", `A: name saved from the form ("${ev("P.name")}")`);
     ok(JSON.parse(t.w.localStorage.getItem("dekurs-auth") || "null")?.email === "pat@example.de", "A: session stored");
     ok(t.remote.pushed && t.remote.pushed.data.name === "Pat", "A: fresh progress with the name was pushed to the account");
@@ -65,13 +67,15 @@ const fill = ($, v) => { for(const [id, val] of Object.entries(v)){ $(id).value 
     ok(ev("P.name") === "Anna" && ev("P.course") === "A2.1", `B: name and level come from the account (${ev("P.name")}, ${ev("P.course")})`);
     ok(ev("P.xp") === 340 && ev("P.p")["A2.1|v0"].b === 3, "B: progress merged from the account");
     ok(/Karten heute|Tagesziel|Diese Stufe/.test($("#stage").textContent) && !t.d.querySelector(".level"), "B: lands on home, not the level picker");
+    ok(!$("#introgo"), "B: a learner with progress never sees the intro");
     ok(t.errors.length === 0, "B: no runtime errors" + (t.errors[0] ? ": " + t.errors[0] : "")); }
 
   // B2 — sign in, account has no name: the typed name is used
   { const t = boot({users:{"x@example.de":"pw123456"}, progress:{name:"", p:{}, xp:0}}); await tick(300);
     fill(t.$, {"#nm":"Lea", "#mail":"x@example.de", "#pw":"pw123456"});
     t.$("#signin").click(); await tick(200);
-    ok(t.ev("P.name") === "Lea" && !!t.d.querySelector(".level"), `B2: typed name used when the account has none ("${t.ev("P.name")}"), level picker shown`); }
+    ok(t.ev("P.name") === "Lea" && !!t.$("#introgo"), `B2: typed name used when the account has none ("${t.ev("P.name")}"), intro shown`);
+    t.$("#introgo").click(); await tick(); ok(!!t.d.querySelector(".level"), "B2: then the level picker"); }
 
   // C — wrong password
   { const t = boot({users:{"anna@example.de":"pw123456"}}); await tick(300);
@@ -93,7 +97,9 @@ const fill = ($, v) => { for(const [id, val] of Object.entries(v)){ $(id).value 
     ok(/gültige E-Mail/.test(t.$("#authmsg").textContent), "E: bad e-mail is rejected");
     ok(t.calls.length === 0, "E: nothing was sent to the server");
     t.$("#skip").click(); await tick();
-    ok(t.ev("P.name") === "Lena" && !!t.d.querySelector(".level") && t.w.localStorage.getItem("dekurs-auth") === null, "E: 'Ohne Konto weiter' keeps the name, no account, level picker shown"); }
+    ok(t.ev("P.name") === "Lena" && !!t.$("#introgo") && t.w.localStorage.getItem("dekurs-auth") === null, "E: 'Ohne Konto weiter' keeps the name, no account, intro shown");
+    t.$("#introgo").click(); await tick();
+    ok(!!t.d.querySelector(".level") && /How it works/.test(t.$("#stage").textContent) && /Add to your home screen|How it works/.test(t.$("#stage .guide summary").textContent), "E: level picker with the English guides"); }
 
   console.log(fails ? `\n${fails} FAILED` : "\nALL PASSED");
   process.exit(fails ? 1 : 0);
