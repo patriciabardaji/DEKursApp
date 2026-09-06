@@ -161,6 +161,7 @@ skip):
 npm i --no-save jsdom          # once; node_modules is git-ignored
 node tests/grammar-sheet.test.js
 node tests/start-screen.test.js
+node tests/satzbau.test.js       # repeated words are judged by word, not by chip
 ```
 
 Before pushing, also check that the inline script still parses:

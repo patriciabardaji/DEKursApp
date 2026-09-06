@@ -4736,7 +4736,7 @@ const DAY = () => Math.floor(Date.now()/864e5);
 const STEPS = {1:1, 2:2, 3:4, 4:8, 5:16};
 const SESSION = 16;
 const GOAL = 120;                  // Punkte pro Tag
-const APP_VERSION = "47";
+const APP_VERSION = "48";
 const MINUTES = [10, 15, 25, 40];      // wählbares Tagesziel
 const SEC_PER_CARD = 15;               // Erfahrungswert fürs Tippen einer Karte
 const goalMin = () => P.goalMin || 15;
@@ -5839,8 +5839,10 @@ function renderSatz(id){
       return;
     }
     S.locked = true;
-    const ok = placed.every((v,i)=>v===i);
-    line.innerHTML = placed.map((i,pos)=>`<span class="chip" data-state="${i===pos?"right":"wrong"}">${esc(parts[i])}</span>`).join("");
+    // judge by the words, not by chip identity: a sentence may contain the same word twice ("ich … ich")
+    const right = pos => parts[placed[pos]] === parts[pos];
+    const ok = placed.every((_,pos)=>right(pos));
+    line.innerHTML = placed.map((i,pos)=>`<span class="chip" data-state="${right(pos)?"right":"wrong"}">${esc(parts[i])}</span>`).join("");
     $("#verd").innerHTML = `<div class="verdict" data-tone="${ok?"right":"wrong"}">
       <h4>${ok ? "Richtig" : "Diese Reihenfolge ist gemeint"}</h4>
       <p><strong>${esc(parts.join(" ").replace(/ ([,?])/g,"$1"))}</strong><br>${s[1]}</p></div>`;
